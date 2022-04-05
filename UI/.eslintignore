@@ -1,0 +1,10 @@
+*.css
+*.svg
+
+*.d.ts
+
+# create-react-app stuff
+reportWebVitals.ts
+service-worker.ts
+serviceWorkerRegistration.ts
+setupTests.ts

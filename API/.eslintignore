@@ -1,3 +1,4 @@
 *.css
 *.svg
-API/dist/
+
+/dist
