@@ -28,8 +28,9 @@ typings/
 .env
 .env.test
 
-# API build dir
+# build directories
 API/dist/
+UI/build/
 
 # VSCode settings
 .vscode/
