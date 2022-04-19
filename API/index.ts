@@ -1,14 +1,14 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import config from 'config';
-import { ServerConfig, MongoDBConfig } from './config/types';
+import { MongoDBConfig } from './config/types';
 import db from './models/db';
 import authRouter from './routes/auth';
 import userRouter from './routes/users';
 import recipeRouter from './routes/recipes';
 
 const dbConfig: MongoDBConfig = config.get('mongoDb');
-const serverConfig: ServerConfig = config.get('server');
+const { port, apiUrl } = config.get('server');
 
 db.connectDb(dbConfig);
 
@@ -24,14 +24,13 @@ app.use(
 
 app.use(express.json());
 
-const apiUrl = '/api/v1';
 app.use(apiUrl, authRouter);
 app.use(`${apiUrl}/users`, userRouter);
 app.use(`${apiUrl}/recipes`, recipeRouter);
 
-app.listen(serverConfig.port, () => {
+app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`[API] Server is running at https://localhost:${serverConfig.port}`);
+  console.log(`[API] Server is running at https://localhost:${port}`);
 });
 
 const cleanup = () => {
