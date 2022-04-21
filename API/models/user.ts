@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, ObjectId } from 'mongoose';
 import Joi, { ValidationError as JoiValidationError, ValidationErrorItem as JoiValidationErrorItem } from 'joi';
 import bcrypt from 'bcrypt';
 import { IUser, UserModel } from './types';
@@ -97,10 +97,10 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.statics.validateUserData = async function (userData: IUser) {
-  let user = await this.findOne({ name: new RegExp(userData.name, 'i') });
+  let user = await this.findOne({ name: userData.name }).exec();
   if (user) return Promise.reject(new APIValidationError('Name is already in use', 409));
 
-  user = await this.findOne({ email: new RegExp(userData.email, 'i') });
+  user = await this.findOne({ email: userData.email }).exec();
   if (user) return Promise.reject(new APIValidationError('Email is already in use', 409));
 
   const inputValidationSchema = Joi.object({ ...inputSchema });
@@ -120,6 +120,73 @@ UserSchema.statics.validateUserData = async function (userData: IUser) {
     return Promise.reject(new APIError('Internal server error while validating user data', 500));
   }
 
+  return Promise.resolve('Success');
+};
+
+UserSchema.statics.validateUserName = async function (userId: ObjectId, name: string) {
+  const user = await this.findOne({ name }).exec();
+  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Name is already in use', 409));
+
+  const nameValidationSchema = inputSchema.name;
+
+  try {
+    await nameValidationSchema.validateAsync(name, { abortEarly: false });
+  } catch (err) {
+    if (err instanceof JoiValidationError) {
+      return Promise.reject(
+        new APIValidationError(
+          'Invalid user name',
+          400,
+          err.details.map((e: JoiValidationErrorItem) => e.message)
+        )
+      );
+    }
+    return Promise.reject(new APIError('Internal server error while validating user name', 500));
+  }
+
+  return Promise.resolve('Success');
+};
+
+UserSchema.statics.validateUserEmail = async function (userId: ObjectId, email: string) {
+  const user = await this.findOne({ email }).exec();
+  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Email is already in use', 409));
+
+  const emailValidationSchema = inputSchema.email;
+
+  try {
+    await emailValidationSchema.validateAsync(email, { abortEarly: false });
+  } catch (err) {
+    if (err instanceof JoiValidationError) {
+      return Promise.reject(
+        new APIValidationError(
+          'Invalid user email',
+          400,
+          err.details.map((e: JoiValidationErrorItem) => e.message)
+        )
+      );
+    }
+    return Promise.reject(new APIError('Internal server error while validating user email', 500));
+  }
+  return Promise.resolve('Success');
+};
+
+UserSchema.statics.validateUserPassword = async function (password: string) {
+  const passwordValidationSchema = inputSchema.password;
+
+  try {
+    await passwordValidationSchema.validateAsync(password, { abortEarly: false });
+  } catch (err) {
+    if (err instanceof JoiValidationError) {
+      return Promise.reject(
+        new APIValidationError(
+          'Invalid user password',
+          400,
+          err.details.map((e: JoiValidationErrorItem) => e.message)
+        )
+      );
+    }
+    return Promise.reject(new APIError('Internal server error while validating user password', 500));
+  }
   return Promise.resolve('Success');
 };
 

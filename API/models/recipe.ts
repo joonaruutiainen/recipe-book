@@ -379,6 +379,10 @@ const RecipeSchema = new Schema<IRecipe>(
       required: true,
       min: 1,
     },
+    public: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: {

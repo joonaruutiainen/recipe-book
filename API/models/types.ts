@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 export interface APIError {
   message: string;
@@ -22,6 +22,9 @@ export interface IUser {
 
 export interface UserModel extends Model<IUser> {
   validateUserData: (userData: IUser) => Promise<APIValidationResult>;
+  validateUserName: (userId: ObjectId, name: string) => Promise<APIValidationResult>;
+  validateUserEmail: (userId: ObjectId, email: string) => Promise<APIValidationResult>;
+  validateUserPassword: (password: string) => Promise<APIValidationResult>;
   verifyPassword: (password: string) => boolean;
 }
 
@@ -37,7 +40,7 @@ export interface IRecipeTag {
 
 export interface IRecipeIngredient {
   quantity: number;
-  unit: string;
+  unit?: string;
   description: string;
   subtitle?: string;
 }
@@ -59,6 +62,7 @@ export interface IRecipe {
   ingredients: Array<IRecipeIngredient>;
   pages: number;
   instructions: Array<IRecipeStep>;
+  public: boolean;
 }
 
 export interface RecipeModel extends Model<IRecipe> {
