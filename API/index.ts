@@ -28,13 +28,14 @@ app.use(apiUrl, authRouter);
 app.use(`${apiUrl}/users`, userRouter);
 app.use(`${apiUrl}/recipes`, recipeRouter);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`[API] Server is running at https://localhost:${port}`);
 });
 
 const cleanup = () => {
   db.disconnectDb();
+  server.close();
   process.exit();
 };
 

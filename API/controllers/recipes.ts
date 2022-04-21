@@ -1,15 +1,32 @@
 import { Request, Response } from 'express';
+import APIError from '../models/apiError';
+import Recipe from '../models/recipe';
+import makeResponse from '../utils/responseHandler';
 
 const getRecipes = async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'GET /recipes',
-  });
+  const recipes = await Recipe.find();
+  return makeResponse.success(
+    res,
+    200,
+    undefined,
+    recipes.map(r => r.toJSON())
+  );
 };
 
 const addRecipe = async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'POST /recipes',
-  });
+  try {
+    await Recipe.validateRecipeData(req.body);
+  } catch (err) {
+    if (err instanceof APIError) {
+      return makeResponse.error(res, err);
+    }
+  }
+
+  const recipe = new Recipe({ ...req.body });
+
+  await recipe.save();
+
+  return makeResponse.success(res, 200, 'Recipe added successfully', recipe.toJSON());
 };
 
 const getRecipe = async (req: Request, res: Response) => {
