@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response } from 'express';
 import session, { SessionOptions } from 'express-session';
 import MongoStore from 'connect-mongo';
 import cors, { CorsOptions } from 'cors';
@@ -7,6 +7,7 @@ import config from 'config';
 
 import { MongoDBConfig, ServerConfig } from './config/types';
 import db from './models/db';
+import csrfProtection from './middleware/csrfProtection';
 import authRouter from './routes/auth';
 import userRouter from './routes/users';
 import recipeRouter from './routes/recipes';
@@ -35,6 +36,10 @@ app.use(
 app.use(express.json());
 
 // router middleware
+app.get('/', csrfProtection, (req: Request, res: Response) => {
+  res.cookie('XSRF_TOKEN', req.csrfToken());
+  res.send(200);
+});
 app.use(serverConfig.apiUrl, authRouter);
 app.use(`${serverConfig.apiUrl}/users`, userRouter);
 app.use(`${serverConfig.apiUrl}/recipes`, recipeRouter);
