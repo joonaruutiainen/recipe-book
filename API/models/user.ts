@@ -191,8 +191,9 @@ UserSchema.statics.validateUserPassword = async function (password: string) {
 };
 
 UserSchema.methods.verifyPassword = async function (password: string) {
-  const result = await bcrypt.compare(password, this.password);
-  return result;
+  const correctPassword = await bcrypt.compare(password, this.password);
+  if (correctPassword) return Promise.resolve('Success');
+  return Promise.reject(new APIError('Incorrect password', 401));
 };
 
 const User = model<IUser, UserModel>('User', UserSchema);

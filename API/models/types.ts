@@ -18,6 +18,7 @@ export interface IUser {
   email: string;
   password: string;
   admin: boolean;
+  verifyPassword: (password: string) => Promise<APIValidationResult>;
 }
 
 export interface UserModel extends Model<IUser> {
@@ -25,7 +26,6 @@ export interface UserModel extends Model<IUser> {
   validateUserName: (userId: ObjectId, name: string) => Promise<APIValidationResult>;
   validateUserEmail: (userId: ObjectId, email: string) => Promise<APIValidationResult>;
   validateUserPassword: (password: string) => Promise<APIValidationResult>;
-  verifyPassword: (password: string) => boolean;
 }
 
 export interface IRecipeDuration {
@@ -63,6 +63,7 @@ export interface IRecipe {
   pages: number;
   instructions: Array<IRecipeStep>;
   public: boolean;
+  userId: string;
 }
 
 export interface RecipeModel extends Model<IRecipe> {

@@ -3,6 +3,7 @@ import { Error as DBError } from 'mongoose';
 import Recipe from '../models/recipe';
 import APIError from '../models/apiError';
 import makeResponse from '../utils/responseHandler';
+import loadUserFromRequest from '../utils/loadUser';
 
 const validateRecipeId = async (req: Request) => {
   const { recipeId } = req.params;
@@ -21,32 +22,46 @@ const validateRecipeId = async (req: Request) => {
 
 const addRecipe = async (req: Request, res: Response) => {
   try {
-    await Recipe.validateRecipeData(req.body);
+    const { user, error } = await loadUserFromRequest(req);
+
+    if (error) throw new APIError(error, 500);
+
+    const recipeData = { ...req.body, userId: user?.id };
+    await Recipe.validateRecipeData(recipeData);
+
+    const recipe = new Recipe(recipeData);
+    await recipe.save();
+
+    return makeResponse.success(res, 201, 'New recipe added successfully', recipe.toJSON());
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
-  }
-
-  const recipe = new Recipe({ ...req.body });
-
-  try {
-    await recipe.save();
-  } catch (err) {
     return makeResponse.error(res, new APIError('Internal server error when saving recipe to database', 500));
   }
-
-  return makeResponse.success(res, 200, 'New recipe added successfully', recipe.toJSON());
 };
 
 const getRecipes = async (req: Request, res: Response) => {
-  const recipes = await Recipe.find();
-  if (!recipes) return makeResponse.error(res, new APIError('"Recipes" not found', 404));
+  try {
+    const { user } = await loadUserFromRequest(req);
 
-  return makeResponse.success(
-    res,
-    200,
-    `${recipes.length} recipes fetched successfully`,
-    recipes.map(r => r.toJSON())
-  );
+    let recipes;
+
+    if (!user) recipes = await Recipe.find({ public: true }).exec();
+
+    if (user?.admin) recipes = await Recipe.find().exec();
+    else recipes = await Recipe.find({ userId: user?.id }).exec();
+
+    if (!recipes) return makeResponse.error(res, new APIError('"Recipes" not found', 404));
+
+    return makeResponse.success(
+      res,
+      200,
+      `${recipes.length} recipes fetched successfully`,
+      recipes.map(r => r.toJSON())
+    );
+  } catch (err) {
+    if (err instanceof APIError) return makeResponse.error(res, err);
+    return makeResponse.error(res, new APIError('Internal server error when fetching recipes from database', 500));
+  }
 };
 
 const getRecipe = async (req: Request, res: Response) => {
@@ -62,7 +77,10 @@ const getRecipe = async (req: Request, res: Response) => {
 const updateRecipe = async (req: Request, res: Response) => {
   try {
     const recipe = await validateRecipeId(req);
-    let updatedRecipe = { ...recipe.toJSON(), ...req.body };
+
+    // recipe.public is not allowed to be modified with update recipe request
+    const { public: recipeIsPublic, ...dataToUpdate } = req.body;
+    let updatedRecipe = { ...recipe.toJSON(), ...dataToUpdate };
 
     await Recipe.validateRecipeData(updatedRecipe);
 

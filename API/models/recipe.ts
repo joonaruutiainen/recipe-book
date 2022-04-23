@@ -232,6 +232,11 @@ const inputSchema = {
       'array.min': 'minimum number of instruction steps is 1',
       'any.required': 'instructions is required',
     }),
+  userId: Joi.string().required().messages({
+    'string.base': 'userId must be a string (mongoose objectId)',
+    'string.empty': 'userId is not allowed to be empty',
+    'any.required': 'userId is required',
+  }),
 };
 
 const RecipeDurationSchema = new Schema<IRecipeDuration>(
@@ -382,6 +387,10 @@ const RecipeSchema = new Schema<IRecipe>(
     public: {
       type: Boolean,
       default: false,
+    },
+    userId: {
+      type: String,
+      required: true,
     },
   },
   {

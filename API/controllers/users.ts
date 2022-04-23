@@ -26,7 +26,7 @@ const getUsers = async (req: Request, res: Response) => {
   return makeResponse.success(
     res,
     200,
-    `${users.length} recipes fetched successfully`,
+    `${users.length} users fetched successfully`,
     users.map(r => r.toJSON())
   );
 };
