@@ -6,14 +6,17 @@ import User from '../models/user';
 import Recipe from '../models/recipe';
 
 const authenticateUser = async (req: Request) => {
-  const { authorization } = req.headers;
   const baseErrorMsg = 'User authentication failed:';
-  if (!authorization) return Promise.reject(new APIError(`${baseErrorMsg} Missing authorization header`, 401));
   try {
+    const { token } = req.session;
+    if (!token) throw new APIError(`${baseErrorMsg} Missing session token`, 401);
+
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error('process.env.JWT_SECRET is undefined');
-    const { sub } = jwt.verify(authorization.split(' ')[1], secret);
+
+    const { sub } = jwt.verify(token, secret);
     if (!sub) throw new JsonWebTokenError(`${baseErrorMsg} Invalid token, subject is required`);
+
     const user = await User.findById(sub).exec();
     if (!user) throw new APIError(`${baseErrorMsg} User not found`, 401);
     return await Promise.resolve(user);

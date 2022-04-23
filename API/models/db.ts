@@ -3,8 +3,7 @@ import { connect, disconnect } from 'mongoose';
 import { MongoDBConfig } from '../config/types';
 
 const connectDb = (dbConfig: MongoDBConfig) => {
-  const { user, password } = dbConfig;
-  connect(`mongodb+srv://${user}:${password}@recipe-app.mjlfo.mongodb.net/RecipeBook?retryWrites=true&w=majority`, {
+  connect(dbConfig.uri, {
     autoIndex: false,
     maxPoolSize: 20,
     serverSelectionTimeoutMS: 10000,
