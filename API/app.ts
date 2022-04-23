@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import config from 'config';
 import { MongoDBConfig, ServerConfig } from './config/types';
 import db from './models/db';
@@ -21,6 +22,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(helmet());
 
 app.use(express.json());
 
