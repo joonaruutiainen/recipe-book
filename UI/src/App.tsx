@@ -1,7 +1,14 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
+import { Footer, NavBar } from './components';
+import './App.css';
 
-function App() {
-  return <div className='App'>Reseptikirja</div>;
-}
+const App = () => (
+  <div className='App'>
+    <NavBar />
+    <Outlet />
+    <Footer />
+  </div>
+);
 
 export default App;

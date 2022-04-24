@@ -1,14 +1,32 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import App from './App';
+import { AuthRoute, ProtectedRoute, LandingPage, Login, Register, Recipes, Recipe, RecipeEditor } from './routes';
 
-ReactDOM.render(
+createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<App />}>
+          <Route index element={<LandingPage />} />
+          <Route path='login' element={<AuthRoute />}>
+            <Route index element={<Login />} />
+          </Route>
+          <Route path='register' element={<AuthRoute />}>
+            <Route index element={<Register />} />
+          </Route>
+          <Route path='recipes' element={<ProtectedRoute />}>
+            <Route index element={<Recipes />} />
+          </Route>
+          <Route path='recipes/:recipeId' element={<Recipe />} />
+          <Route path='recipeEditor' element={<RecipeEditor />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change

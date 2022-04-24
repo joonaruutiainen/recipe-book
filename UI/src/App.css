@@ -1,0 +1,16 @@
+.App {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column; 
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+  position: relative;
+  background-color: lightpink;
+}
+
+body {
+overflow: hidden;
+margin: 0;
+}
