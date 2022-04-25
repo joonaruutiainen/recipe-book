@@ -36,6 +36,7 @@ const NavBar = () => {
       <Link to='register'>Register</Link>
       <Link to='recipes'>Recipes</Link>
       <Link to='recipeEditor'>RecipeEditor</Link>
+      <Link to='users'>Users</Link>
       {user && (
         <button type='button' onClick={logout}>
           Logout

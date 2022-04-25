@@ -1,20 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { recipeActions } from '../redux/slices/recipesSlice';
 
-const Recipes = () => (
-  <div>
-    <ul>
-      <li>
-        <Link to='1'>Recipe 1</Link>
-      </li>
-      <li>
-        <Link to='2'>Recipe 2</Link>
-      </li>
-      <li>
-        <Link to='3'>Recipe 3</Link>
-      </li>
-    </ul>
-  </div>
-);
+const Recipes = () => {
+  const recipes = useAppSelector(state => state.recipes.public);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      {recipes.length === 0 && (
+        <button type='button' onClick={() => dispatch(recipeActions.initRecipes())}>
+          Get recipes
+        </button>
+      )}
+      <ul>
+        {recipes.map(recipe => (
+          <li key={recipe.id}>
+            <button
+              type='button'
+              onClick={() => {
+                navigate(recipe.id);
+              }}
+            >
+              {recipe.id}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default Recipes;

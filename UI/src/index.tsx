@@ -6,7 +6,18 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import store from './redux/store';
-import { AuthRoute, ProtectedRoute, LandingPage, Login, Register, Recipes, Recipe, RecipeEditor } from './routes';
+import {
+  AuthRoute,
+  ProtectedRoute,
+  LandingPage,
+  Login,
+  Register,
+  Recipes,
+  Recipe,
+  RecipeEditor,
+  Users,
+  User,
+} from './routes';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -26,6 +37,10 @@ createRoot(document.getElementById('root')!).render(
             <Route path='recipeEditor' element={<ProtectedRoute />}>
               <Route index element={<RecipeEditor />} />
             </Route>
+            <Route path='users' element={<ProtectedRoute adminRequired />}>
+              <Route index element={<Users />} />
+            </Route>
+            <Route path='users/:userId' element={<User />} />
           </Route>
         </Routes>
       </BrowserRouter>
