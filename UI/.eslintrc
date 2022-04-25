@@ -29,6 +29,7 @@
     "no-unused-vars": "off",
     "no-plusplus": "off",
     "no-use-before-define": "off",
+    "no-param-reassign": "off",
     "@typescript-eslint/no-use-before-define": ["off"],
     "@typescript-eslint/no-unused-vars": ["warn"],
     "@typescript-eslint/no-non-null-assertion": "off",
