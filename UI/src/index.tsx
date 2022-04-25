@@ -1,31 +1,35 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
+import store from './redux/store';
 import { AuthRoute, ProtectedRoute, LandingPage, Login, Register, Recipes, Recipe, RecipeEditor } from './routes';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<App />}>
-          <Route index element={<LandingPage />} />
-          <Route path='login' element={<AuthRoute />}>
-            <Route index element={<Login />} />
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App />}>
+            <Route index element={<LandingPage />} />
+            <Route path='login' element={<AuthRoute />}>
+              <Route index element={<Login />} />
+            </Route>
+            <Route path='register' element={<AuthRoute />}>
+              <Route index element={<Register />} />
+            </Route>
+            <Route path='recipes' element={<Recipes />} />
+            <Route path='recipes/:recipeId' element={<Recipe />} />
+            <Route path='recipeEditor' element={<ProtectedRoute />}>
+              <Route index element={<RecipeEditor />} />
+            </Route>
           </Route>
-          <Route path='register' element={<AuthRoute />}>
-            <Route index element={<Register />} />
-          </Route>
-          <Route path='recipes' element={<ProtectedRoute />}>
-            <Route index element={<Recipes />} />
-          </Route>
-          <Route path='recipes/:recipeId' element={<Recipe />} />
-          <Route path='recipeEditor' element={<RecipeEditor />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 
