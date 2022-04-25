@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
 const NavBar = () => {
   const { user } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const login = () =>
     dispatch(
@@ -15,7 +16,10 @@ const NavBar = () => {
       })
     );
 
-  const logout = () => dispatch(authActions.logoutUser());
+  const logout = () => {
+    dispatch(authActions.logoutUser());
+    navigate('/');
+  };
 
   return (
     <nav

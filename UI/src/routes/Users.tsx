@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { userActions } from '../redux/slices/usersSlice';
@@ -8,19 +8,19 @@ const Users = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (users.length === 0) dispatch(userActions.getUsers());
+  }, [dispatch, users]);
+
   return (
     <div>
-      {users.length === 0 && (
-        <button type='button' onClick={() => dispatch(userActions.getUsers())}>
-          Get users
-        </button>
-      )}
       <ul>
         {users.map(user => (
           <li key={user.id}>
+            <div>ID: {user.id}</div>
             <div>Name: {user.name}</div>
             <div>Email: {user.email}</div>
-            <div>Admin: {user.admin}</div>
+            <div>Admin: {user.admin ? 'true' : 'false'}</div>
             <button
               type='button'
               onClick={() => {

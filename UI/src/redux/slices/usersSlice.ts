@@ -3,6 +3,7 @@ import { User } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { userService } from '../../services';
 import type { RootState } from '../store';
+import { authActions } from './authSlice';
 
 export interface UsersState {
   all: User[];
@@ -101,6 +102,7 @@ const UsersSlice = createSlice({
         state.error = action.error;
       }
     });
+    builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
   },
 });
 

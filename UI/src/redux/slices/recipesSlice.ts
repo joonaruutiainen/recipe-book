@@ -3,6 +3,7 @@ import { Recipe } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { recipeService } from '../../services';
 import type { RootState } from '../store';
+import { authActions } from './authSlice';
 
 export enum SelectionFilter {
   public = 'public',
@@ -100,6 +101,7 @@ const RecipesSlice = createSlice({
         state.error = action.error;
       }
     });
+    builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
   },
 });
 
