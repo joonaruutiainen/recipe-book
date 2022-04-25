@@ -37,7 +37,7 @@ const logoutUser = async (req: Request, res: Response) => {
   try {
     const { name: sessionName } = config.get('session');
     res.clearCookie(sessionName);
-    res.clearCookie('XSRF_TOKEN');
+    res.clearCookie('XSRF-TOKEN');
     req.session.destroy(err => {
       if (err) throw new APIError('Failed to logout user', 500);
       return 'success';

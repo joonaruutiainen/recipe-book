@@ -3,6 +3,7 @@ import session, { SessionOptions } from 'express-session';
 import MongoStore from 'connect-mongo';
 import cors, { CorsOptions } from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import config from 'config';
 
 import { MongoDBConfig, ServerConfig } from './config/types';
@@ -34,11 +35,12 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(morgan('dev'));
 
 // router middleware
-app.get('/', csrfProtection, (req: Request, res: Response) => {
-  res.cookie('XSRF_TOKEN', req.csrfToken());
-  res.send(200);
+app.get(serverConfig.apiUrl, csrfProtection, (req: Request, res: Response) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  res.sendStatus(200);
 });
 app.use(serverConfig.apiUrl, authRouter);
 app.use(`${serverConfig.apiUrl}/users`, userRouter);

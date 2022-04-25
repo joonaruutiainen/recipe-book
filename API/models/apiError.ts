@@ -3,7 +3,7 @@ class APIError extends Error {
 
   constructor(message: string, code: number) {
     super(message);
-    this.name = 'APIValidationError';
+    this.name = 'APIError';
     this.code = code;
   }
 }
