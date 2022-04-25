@@ -77,8 +77,8 @@ const updateRecipe = async (req: Request, res: Response) => {
   try {
     const recipe = await validateRecipeId(req);
 
-    // recipe.public is not allowed to be modified with update recipe request
-    const { public: recipeIsPublic, ...dataToUpdate } = req.body;
+    // recipe.public and recipe.userId are not allowed to be modified with update recipe request
+    const { public: recipeIsPublic, userId, ...dataToUpdate } = req.body;
     let updatedRecipe = { ...recipe.toJSON(), ...dataToUpdate };
 
     await Recipe.validateRecipeData(updatedRecipe);
