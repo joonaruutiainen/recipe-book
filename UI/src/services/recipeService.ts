@@ -3,6 +3,7 @@ import apiService from './apiService';
 
 interface RecipeService {
   getRecipes: () => Promise<APIResponse>;
+  getRecipe: (recipeId: string) => Promise<APIResponse>;
 }
 
 const getRecipes = () =>
@@ -11,8 +12,15 @@ const getRecipes = () =>
     method: 'get',
   });
 
+const getRecipe = (recipeId: string) =>
+  apiService.makeRequest({
+    url: `/recipes/${recipeId}`,
+    method: 'get',
+  });
+
 const recipeService: RecipeService = {
   getRecipes,
+  getRecipe,
 };
 
 export default recipeService;

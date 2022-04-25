@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, SerializedError } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, SerializedError, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { userService } from '../../services';
@@ -18,7 +18,7 @@ const initialState: UsersState = {
   error: null,
 };
 
-const sliceName = 'recipes';
+const sliceName = 'users';
 
 const getUsers = createAsyncThunk<User[], void, { rejectValue: ApplicationError }>(
   `${sliceName}/getUsers`,
@@ -55,7 +55,19 @@ const getUser = createAsyncThunk<User, string, { rejectValue: ApplicationError }
 const UsersSlice = createSlice({
   name: sliceName,
   initialState,
-  reducers: {},
+  reducers: {
+    selectUser(state, action: PayloadAction<string>) {
+      const selected = state.all.find(user => user.id === action.payload);
+      if (selected) {
+        state.selected = selected;
+      } else {
+        state.error = new ApplicationError('User not found', 404);
+      }
+    },
+    clearSelectedUser(state) {
+      state.selected = null;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(getUsers.pending, state => {
       state.loading = true;
@@ -95,6 +107,7 @@ const UsersSlice = createSlice({
 export const userActions = {
   getUsers,
   getUser,
+  ...UsersSlice.actions,
 };
 
 export default UsersSlice;

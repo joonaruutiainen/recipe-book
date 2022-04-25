@@ -24,7 +24,7 @@ const Users = () => {
             <button
               type='button'
               onClick={() => {
-                dispatch(userActions.getUser(user.id));
+                dispatch(userActions.selectUser(user.id));
                 navigate(user.id);
               }}
             >

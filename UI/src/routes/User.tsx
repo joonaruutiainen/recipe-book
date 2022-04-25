@@ -10,7 +10,7 @@ const User = () => {
 
   useEffect(() => {
     if (!user && userId) dispatch(userActions.getUser(userId));
-  }, [user]);
+  }, [user, dispatch]);
 
   return <div>{user && <div>{user.name}</div>}</div>;
 };

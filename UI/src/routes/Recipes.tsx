@@ -1,26 +1,43 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { recipeActions } from '../redux/slices/recipesSlice';
+import { recipeActions, SelectionFilter } from '../redux/slices/recipesSlice';
 
 const Recipes = () => {
-  const recipes = useAppSelector(state => state.recipes.public);
+  const user = useAppSelector(state => state.auth.user);
+  const { selection: recipes, selectionFilter } = useAppSelector(state => state.recipes);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return (
     <div>
-      {recipes.length === 0 && (
-        <button type='button' onClick={() => dispatch(recipeActions.initRecipes())}>
-          Get recipes
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <button
+          type='button'
+          onClick={() => {
+            if (!(selectionFilter === SelectionFilter.public))
+              dispatch(recipeActions.setSelection(SelectionFilter.public));
+          }}
+        >
+          Public recipes
         </button>
-      )}
+        <button
+          type='button'
+          onClick={() => {
+            if (!user) navigate('/login');
+            else dispatch(recipeActions.setSelection(SelectionFilter.myRecipes));
+          }}
+        >
+          My recipes
+        </button>
+      </div>
       <ul>
         {recipes.map(recipe => (
           <li key={recipe.id}>
             <button
               type='button'
               onClick={() => {
+                dispatch(recipeActions.selectRecipe(recipe.id));
                 navigate(recipe.id);
               }}
             >

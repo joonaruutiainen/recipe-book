@@ -7,7 +7,7 @@
   height: 100vh;
   margin: auto;
   position: relative;
-  background-color: lightpink;
+  background-image: linear-gradient(to bottom right, #dbd5c5, #d4c8aa);
 }
 
 body {
