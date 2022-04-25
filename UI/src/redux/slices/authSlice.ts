@@ -41,8 +41,7 @@ const initSession = createAsyncThunk<boolean, void, { rejectValue: ApplicationEr
 const loginUser = createAsyncThunk<User, LoginData, { rejectValue: ApplicationError }>(
   `${sliceName}/login`,
   async (userData, { rejectWithValue }) => {
-    const { identifier, password } = userData;
-    const res = await authService.login(identifier, password);
+    const res = await authService.login(userData);
     if (res.error) {
       return rejectWithValue(res.error as ApplicationError);
     }
@@ -62,8 +61,7 @@ const logoutUser = createAsyncThunk<boolean, void, { rejectValue: ApplicationErr
 const registerUser = createAsyncThunk<User, RegistrationData, { rejectValue: ApplicationError }>(
   `${sliceName}/register`,
   async (userData, { rejectWithValue }) => {
-    const { name, email, password, confirmPassword } = userData;
-    const res = await authService.register(name, email, password, confirmPassword);
+    const res = await authService.register(userData);
     if (res.error) {
       return rejectWithValue(res.error as ApplicationError);
     }

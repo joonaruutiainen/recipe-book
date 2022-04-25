@@ -1,3 +1,3 @@
 export { default as authService } from './authService';
-export { default as userService } from './authService';
-export { default as recipeService } from './authService';
+export { default as userService } from './userService';
+export { default as recipeService } from './recipeService';

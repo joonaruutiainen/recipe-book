@@ -1,11 +1,11 @@
-import { APIResponse } from '../types';
+import { APIResponse, LoginData, RegistrationData } from '../types';
 import apiService from './apiService';
 
 interface AuthService {
   initializeSession: () => Promise<APIResponse>;
-  login: (identifier: string, password: string) => Promise<APIResponse>;
+  login: (userData: LoginData) => Promise<APIResponse>;
   logout: () => Promise<APIResponse>;
-  register: (name: string, email: string, password: string, confirmPassword: string) => Promise<APIResponse>;
+  register: (userData: RegistrationData) => Promise<APIResponse>;
 }
 
 const initializeSession = async () =>
@@ -14,14 +14,11 @@ const initializeSession = async () =>
     method: 'get',
   });
 
-const login = async (identifier: string, password: string) =>
+const login = async (userData: LoginData) =>
   apiService.makeRequest({
     url: '/login',
     method: 'post',
-    data: {
-      identifier,
-      password,
-    },
+    data: userData,
   });
 
 const logout = async () =>
@@ -30,16 +27,11 @@ const logout = async () =>
     method: 'post',
   });
 
-const register = async (name: string, email: string, password: string, confirmPassword: string) =>
+const register = async (userData: RegistrationData) =>
   apiService.makeRequest({
     url: '/register',
     method: 'post',
-    data: {
-      name,
-      email,
-      password,
-      confirmPassword,
-    },
+    data: userData,
   });
 
 const authService: AuthService = {
