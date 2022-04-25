@@ -89,8 +89,9 @@ const UserSchema = new Schema<IUser>(
     toJSON: {
       versionKey: false,
       transform: (_, ret) => {
-        const { password, ...user } = ret;
-        return user;
+        // eslint-disable-next-line
+        const { password, _id, ...user } = ret;
+        return { id: _id, ...user };
       },
     },
   }

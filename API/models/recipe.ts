@@ -255,6 +255,11 @@ const RecipeDurationSchema = new Schema<IRecipeDuration>(
   {
     toJSON: {
       versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipeDuration } = ret;
+        return recipeDuration;
+      },
     },
   }
 );
@@ -273,6 +278,11 @@ const RecipeTagSchema = new Schema<IRecipeTag>(
   {
     toJSON: {
       versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipeTag } = ret;
+        return recipeTag;
+      },
     },
   }
 );
@@ -302,6 +312,11 @@ const RecipeIngredientSchema = new Schema<IRecipeIngredient>(
   {
     toJSON: {
       versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipeIngredient } = ret;
+        return recipeIngredient;
+      },
     },
   }
 );
@@ -334,6 +349,11 @@ const RecipeStepSchema = new Schema<IRecipeStep>(
   {
     toJSON: {
       versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipeStep } = ret;
+        return recipeStep;
+      },
     },
   }
 );
@@ -396,6 +416,11 @@ const RecipeSchema = new Schema<IRecipe>(
   {
     toJSON: {
       versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipe } = ret;
+        return { id: _id, ...recipe };
+      },
     },
   }
 );
