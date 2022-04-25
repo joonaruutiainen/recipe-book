@@ -47,7 +47,7 @@ const getRecipes = async (req: Request, res: Response) => {
 
     if (!user) recipes = await Recipe.find({ public: true }).exec();
     else if (user?.admin) recipes = await Recipe.find().exec();
-    else recipes = await Recipe.find({ userId: user?.id }).exec();
+    else recipes = await Recipe.find({ $or: [{ userId: user?.id }, { public: true }] }).exec();
 
     if (!recipes) return makeResponse.error(res, new APIError('"Recipes" not found', 404));
 
