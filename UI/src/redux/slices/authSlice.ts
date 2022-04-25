@@ -12,9 +12,11 @@ export interface AuthState {
   error: ApplicationError | SerializedError | null;
 }
 
+const user: User | undefined = JSON.parse(localStorage.getItem('user')!);
+
 const initialState: AuthState = {
   initialized: false,
-  user: null,
+  user: user || null,
   newUser: null,
   loading: false,
   error: null,
@@ -94,6 +96,7 @@ const AuthSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
+      localStorage.setItem('user', JSON.stringify(action.payload));
       state.loading = false;
       state.user = action.payload;
       state.error = null;
@@ -109,7 +112,14 @@ const AuthSlice = createSlice({
     builder.addCase(logoutUser.pending, state => {
       state.loading = true;
     });
-    builder.addCase(logoutUser.fulfilled, () => initialState);
+    builder.addCase(logoutUser.fulfilled, state => {
+      localStorage.removeItem('user');
+      state.initialized = false;
+      state.user = null;
+      state.newUser = null;
+      state.loading = false;
+      state.error = null;
+    });
     builder.addCase(logoutUser.rejected, (state, action) => {
       state.loading = false;
       if (action.payload) {
