@@ -39,7 +39,9 @@ createRoot(document.getElementById('root')!).render(
             </Route>
             <Route path='users' element={<ProtectedRoute adminRequired />}>
               <Route index element={<Users />} />
-              <Route path=':userId' element={<User />} />
+            </Route>
+            <Route path='users/:userId' element={<ProtectedRoute />}>
+              <Route index element={<User />} />
             </Route>
           </Route>
         </Routes>
