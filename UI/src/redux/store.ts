@@ -9,6 +9,10 @@ const store = configureStore({
     recipes: RecipesSlice.reducer,
     users: UsersSlice.reducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

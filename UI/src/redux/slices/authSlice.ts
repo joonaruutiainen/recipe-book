@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, SerializedError } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { User, LoginData, RegistrationData } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { authService } from '../../services';
@@ -9,7 +9,7 @@ export interface AuthState {
   user: User | null;
   newUser: User | null;
   loading: boolean;
-  error: ApplicationError | SerializedError | null;
+  error: ApplicationError | null;
 }
 
 const user: User | undefined = JSON.parse(localStorage.getItem('user')!);
@@ -27,9 +27,12 @@ const sliceName = 'auth';
 const initSession = createAsyncThunk<boolean, void, { rejectValue: ApplicationError }>(
   `${sliceName}/init`,
   async (_, { rejectWithValue }) => {
-    const res = await authService.initializeSession();
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return true;
+    try {
+      await authService.initializeSession();
+      return true;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   },
   {
     condition: (_, { getState }) => {
@@ -43,38 +46,50 @@ const initSession = createAsyncThunk<boolean, void, { rejectValue: ApplicationEr
 const loginUser = createAsyncThunk<User, LoginData, { rejectValue: ApplicationError }>(
   `${sliceName}/login`,
   async (userData, { rejectWithValue }) => {
-    const res = await authService.login(userData);
-    if (res.error) {
-      return rejectWithValue(res.error as ApplicationError);
+    try {
+      const res = await authService.login(userData);
+      return res.payload as User;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
     }
-    return res.payload as User;
   }
 );
 
 const logoutUser = createAsyncThunk<boolean, void, { rejectValue: ApplicationError }>(
   `${sliceName}/logout`,
   async (_, { rejectWithValue }) => {
-    const res = await authService.logout();
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return true;
+    try {
+      await authService.logout();
+      return true;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   }
 );
 
 const registerUser = createAsyncThunk<User, RegistrationData, { rejectValue: ApplicationError }>(
   `${sliceName}/register`,
   async (userData, { rejectWithValue }) => {
-    const res = await authService.register(userData);
-    if (res.error) {
-      return rejectWithValue(res.error as ApplicationError);
+    try {
+      const res = await authService.register(userData);
+      return res.payload as User;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
     }
-    return res.payload as User;
   }
 );
 
 const AuthSlice = createSlice({
   name: sliceName,
   initialState,
-  reducers: {},
+  reducers: {
+    clearNewUser(state) {
+      state.newUser = null;
+    },
+    clearError(state) {
+      state.error = null;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(initSession.pending, state => {
       state.loading = true;
@@ -89,11 +104,14 @@ const AuthSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
     builder.addCase(loginUser.pending, state => {
       state.loading = true;
+      if (state.newUser) {
+        state.newUser = null;
+      }
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       localStorage.setItem('user', JSON.stringify(action.payload));
@@ -106,7 +124,7 @@ const AuthSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
     builder.addCase(logoutUser.pending, state => {
@@ -125,7 +143,7 @@ const AuthSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
     builder.addCase(registerUser.pending, state => {
@@ -141,7 +159,7 @@ const AuthSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
   },
@@ -152,6 +170,7 @@ export const authActions = {
   loginUser,
   logoutUser,
   registerUser,
+  ...AuthSlice.actions,
 };
 
 export default AuthSlice;

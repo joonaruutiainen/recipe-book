@@ -8,14 +8,6 @@ const NavBar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const login = () =>
-    dispatch(
-      authActions.loginUser({
-        identifier: 'admin',
-        password: '12345678',
-      })
-    );
-
   const logout = () => {
     dispatch(authActions.logoutUser());
     navigate('/');
@@ -30,11 +22,6 @@ const NavBar = () => {
         padding: '1rem 0 1rem 0',
       }}
     >
-      {!user && (
-        <button type='button' onClick={login}>
-          Login
-        </button>
-      )}
       <Link to='/'>Home</Link>
       <Link to='login'>Login</Link>
       <Link to='register'>Register</Link>

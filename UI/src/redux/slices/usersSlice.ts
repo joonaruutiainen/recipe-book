@@ -24,9 +24,12 @@ const sliceName = 'users';
 const getUsers = createAsyncThunk<User[], void, { rejectValue: ApplicationError }>(
   `${sliceName}/getUsers`,
   async (_, { rejectWithValue }) => {
-    const res = await userService.getUsers();
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return res.payload as User[];
+    try {
+      const res = await userService.getUsers();
+      return res.payload as User[];
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   },
   {
     condition: (_, { getState }) => {
@@ -40,9 +43,12 @@ const getUsers = createAsyncThunk<User[], void, { rejectValue: ApplicationError 
 const getUser = createAsyncThunk<User, string, { rejectValue: ApplicationError }>(
   `${sliceName}/getUser`,
   async (userId: string, { rejectWithValue }) => {
-    const res = await userService.getUser(userId);
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return res.payload as User;
+    try {
+      const res = await userService.getUser(userId);
+      return res.payload as User;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   },
   {
     condition: (_, { getState }) => {

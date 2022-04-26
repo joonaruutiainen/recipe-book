@@ -34,9 +34,12 @@ const sliceName = 'recipes';
 const getRecipes = createAsyncThunk<Recipe[], void, { rejectValue: ApplicationError }>(
   `${sliceName}/getRecipes`,
   async (_, { rejectWithValue }) => {
-    const res = await recipeService.getRecipes();
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return res.payload as Recipe[];
+    try {
+      const res = await recipeService.getRecipes();
+      return res.payload as Recipe[];
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   },
   {
     condition: (_, { getState }) => {
@@ -50,9 +53,12 @@ const getRecipes = createAsyncThunk<Recipe[], void, { rejectValue: ApplicationEr
 const getRecipe = createAsyncThunk<Recipe, string, { rejectValue: ApplicationError }>(
   `${sliceName}/getRecipe`,
   async (recipeId: string, { rejectWithValue }) => {
-    const res = await recipeService.getRecipe(recipeId);
-    if (res.error) return rejectWithValue(res.error as ApplicationError);
-    return res.payload as Recipe;
+    try {
+      const res = await recipeService.getRecipe(recipeId);
+      return res.payload as Recipe;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
   },
   {
     condition: (_, { getState }) => {

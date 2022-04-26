@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { APIResponse } from '../types';
+import { APIError } from '../types/APIError';
 import ApplicationError from '../utils/ApplicationError';
 
 axios.defaults.baseURL = 'http://localhost:8080/api/v1';
@@ -18,8 +19,8 @@ const makeRequest = async (req: AxiosRequestConfig): Promise<APIResponse> => {
   } catch (err) {
     if (axios.isAxiosError(err)) {
       if (err.response) {
-        const { data }: { data: ApplicationError } = err.response;
-        return Promise.reject(new ApplicationError(data.message, data.code));
+        const { error }: { error: APIError } = err.response.data;
+        return Promise.reject(new ApplicationError(error.message, err.response.status, error.details));
       }
       if (err.request) return Promise.reject(new ApplicationError('Recipebook API is unavailable', 500));
       return Promise.reject(new ApplicationError(err.message, parseInt(err.code!, 10) || 500));
