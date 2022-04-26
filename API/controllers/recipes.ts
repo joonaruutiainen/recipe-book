@@ -5,15 +5,15 @@ import APIError from '../models/apiError';
 import makeResponse from '../utils/responseHandler';
 import loadUserFromRequest from '../utils/loadUser';
 
-const validateRecipeId = async (req: Request) => {
+export const validateRecipeId = async (req: Request) => {
   const { recipeId } = req.params;
-  if (!recipeId) return Promise.reject(new APIError('Missing route parameter: recipeId', 403));
+  if (!recipeId) return Promise.reject(new APIError('Missing route parameter: recipeId', 400));
 
   let recipe;
   try {
     recipe = await Recipe.findById(recipeId).exec();
   } catch (err) {
-    if (err instanceof DBError.CastError) return Promise.reject(new APIError('Invalid recipeId', 403));
+    if (err instanceof DBError.CastError) return Promise.reject(new APIError('Invalid recipeId', 400));
   }
 
   if (!recipe) return Promise.reject(new APIError(`No recipe found with ID ${recipeId}`, 404));

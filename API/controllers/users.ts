@@ -6,13 +6,13 @@ import makeResponse from '../utils/responseHandler';
 
 const validateUserId = async (req: Request) => {
   const { userId } = req.params;
-  if (!userId) return Promise.reject(new APIError('Missing route paramater: userId', 403));
+  if (!userId) return Promise.reject(new APIError('Missing route paramater: userId', 400));
 
   let user;
   try {
     user = await User.findById(userId).exec();
   } catch (err) {
-    if (err instanceof DBError.CastError) return Promise.reject(new APIError('Invalid userId', 403));
+    if (err instanceof DBError.CastError) return Promise.reject(new APIError('Invalid userId', 400));
   }
 
   if (!user) return Promise.reject(new APIError(`No user found with ID ${userId}`, 404));

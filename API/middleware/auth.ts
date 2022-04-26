@@ -1,9 +1,10 @@
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { Error as DBError } from 'mongoose';
 import APIError from '../models/apiError';
 import makeResponse from '../utils/responseHandler';
 import User from '../models/user';
-import Recipe from '../models/recipe';
+import { validateRecipeId } from '../controllers/recipes';
 
 const authenticateUser = async (req: Request) => {
   const baseErrorMsg = 'User authentication failed:';
@@ -26,6 +27,7 @@ const authenticateUser = async (req: Request) => {
       return Promise.reject(new APIError(`${baseErrorMsg} Authentication token expired`, 401));
     if (err instanceof JsonWebTokenError || err instanceof SyntaxError)
       return Promise.reject(new APIError(`${baseErrorMsg} ${err.message}`, 401));
+    if (err instanceof DBError.CastError) return Promise.reject(new APIError('Invalid userId', 400));
     return Promise.reject(new APIError('Internal server error when authenticating user', 500));
   }
 };
@@ -64,7 +66,7 @@ const userRightsRequired = async (req: Request, res: Response, next: NextFunctio
 
 const recipeRightsRequired = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const recipe = await Recipe.findById(req.params.recipeId).exec();
+    const recipe = await validateRecipeId(req);
     if (recipe?.public) return next();
     const user = await authenticateUser(req);
     if (user?.id === recipe?.userId || user?.admin) return next();
