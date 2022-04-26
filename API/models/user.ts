@@ -24,36 +24,70 @@ const inputSchema = {
     .min(schemaDefaults.name.minLength)
     .max(schemaDefaults.name.maxLength)
     .regex(/^((?!\$).)*$/)
+    // .messages({
+    //   'string.base': 'name must be a string',
+    //   'string.empty': 'name is not allowed to be an empty string',
+    //   'string.min': `minimum name length is ${schemaDefaults.name.minLength} characters`,
+    //   'string.max': `maximum name length is ${schemaDefaults.name.maxLength} characters`,
+    //   'any.required': 'name is required',
+    // }),
     .messages({
-      'string.base': 'name must be a string',
-      'string.empty': 'name is not allowed to be empty',
-      'string.min': `minimum name length is ${schemaDefaults.name.minLength} characters`,
-      'string.max': `maximum name length is ${schemaDefaults.name.maxLength} characters`,
-      'any.required': 'name is required',
+      'string.base': 'Käyttäjätunnuksen täytyy olla merkkijono',
+      'string.empty': 'Käyttäjätunnus ei voi olla tyhjä merkkijono',
+      'string.min': `Käyttäjätunnuksen täytyy olla vähintään ${schemaDefaults.name.minLength} merkkiä pitkä`,
+      'string.max': `Käyttäjätunnus voi olla enintään ${schemaDefaults.name.minLength} merkkiä pitkä`,
+      'any.required': 'Käyttäjätunnus on vaadittu kenttä',
     }),
-  email: Joi.string().required().trim().normalize().email().messages({
-    'string.base': 'email must be a string',
-    'string.empty': 'email is not allowed to be empty',
-    'string.email': 'email must be in valid format (e.g. user@email.com)',
-    'any.required': 'email is required',
-  }),
+  email: Joi.string()
+    .required()
+    .trim()
+    .normalize()
+    .email()
+    // .messages({
+    //   'string.base': 'email must be a string',
+    //   'string.empty': 'email is not allowed to be an empty string',
+    //   'string.email': 'email must be in valid format (e.g. user@email.com)',
+    //   'any.required': 'email is required',
+    // }),
+    .messages({
+      'string.base': 'Sähköpostin täytyy olla merkkijono',
+      'string.empty': 'Sähköposti ei voi olla tyhjä merkkijono',
+      'string.email': 'Sähköposti täytyy antaa oikeassa muodossa (esim. user@email.com)',
+      'any.required': 'Sähköposti on vaadittu kenttä',
+    }),
   password: Joi.string()
     .required()
     .min(schemaDefaults.password.minLength)
     .max(schemaDefaults.password.maxLength)
+    // .messages({
+    //   'string.base': 'password must be a string',
+    //   'string.empty': 'password is not allowed to be an empty string',
+    //   'string.min': `minimum password length is ${schemaDefaults.password.minLength} characters`,
+    //   'string.max': `maximum password length is ${schemaDefaults.password.maxLength} characters`,
+    //   'any.required': 'password is required',
+    // }),
     .messages({
-      'string.base': 'password must be a string',
-      'string.empty': 'password is not allowed to be empty',
-      'string.min': `minimum password length is ${schemaDefaults.password.minLength} characters`,
-      'string.max': `maximum password length is ${schemaDefaults.password.maxLength} characters`,
-      'any.required': 'password is required',
+      'string.base': 'Salasanan täytyy olla merkkijono',
+      'string.empty': 'Salasana ei voi olla tyhjä merkkijono',
+      'string.min': `Salasanan täytyy olla vähintään ${schemaDefaults.password.minLength} merkkiä pitkä`,
+      'string.max': `Salasana voi olla enintään ${schemaDefaults.password.maxLength} merkkiä pitkä`,
+      'any.required': 'Salasana on vaadittu kenttä',
     }),
-  confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({
-    'string.base': 'confirmPassword must be a string',
-    'string.empty': 'confirmPassword is not allowed to be empty',
-    'any.only': 'confirmation does not equal to given password',
-    'any.required': 'confirmPassword is required',
-  }),
+  confirmPassword: Joi.string()
+    .required()
+    .valid(Joi.ref('password'))
+    // .messages({
+    //   'string.base': 'confirmPassword must be a string',
+    //   'string.empty': 'confirmPassword is not allowed to be an empty string',
+    //   'any.only': 'confirmation does not equal to given password',
+    //   'any.required': 'confirmPassword is required',
+    // }),
+    .messages({
+      'string.base': 'Salasanan vahvistuksen täytyy olla merkkijono',
+      'string.empty': 'Salasanan vahvistus ei voi olla tyhjä merkkijono',
+      'any.only': 'Salasanan vahvistus ei vastaa annettua salasanaa',
+      'any.required': 'Salasanan vahvistus on vaadittu kenttä',
+    }),
 };
 
 const UserSchema = new Schema<IUser>(
@@ -99,10 +133,12 @@ const UserSchema = new Schema<IUser>(
 
 UserSchema.statics.validateUserData = async function (userData: IUser) {
   let user = await this.findOne({ name: userData.name }).exec();
-  if (user) return Promise.reject(new APIValidationError('Name is already in use', 409));
+  // if (user) return Promise.reject(new APIValidationError('Name is already in use', 409));
+  if (user) return Promise.reject(new APIValidationError('Käyttäjätunnus on jo käytössä', 409));
 
   user = await this.findOne({ email: userData.email }).exec();
-  if (user) return Promise.reject(new APIValidationError('Email is already in use', 409));
+  // if (user) return Promise.reject(new APIValidationError('Email is already in use', 409));
+  if (user) return Promise.reject(new APIValidationError('Sähköposti on jo käytössä', 409));
 
   const inputValidationSchema = Joi.object({ ...inputSchema });
 
@@ -112,7 +148,8 @@ UserSchema.statics.validateUserData = async function (userData: IUser) {
     if (err instanceof JoiValidationError) {
       return Promise.reject(
         new APIValidationError(
-          'Invalid user data',
+          // 'Invalid user data',
+          'Virheellinen käyttäjä',
           400,
           err.details.map((e: JoiValidationErrorItem) => e.message)
         )
@@ -126,7 +163,8 @@ UserSchema.statics.validateUserData = async function (userData: IUser) {
 
 UserSchema.statics.validateUserName = async function (userId: ObjectId, name: string) {
   const user = await this.findOne({ name }).exec();
-  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Name is already in use', 409));
+  // if (user && user.id !== userId) return Promise.reject(new APIValidationError('Name is already in use', 409));
+  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Käyttäjätunnus on jo käytössä', 409));
 
   const nameValidationSchema = inputSchema.name;
 
@@ -136,7 +174,8 @@ UserSchema.statics.validateUserName = async function (userId: ObjectId, name: st
     if (err instanceof JoiValidationError) {
       return Promise.reject(
         new APIValidationError(
-          'Invalid user name',
+          // 'Invalid user name',
+          'Virheellinen käyttäjätunnus',
           400,
           err.details.map((e: JoiValidationErrorItem) => e.message)
         )
@@ -150,7 +189,8 @@ UserSchema.statics.validateUserName = async function (userId: ObjectId, name: st
 
 UserSchema.statics.validateUserEmail = async function (userId: ObjectId, email: string) {
   const user = await this.findOne({ email }).exec();
-  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Email is already in use', 409));
+  // if (user && user.id !== userId) return Promise.reject(new APIValidationError('Email is already in use', 409));
+  if (user && user.id !== userId) return Promise.reject(new APIValidationError('Sähköposti on jo käytössä', 409));
 
   const emailValidationSchema = inputSchema.email;
 
@@ -160,7 +200,8 @@ UserSchema.statics.validateUserEmail = async function (userId: ObjectId, email: 
     if (err instanceof JoiValidationError) {
       return Promise.reject(
         new APIValidationError(
-          'Invalid user email',
+          // 'Invalid user email',
+          'Virheellinen sähköposti',
           400,
           err.details.map((e: JoiValidationErrorItem) => e.message)
         )
@@ -180,7 +221,8 @@ UserSchema.statics.validateUserPassword = async function (password: string) {
     if (err instanceof JoiValidationError) {
       return Promise.reject(
         new APIValidationError(
-          'Invalid user password',
+          // 'Invalid user password',
+          'Virheellinen salasana',
           400,
           err.details.map((e: JoiValidationErrorItem) => e.message)
         )
@@ -194,7 +236,8 @@ UserSchema.statics.validateUserPassword = async function (password: string) {
 UserSchema.methods.verifyPassword = async function (password: string) {
   const correctPassword = await bcrypt.compare(password, this.password);
   if (correctPassword) return Promise.resolve('Success');
-  return Promise.reject(new APIError('Incorrect password', 401));
+  // return Promise.reject(new APIError('Incorrect password', 401));
+  return Promise.reject(new APIError('Väärä salasana', 401));
 };
 
 const User = model<IUser, UserModel>('User', UserSchema);
