@@ -26,7 +26,7 @@ const loginUser = async (req: Request, res: Response) => {
     const token = jwt.sign({ sub: user.id }, secret, { expiresIn: '24h' });
     req.session.token = token;
 
-    return makeResponse.success(res, 200, 'Used logged in successfully', { ...user.toJSON() });
+    return makeResponse.success(res, 200, 'Used logged in successfully', user.toJSON());
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
     return makeResponse.error(res, new APIError('Interal server error when authenticating user', 500));
