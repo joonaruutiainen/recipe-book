@@ -19,7 +19,8 @@ const makeRequest = async (req: AxiosRequestConfig): Promise<APIResponse> => {
   } catch (err) {
     if (axios.isAxiosError(err)) {
       if (err.response) {
-        const { error }: { error: APIError } = err.response.data;
+        const { error, code }: { error: APIError; code: number } = err.response.data;
+        if (code === 500) return Promise.reject(new ApplicationError('Oops, something went wrong!', 500));
         return Promise.reject(new ApplicationError(error.message, err.response.status, error.details));
       }
       if (err.request) return Promise.reject(new ApplicationError('Recipebook API is unavailable', 500));

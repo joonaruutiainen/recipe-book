@@ -51,7 +51,7 @@ const Login = () => {
     if (newUser) {
       setNotification(
         <Notification
-          message='User registered successfully'
+          message='Uusi käyttäjä luotu'
           color='green'
           onClose={() => {
             setNotification(null);

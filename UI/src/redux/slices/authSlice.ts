@@ -122,7 +122,11 @@ const AuthSlice = createSlice({
     builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
       if (action.payload) {
-        state.error = action.payload;
+        const { code } = action.payload;
+        if (code === 404) state.error = new ApplicationError('Käyttäjää ei löytynyt', 404);
+        else {
+          state.error = action.payload;
+        }
       } else {
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
