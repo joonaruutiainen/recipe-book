@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, SerializedError, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Recipe } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { recipeService } from '../../services';
@@ -16,8 +16,9 @@ export interface RecipesState {
   selection: Recipe[];
   selectionFilter: SelectionFilter;
   selected: Recipe | null;
-  loading: boolean;
-  error: ApplicationError | SerializedError | null;
+  loadingMany: boolean;
+  loadingOne: boolean;
+  error: ApplicationError | null;
 }
 
 const initialState: RecipesState = {
@@ -25,7 +26,8 @@ const initialState: RecipesState = {
   selection: [],
   selectionFilter: SelectionFilter.public,
   selected: null,
-  loading: false,
+  loadingMany: false,
+  loadingOne: false,
   error: null,
 };
 
@@ -44,7 +46,7 @@ const getRecipes = createAsyncThunk<Recipe[], void, { rejectValue: ApplicationEr
   {
     condition: (_, { getState }) => {
       const { recipes } = getState() as RootState;
-      if (recipes.loading) return false;
+      if (recipes.loadingMany) return false;
       return true;
     },
   }
@@ -63,7 +65,7 @@ const getRecipe = createAsyncThunk<Recipe, string, { rejectValue: ApplicationErr
   {
     condition: (_, { getState }) => {
       const { recipes } = getState() as RootState;
-      if (recipes.loading) return false;
+      if (recipes.loadingOne) return false;
       return true;
     },
   }
@@ -88,23 +90,61 @@ const RecipesSlice = createSlice({
     clearSelectedRecipe(state) {
       state.selected = null;
     },
+    clearError(state) {
+      state.error = null;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getRecipes.pending, state => {
-      state.loading = true;
+      state.loadingMany = true;
     });
     builder.addCase(getRecipes.fulfilled, (state, action) => {
-      state.loading = false;
+      state.loadingMany = false;
       state.all = action.payload;
       state.selection = action.payload.filter(recipe => recipe.public);
       state.error = null;
     });
     builder.addCase(getRecipes.rejected, (state, action) => {
-      state.loading = false;
+      state.loadingMany = false;
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
+    builder.addCase(getRecipe.pending, state => {
+      state.loadingOne = true;
+    });
+    builder.addCase(getRecipe.fulfilled, (state, action) => {
+      state.loadingOne = false;
+      state.selected = action.payload;
+      state.error = null;
+    });
+    builder.addCase(getRecipe.rejected, (state, action) => {
+      state.loadingOne = false;
+      if (action.payload) {
+        const { code } = action.payload;
+        switch (code) {
+          case 400:
+            state.error = new ApplicationError('Reseptiä ei löytynyt tai ID on virheellinen', 400);
+            return;
+          case 401:
+            state.error = new ApplicationError(
+              'Tätä reseptiä ei ole julkaistu. Kirjaudu sisään lukeaksesi reseptin',
+              401
+            );
+            return;
+          case 403:
+            state.error = new ApplicationError('Tätä reseptiä ei ole julkaistu', 403);
+            return;
+          case 404:
+            state.error = new ApplicationError('Reseptiä ei löytynyt', 404);
+            return;
+          default:
+            state.error = action.payload;
+        }
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
     builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
