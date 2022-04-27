@@ -27,6 +27,7 @@ const inputSchema = {
     // .messages({
     //   'string.base': 'name must be a string',
     //   'string.empty': 'name is not allowed to be an empty string',
+    //   'string.alphanum': 'name must contain only alpha-numeric characters',
     //   'string.min': `minimum name length is ${schemaDefaults.name.minLength} characters`,
     //   'string.max': `maximum name length is ${schemaDefaults.name.maxLength} characters`,
     //   'any.required': 'name is required',
@@ -34,6 +35,7 @@ const inputSchema = {
     .messages({
       'string.base': 'Käyttäjätunnuksen täytyy olla merkkijono',
       'string.empty': 'Käyttäjätunnus ei voi olla tyhjä merkkijono',
+      'string.alphanum': 'Käyttäjätunnus voi sisältää vain kirjaimia ja numeroita',
       'string.min': `Käyttäjätunnuksen täytyy olla vähintään ${schemaDefaults.name.minLength} merkkiä pitkä`,
       'string.max': `Käyttäjätunnus voi olla enintään ${schemaDefaults.name.minLength} merkkiä pitkä`,
       'any.required': 'Käyttäjätunnus on vaadittu kenttä',

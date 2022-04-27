@@ -45,7 +45,6 @@ const inputSchema = {
     .required()
     .trim()
     .normalize()
-    .alphanum()
     .min(schemaDefaults.title.minLength)
     .max(schemaDefaults.title.maxLength)
     // .messages({
@@ -66,7 +65,6 @@ const inputSchema = {
     .required()
     .trim()
     .normalize()
-    .alphanum()
     .min(schemaDefaults.description.minLength)
     .max(schemaDefaults.description.maxLength)
     // .messages({
@@ -127,7 +125,6 @@ const inputSchema = {
         .keys({
           name: Joi.string()
             .required()
-            .alphanum()
             // .messages({
             // 'string.base': 'tag.name must be a string',
             // 'string.empty': 'tag.name is not allowed to be an empty string',
@@ -178,9 +175,9 @@ const inputSchema = {
       'any.required': 'Annosten määrä on vaadittu kenttä',
     }),
   subtitles: Joi.array()
+
     .items(
       Joi.string()
-        .alphanum()
         .min(schemaDefaults.subtitle.minLength)
         .max(schemaDefaults.subtitle.maxLenght)
         // .messages({
@@ -239,7 +236,6 @@ const inputSchema = {
               )}`,
             }),
           description: Joi.string()
-            .alphanum()
             .min(schemaDefaults.ingredient.description.minLength)
             .max(schemaDefaults.ingredient.description.maxLength)
             .required()
@@ -320,7 +316,6 @@ const inputSchema = {
               'any.required': 'Valmistusvaiheen numero on vaadittu kenttä',
             }),
           title: Joi.string()
-            .alphanum()
             .min(schemaDefaults.step.title.minLength)
             .max(schemaDefaults.step.title.maxLength)
             .required()
@@ -339,7 +334,6 @@ const inputSchema = {
               'any.required': 'Valmistusvaiheen otsikko on vaadittu kenttä',
             }),
           description: Joi.string()
-            .alphanum()
             .min(schemaDefaults.step.description.minLength)
             .max(schemaDefaults.step.description.maxLength)
             .required()
