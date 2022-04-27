@@ -21,9 +21,9 @@ const inputSchema = {
     .required()
     .trim()
     .normalize()
+    .alphanum()
     .min(schemaDefaults.name.minLength)
     .max(schemaDefaults.name.maxLength)
-    .regex(/^((?!\$).)*$/)
     // .messages({
     //   'string.base': 'name must be a string',
     //   'string.empty': 'name is not allowed to be an empty string',
