@@ -102,6 +102,7 @@ const RecipesSlice = createSlice({
       state.loadingMany = false;
       state.all = action.payload;
       state.selection = action.payload.filter(recipe => recipe.public);
+      state.selectionFilter = SelectionFilter.public;
       state.error = null;
     });
     builder.addCase(getRecipes.rejected, (state, action) => {

@@ -10,7 +10,22 @@
   background-image: linear-gradient(to bottom right, #dbd5c5, #d4c8aa);
 }
 
+.App .header {
+  flex: 0 1 'auto'
+}
+
+.App .content {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 body {
-overflow: hidden;
-margin: 0;
+  overflow: hidden;
+  margin: 0;
 }

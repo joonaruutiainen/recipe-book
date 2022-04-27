@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Footer, NavBar } from './components';
+import { NavBar } from './components';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { authActions } from './redux/slices/authSlice';
@@ -41,6 +41,15 @@ const theme = createTheme({
       fontSize: 20,
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 400,
+      md: 900,
+      lg: 1300,
+      xl: 1700,
+    },
+  },
 });
 
 const App = () => {
@@ -63,9 +72,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className='App'>
-        <NavBar />
-        <Outlet />
-        <Footer />
+        <div className='header'>
+          <NavBar />
+        </div>
+        <div className='content'>
+          <Outlet />
+        </div>
       </div>
     </ThemeProvider>
   );

@@ -11,15 +11,25 @@ const Recipes = () => {
   const navigate = useNavigate();
 
   return (
-    <Stack width='100%' height='100%' alignItems='center'>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flexStart',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <Stack
         direction='row'
         justifyContent='flex-start'
         width='100%'
         divider={<Divider orientation='vertical' flexItem />}
         spacing={2}
-        marginY={5}
-        paddingLeft={25}
+        marginTop={3}
+        marginBottom={5}
+        paddingLeft={10}
       >
         <Button
           onClick={() => {
@@ -40,13 +50,23 @@ const Recipes = () => {
         </Button>
       </Stack>
       <Container maxWidth='xl'>
-        <Grid container justifyContent='flex-start' spacing={5}>
+        <Grid container justifyContent='flex-start' rowSpacing={6}>
           {recipes.map(recipe => (
-            <Grid container item xs={12} sm={3} key={recipe.id} justifyContent='center' alignItems='center'>
+            <Grid
+              container
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              xl={3}
+              key={recipe.id}
+              justifyContent='center'
+              alignItems='center'
+            >
               <Card
                 sx={{
-                  width: '350px',
-                  height: '300px',
+                  width: '370px',
+                  height: '320px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-evenly',
@@ -70,7 +90,7 @@ const Recipes = () => {
           ))}
         </Grid>
       </Container>
-    </Stack>
+    </div>
   );
 };
 
