@@ -159,7 +159,7 @@ const Register = () => {
             }
           }}
         />
-        <button type='submit'>Kirjaudu sisään</button>
+        <button type='submit'>Luo käyttäjä</button>
       </form>
       <div
         style={{
