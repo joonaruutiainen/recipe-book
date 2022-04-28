@@ -49,12 +49,15 @@ const inputSchema = {
     //   'string.base': 'email must be a string',
     //   'string.empty': 'email is not allowed to be an empty string',
     //   'string.email': 'email must be in valid format (e.g. user@email.com)',
+    //   'string.pattern.base': 'email can contain only the following characters: [a-z][A-Z][0-9][.-_@]',
     //   'any.required': 'email is required',
     // }),
+    .regex(/^\w+([.-_]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
     .messages({
       'string.base': 'Sähköpostin täytyy olla merkkijono',
       'string.empty': 'Sähköposti ei voi olla tyhjä merkkijono',
       'string.email': 'Sähköposti täytyy antaa oikeassa muodossa (esim. user@email.com)',
+      'string.pattern.base': 'Sähköposti voi sisältää vain merkkejä [a-z][A-Z][0-9][.-_@]',
       'any.required': 'Sähköposti on vaadittu kenttä',
     }),
   password: Joi.string()
@@ -107,7 +110,7 @@ const UserSchema = new Schema<IUser>(
       required: true,
       unique: true,
       trim: true,
-      match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      match: /^\w+([.-_]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
     },
     password: {
       type: String,
