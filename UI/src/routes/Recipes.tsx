@@ -21,35 +21,34 @@ const Recipes = () => {
         height: '100%',
       }}
     >
-      <Stack
-        direction='row'
-        justifyContent='flex-start'
-        width='100%'
-        divider={<Divider orientation='vertical' flexItem />}
-        spacing={2}
-        marginTop={3}
-        marginBottom={5}
-        paddingLeft={10}
-      >
-        <Button
-          onClick={() => {
-            if (!(selectionFilter === SelectionFilter.public))
-              dispatch(recipeActions.setSelection(SelectionFilter.public));
-          }}
-        >
-          Julkaistut reseptit
-        </Button>
-        <Button
-          onClick={() => {
-            if (!user) navigate('/login');
-            else if (!(selectionFilter === SelectionFilter.myRecipes))
-              dispatch(recipeActions.setSelection(SelectionFilter.myRecipes));
-          }}
-        >
-          Omat reseptit
-        </Button>
-      </Stack>
       <Container maxWidth='xl'>
+        <Stack
+          direction='row'
+          justifyContent='flex-start'
+          width='100%'
+          divider={<Divider orientation='vertical' flexItem />}
+          spacing={2}
+          marginTop={3}
+          marginBottom={5}
+        >
+          <Button
+            onClick={() => {
+              if (!(selectionFilter === SelectionFilter.public))
+                dispatch(recipeActions.setSelection(SelectionFilter.public));
+            }}
+          >
+            Julkaistut reseptit
+          </Button>
+          <Button
+            onClick={() => {
+              if (!user) navigate('/login');
+              else if (!(selectionFilter === SelectionFilter.myRecipes))
+                dispatch(recipeActions.setSelection(SelectionFilter.myRecipes));
+            }}
+          >
+            Omat reseptit
+          </Button>
+        </Stack>
         <Grid container justifyContent='flex-start' rowSpacing={6}>
           {recipes.map(recipe => (
             <Grid
