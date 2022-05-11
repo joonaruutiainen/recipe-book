@@ -102,7 +102,11 @@ const AuthSlice = createSlice({
     builder.addCase(initSession.rejected, (state, action) => {
       state.loading = false;
       if (action.payload) {
-        state.error = action.payload;
+        const { code } = action.payload;
+        if (code === 401 && state.user) {
+          state.user = null;
+          localStorage.removeItem('user');
+        }
       } else {
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }

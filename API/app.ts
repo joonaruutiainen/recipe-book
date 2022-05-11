@@ -12,6 +12,9 @@ import csrfProtection from './middleware/csrfProtection';
 import authRouter from './routes/auth';
 import userRouter from './routes/users';
 import recipeRouter from './routes/recipes';
+import loadUserFromRequest from './utils/loadUser';
+import makeResponse from './utils/responseHandler';
+import APIError from './models/apiError';
 
 const dbConfig: MongoDBConfig = config.get('mongoDb');
 const serverConfig: ServerConfig = config.get('server');
@@ -38,9 +41,11 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // router middleware
-app.get(serverConfig.apiUrl, csrfProtection, (req: Request, res: Response) => {
+app.get(serverConfig.apiUrl, csrfProtection, async (req: Request, res: Response) => {
   res.cookie('XSRF-TOKEN', req.csrfToken());
-  res.sendStatus(200);
+  const { error } = await loadUserFromRequest(req);
+  if (error) return makeResponse.error(res, new APIError('User is not authenticated', 401));
+  return makeResponse.success(res, 200);
 });
 app.use(serverConfig.apiUrl, authRouter);
 app.use(`${serverConfig.apiUrl}/users`, userRouter);
