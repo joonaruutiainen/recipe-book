@@ -101,6 +101,7 @@ const AuthSlice = createSlice({
     });
     builder.addCase(initSession.rejected, (state, action) => {
       state.loading = false;
+      state.initialized = true;
       if (action.payload) {
         const { code } = action.payload;
         if (code === 401 && state.user) {
