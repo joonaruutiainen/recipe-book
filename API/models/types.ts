@@ -39,7 +39,7 @@ export interface IRecipeTag {
 }
 
 export interface IRecipeIngredient {
-  quantity: number;
+  quantity?: number;
   unit?: string;
   description: string;
   subtitle?: string;

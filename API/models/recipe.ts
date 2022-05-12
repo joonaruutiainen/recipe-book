@@ -206,18 +206,15 @@ const inputSchema = {
           quantity: Joi.number()
             .min(schemaDefaults.ingredient.quantity.min)
             .max(schemaDefaults.ingredient.quantity.max)
-            .required()
             // .messages({
             //   'number.base': 'ingredient.quantity must be a number',
             //   'number.min': `minimum quantity for ingredient is ${schemaDefaults.ingredient.quantity.min}`,
             //   'number.max': `maximum quantity for ingredient is ${schemaDefaults.ingredient.quantity.max}`,
-            //   'any.required': 'ingredient.quantity is required',
             // }),
             .messages({
               'number.base': 'Ainesosan määrän täytyy olla numero',
               'number.min': `Ainesosan määrän täytyy olla vähintään ${schemaDefaults.ingredient.quantity.min}`,
               'number.max': `Ainesosan määrä voi olla vähintään ${schemaDefaults.ingredient.quantity.max}`,
-              'any.required': 'Ainesosan määrä on vaadittu kenttä',
             }),
           unit: Joi.string()
             .valid(...schemaDefaults.ingredient.validUnits)
@@ -453,7 +450,6 @@ const RecipeIngredientSchema = new Schema<IRecipeIngredient>(
   {
     quantity: {
       type: Number,
-      required: true,
       min: schemaDefaults.ingredient.quantity.min,
       max: schemaDefaults.ingredient.quantity.max,
     },
