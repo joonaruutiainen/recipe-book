@@ -1,13 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Stack, Grid, Divider, Button, Typography, Container } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import StarIcon from '@mui/icons-material/Star';
+import PeopleIcon from '@mui/icons-material/People';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
 import { TagButton } from '../components';
 
 const Recipe = () => {
   const { selected: recipe, error } = useAppSelector(state => state.recipes);
+  const [selectedPortionSize, setSelectedPortionSize] = useState(recipe?.portionSize || 1);
   const { recipeId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -58,13 +64,20 @@ const Recipe = () => {
               <div style={{ width: '100%', height: '300px', backgroundColor: 'white' }} />
               <Typography variant='h1'>{recipe.title}</Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
-                <Typography variant='h6'>
-                  {recipe.duration.hours > 0
-                    ? `${recipe.duration.hours}h ${recipe.duration.minutes}min valmistusaika`
-                    : `${recipe.duration.minutes}min valmistusaika`}
-                </Typography>
-                <Typography variant='h6'>Lisää suosikkilistalle</Typography>
-                <Typography variant='h6'>Julkaise</Typography>
+                <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1}>
+                  <AccessTimeIcon />
+                  <Typography variant='h6'>
+                    {recipe.duration.hours > 0
+                      ? `${recipe.duration.hours}h ${recipe.duration.minutes}min valmistusaika`
+                      : `${recipe.duration.minutes}min valmistusaika`}
+                  </Typography>
+                </Stack>
+                <Button startIcon={<StarIcon />} sx={{ fontSize: 20, textTransform: 'none' }}>
+                  Lisää suosikkilistalle
+                </Button>
+                <Button startIcon={<PeopleIcon />} sx={{ fontSize: 20, textTransform: 'none' }}>
+                  Julkaise
+                </Button>
               </Stack>
               <Stack direction='row' justifyContent='flex-start' spacing={2} width='100%'>
                 {recipe.tags?.map(tag => (
@@ -74,7 +87,29 @@ const Recipe = () => {
               <Typography variant='h6'>{recipe.description}</Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
                 <Typography variant='h4'>Ainesosat</Typography>
-                <Typography variant='h5'>{recipe.portionSize} annosta</Typography>
+                <Stack direction='row' justifyContent='space-between' alignItems='center' width='30%'>
+                  <IndeterminateCheckBoxIcon
+                    color='secondary'
+                    onClick={selectedPortionSize > 1 ? () => setSelectedPortionSize(n => n - 1) : undefined}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                  />
+                  <Typography variant='h5'>
+                    {selectedPortionSize === 1 ? '1 annos' : `${selectedPortionSize} annosta`}
+                  </Typography>
+                  <AddBoxIcon
+                    color='secondary'
+                    onClick={() => setSelectedPortionSize(n => n + 1)}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                  />
+                </Stack>
               </Stack>
               <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
                 {recipe.subtitles &&
@@ -91,7 +126,7 @@ const Recipe = () => {
                         {recipe.ingredients
                           .filter(i => i.subtitle === st)
                           .map(i => (
-                            <Stack direction='row' justifyContent='flex-end'>
+                            <Stack key={i.description} direction='row' justifyContent='flex-end'>
                               <div style={{ width: '20%' }}>
                                 {i.quantity && i.unit && (
                                   <Typography variant='h6'>
