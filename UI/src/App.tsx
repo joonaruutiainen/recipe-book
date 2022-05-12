@@ -18,23 +18,34 @@ const theme = createTheme({
   },
   typography: {
     h1: {
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Helvetica',
       fontSize: 36,
+      fontWeight: 'bold',
       color: '#39352C',
     },
     h2: {
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Helvetica',
       fontSize: 32,
       color: '#39352C',
     },
     h3: {
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Helvetica',
       fontSize: 28,
       color: '#39352C',
     },
     h4: {
-      fontFamily: 'Segoe UI',
+      fontFamily: 'Helvetica',
+      fontSize: 26,
+      color: '#39352C',
+    },
+    h5: {
+      fontFamily: 'Helvetica',
       fontSize: 24,
+      color: '#39352C',
+    },
+    h6: {
+      fontFamily: 'Helvetica',
+      fontSize: 20,
       color: '#39352C',
     },
     button: {

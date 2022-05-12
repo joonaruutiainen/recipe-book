@@ -9,7 +9,7 @@ interface RecipeTag {
 }
 
 interface RecipeIngredient {
-  quantity: number;
+  quantity?: number;
   unit?: string;
   description: string;
   subtitle?: string;

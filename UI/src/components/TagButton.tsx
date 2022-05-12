@@ -10,10 +10,12 @@ export interface TagButtonProps {
 const TagButton: React.FC<TagButtonProps> = ({ text, color, onClick }) => (
   <Button
     variant='outlined'
+    size='small'
     onClick={onClick}
     sx={{
       width: 'max-content',
-      paddingX: 5,
+      fontSize: 18,
+      paddingX: 3,
       textTransform: 'none',
       color,
       borderColor: color,

@@ -76,7 +76,10 @@ const Recipes = () => {
                     cursor: 'pointer',
                   },
                 }}
-                onClick={() => navigate(recipe.id)}
+                onClick={() => {
+                  dispatch(recipeActions.selectRecipe(recipe.id));
+                  navigate(recipe.id);
+                }}
               >
                 <Stack alignItems='center' spacing={2}>
                   <Typography variant='h2'>{recipe.title}</Typography>
@@ -85,7 +88,7 @@ const Recipes = () => {
                     {recipe.duration.hours}h {recipe.duration.minutes}min
                   </Typography>
                   {recipe.tags?.map(tag => (
-                    <TagButton text={tag.name} color={tag.color} />
+                    <TagButton key={tag.name} text={tag.name} color={tag.color} />
                   ))}
                 </Stack>
               </Card>
