@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Grid, Divider, Button, Typography, Container } from '@mui/material';
+import { Stack, Grid, Divider, Button, Typography, Card, Box } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarIcon from '@mui/icons-material/Star';
@@ -48,7 +48,7 @@ const Recipe = () => {
       )}
       {recipe && (
         <Grid container justifyContent='center' rowSpacing={5}>
-          <Grid container item md={12} lg={2} justifyContent='center' alignItems='center' height={10}>
+          <Grid container item md={12} lg={1.5} justifyContent='center' alignItems='center' height={10}>
             <Button
               variant='outlined'
               onClick={() => {
@@ -59,9 +59,9 @@ const Recipe = () => {
               <ArrowBackIcon />
             </Button>
           </Grid>
-          <Grid container item md={12} lg={4} justifyContent='flex-start' alignItems='center'>
-            <Stack direction='column' justifyContent='flex-start' spacing={2} width='100%'>
-              <div style={{ width: '100%', height: '300px', backgroundColor: 'white' }} />
+          <Grid container item md={12} lg={4.5} justifyContent='flex-start' alignItems='center'>
+            <Stack direction='column' justifyContent='flex-start' spacing={2} width='95%'>
+              <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
               <Typography variant='h1'>{recipe.title}</Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
                 <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1}>
@@ -87,7 +87,7 @@ const Recipe = () => {
               <Typography variant='h6'>{recipe.description}</Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
                 <Typography variant='h4'>Ainesosat</Typography>
-                <Stack direction='row' justifyContent='space-between' alignItems='center' width='30%'>
+                <Stack direction='row' justifyContent='space-between' alignItems='center' width='200px'>
                   <IndeterminateCheckBoxIcon
                     color='secondary'
                     onClick={selectedPortionSize > 1 ? () => setSelectedPortionSize(n => n - 1) : undefined}
@@ -156,13 +156,76 @@ const Recipe = () => {
               </Stack>
             </Stack>
           </Grid>
-          <Grid container item md={12} lg={4} justifyContent='flex-start' alignItems='center'>
-            {recipe.instructions.map(i => (
-              <div key={i.index}>{i.title}</div>
-            ))}
+          <Grid container item md={12} lg={4.5} justifyContent='flex-end' alignItems='center'>
+            <Box
+              sx={{
+                width: '95%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              <Card
+                sx={{
+                  width: '100%',
+                  height: '90vh',
+                  position: 'sticky',
+                  top: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-evenly',
+                  textAlign: 'center',
+                  boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
+                }}
+              >
+                Valmistusohje
+              </Card>
+            </Box>
           </Grid>
-          <Grid container item md={12} lg={2} justifyContent='flex-start' alignItems='center'>
-            Modify button
+          <Grid container item md={12} lg={1.5} justifyContent='center' alignItems='center'>
+            <Stack
+              direction='column'
+              justifyContent='flex-end'
+              alignItems='center'
+              spacing={1}
+              sx={{
+                width: '100%',
+                height: '100vh',
+                position: 'absolute',
+                bottom: '60px',
+              }}
+            >
+              <Button
+                variant='outlined'
+                size='small'
+                color='secondary'
+                sx={{
+                  width: '200px',
+                  fontSize: 20,
+                  paddingX: 3,
+                  textTransform: 'none',
+                  borderRadius: 25,
+                }}
+              >
+                Poista
+              </Button>
+              <Button
+                variant='contained'
+                size='small'
+                color='secondary'
+                sx={{
+                  width: '200px',
+                  fontSize: 20,
+                  paddingX: 3,
+                  textTransform: 'none',
+                  borderRadius: 25,
+                }}
+              >
+                Muokkaa
+              </Button>
+            </Stack>
           </Grid>
         </Grid>
       )}
