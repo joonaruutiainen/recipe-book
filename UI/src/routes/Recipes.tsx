@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Stack, Grid, Card, Divider, Button, Typography, Container } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions, SelectionFilter } from '../redux/slices/recipesSlice';
+import { TagButton } from '../components';
 
 const Recipes = () => {
   const user = useAppSelector(state => state.auth.user);
@@ -77,12 +78,15 @@ const Recipes = () => {
                 }}
                 onClick={() => navigate(recipe.id)}
               >
-                <Stack>
+                <Stack alignItems='center' spacing={2}>
                   <Typography variant='h2'>{recipe.title}</Typography>
                   <Typography variant='h4'>{recipe.description}</Typography>
                   <Typography variant='h4'>
                     {recipe.duration.hours}h {recipe.duration.minutes}min
                   </Typography>
+                  {recipe.tags?.map(tag => (
+                    <TagButton text={tag.name} color={tag.color} />
+                  ))}
                 </Stack>
               </Card>
             </Grid>
