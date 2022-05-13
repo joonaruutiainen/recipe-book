@@ -48,16 +48,28 @@ const Recipe = () => {
       )}
       {recipe && (
         <Grid container justifyContent='center' rowSpacing={5}>
-          <Grid container item xs={1.5} justifyContent='center' alignItems='center' height={10}>
-            <Button
-              variant='outlined'
-              onClick={() => {
-                navigate('/recipes');
-                dispatch(recipeActions.clearSelectedRecipe());
+          <Grid container item xs={1.5} direction='column' justifyContent='flex-start' alignItems='center'>
+            <Stack
+              direction='column'
+              justifyContent='flex-start'
+              alignItems='center'
+              spacing={1}
+              sx={{
+                width: '100%',
+                position: 'sticky',
+                top: '20px',
               }}
             >
-              <ArrowBackIcon />
-            </Button>
+              <Button
+                variant='outlined'
+                onClick={() => {
+                  navigate('/recipes');
+                  dispatch(recipeActions.clearSelectedRecipe());
+                }}
+              >
+                <ArrowBackIcon />
+              </Button>
+            </Stack>
           </Grid>
           <Grid container item md={10.5} xl={4.5} direction='column' justifyContent='flex-start' alignItems='flex-end'>
             <Stack
@@ -65,7 +77,7 @@ const Recipe = () => {
               justifyContent='flex-start'
               spacing={2}
               width='95%'
-              maxWidth='700px'
+              maxWidth='720px'
               marginRight={5}
             >
               <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
@@ -118,7 +130,7 @@ const Recipe = () => {
                   />
                 </Stack>
               </Stack>
-              <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
+              <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4} paddingBottom={5}>
                 {recipe.subtitles &&
                   recipe.subtitles?.map(st => (
                     <Stack
@@ -175,7 +187,7 @@ const Recipe = () => {
             <Box
               sx={{
                 width: '95%',
-                maxWidth: '700px',
+                maxWidth: '720px',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -226,22 +238,24 @@ const Recipe = () => {
               </Card>
             </Box>
           </Grid>
-          <Grid
-            container
-            item
-            xs={1.5}
-            direction='column'
-            justifyContent='flex-end'
-            alignItems='center'
-            marginBottom={11}
-          >
-            <Stack direction='column' justifyContent='flex-end' alignItems='center' spacing={1}>
+          <Grid container item xs={1.5} direction='column' justifyContent='flex-end' alignItems='center'>
+            <Stack
+              direction='column'
+              justifyContent='flex-start'
+              alignItems='center'
+              spacing={1}
+              sx={{
+                width: '100%',
+                position: 'sticky',
+                bottom: '50px',
+              }}
+            >
               <Button
                 variant='outlined'
                 size='small'
                 color='secondary'
                 sx={{
-                  width: '200px',
+                  width: '150px',
                   fontSize: 20,
                   paddingX: 3,
                   textTransform: 'none',
@@ -255,7 +269,7 @@ const Recipe = () => {
                 size='small'
                 color='secondary'
                 sx={{
-                  width: '200px',
+                  width: '150px',
                   fontSize: 20,
                   paddingX: 3,
                   textTransform: 'none',

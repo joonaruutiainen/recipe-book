@@ -59,7 +59,7 @@ const theme = createTheme({
       sm: 400,
       md: 900,
       lg: 1300,
-      xl: 1600,
+      xl: 1602,
     },
   },
 });
