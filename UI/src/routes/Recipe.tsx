@@ -48,7 +48,7 @@ const Recipe = () => {
       )}
       {recipe && (
         <Grid container justifyContent='center' rowSpacing={5}>
-          <Grid container item md={12} lg={1.5} justifyContent='center' alignItems='center' height={10}>
+          <Grid container item xs={1.5} justifyContent='center' alignItems='center' height={10}>
             <Button
               variant='outlined'
               onClick={() => {
@@ -59,8 +59,15 @@ const Recipe = () => {
               <ArrowBackIcon />
             </Button>
           </Grid>
-          <Grid container item md={12} lg={4.5} justifyContent='flex-start' alignItems='center'>
-            <Stack direction='column' justifyContent='flex-start' spacing={2} width='95%'>
+          <Grid container item md={10.5} xl={4.5} direction='column' justifyContent='flex-start' alignItems='flex-end'>
+            <Stack
+              direction='column'
+              justifyContent='flex-start'
+              spacing={2}
+              width='95%'
+              maxWidth='700px'
+              marginRight={5}
+            >
               <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
               <Typography variant='h1'>{recipe.title}</Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
@@ -156,15 +163,25 @@ const Recipe = () => {
               </Stack>
             </Stack>
           </Grid>
-          <Grid container item md={12} lg={4.5} justifyContent='flex-end' alignItems='center'>
+          <Grid
+            container
+            item
+            md={10.5}
+            xl={4.5}
+            direction='column'
+            justifyContent='flex-start'
+            alignItems='flex-start'
+          >
             <Box
               sx={{
                 width: '95%',
+                maxWidth: '700px',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
+                marginLeft: 5,
               }}
             >
               <Card
@@ -175,28 +192,50 @@ const Recipe = () => {
                   top: '20px',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-evenly',
-                  textAlign: 'center',
+                  justifyContent: 'flex-start',
                   boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
                 }}
               >
-                Valmistusohje
+                <Stack
+                  direction='column'
+                  justifyContent='flex-start'
+                  alignItems='center'
+                  divider={<Divider orientation='horizontal' flexItem />}
+                  spacing={3}
+                  sx={{ margin: 5 }}
+                >
+                  <Typography variant='h2'>Valmistusohje</Typography>
+                  {recipe.instructions.map(step => (
+                    <Stack key={step.index} direction='column' width='100%' spacing={1}>
+                      <Stack
+                        direction='row'
+                        justifyContent='flex-start'
+                        alignItems='center'
+                        divider={<Divider orientation='vertical' flexItem />}
+                        spacing={2}
+                      >
+                        <Typography variant='h3' width={15}>
+                          {step.index}
+                        </Typography>
+                        <Typography variant='h3'>{step.title}</Typography>
+                      </Stack>
+                      <Typography variant='h6'>{step.description}</Typography>
+                    </Stack>
+                  ))}
+                </Stack>
               </Card>
             </Box>
           </Grid>
-          <Grid container item md={12} lg={1.5} justifyContent='center' alignItems='center'>
-            <Stack
-              direction='column'
-              justifyContent='flex-end'
-              alignItems='center'
-              spacing={1}
-              sx={{
-                width: '100%',
-                height: '100vh',
-                position: 'absolute',
-                bottom: '60px',
-              }}
-            >
+          <Grid
+            container
+            item
+            xs={1.5}
+            direction='column'
+            justifyContent='flex-end'
+            alignItems='center'
+            marginBottom={11}
+          >
+            <Stack direction='column' justifyContent='flex-end' alignItems='center' spacing={1}>
               <Button
                 variant='outlined'
                 size='small'

@@ -83,7 +83,6 @@ const Recipes = () => {
               >
                 <Stack alignItems='center' spacing={2}>
                   <Typography variant='h2'>{recipe.title}</Typography>
-                  <Typography variant='h4'>{recipe.description}</Typography>
                   <Typography variant='h4'>
                     {recipe.duration.hours}h {recipe.duration.minutes}min
                   </Typography>

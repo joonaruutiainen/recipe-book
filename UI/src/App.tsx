@@ -25,12 +25,13 @@ const theme = createTheme({
     },
     h2: {
       fontFamily: 'Helvetica',
-      fontSize: 32,
+      fontSize: 28,
       color: '#39352C',
     },
     h3: {
-      fontFamily: 'Helvetica',
+      fontFamily: 'Segoe UI',
       fontSize: 28,
+      fontWeight: 'lighter',
       color: '#39352C',
     },
     h4: {
@@ -58,7 +59,7 @@ const theme = createTheme({
       sm: 400,
       md: 900,
       lg: 1300,
-      xl: 1700,
+      xl: 1600,
     },
   },
 });
