@@ -103,7 +103,9 @@ const Recipe = () => {
                   <TagButton key={tag.name} text={tag.name} color={tag.color} />
                 ))}
               </Stack>
-              <Typography variant='h6'>{recipe.description}</Typography>
+              <Typography variant='h6' align='justify'>
+                {recipe.description}
+              </Typography>
               <Stack direction='row' justifyContent='space-between' width='100%'>
                 <Typography variant='h4'>Ainesosat</Typography>
                 <Stack direction='row' justifyContent='space-between' alignItems='center' width='200px'>
@@ -206,6 +208,7 @@ const Recipe = () => {
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
+                  overflow: 'auto',
                 }}
               >
                 <Stack
@@ -231,7 +234,9 @@ const Recipe = () => {
                         </Typography>
                         <Typography variant='h3'>{step.title}</Typography>
                       </Stack>
-                      <Typography variant='h6'>{step.description}</Typography>
+                      <Typography variant='h6' align='justify'>
+                        {step.description}
+                      </Typography>
                     </Stack>
                   ))}
                 </Stack>
