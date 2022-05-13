@@ -1,17 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Grid, Card, Divider, Button, Typography, Container } from '@mui/material';
+import { Stack, Grid, Card, Divider, Button, Typography, Container, CircularProgress } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions, SelectionFilter } from '../redux/slices/recipesSlice';
 import { TagButton } from '../components';
 
 const Recipes = () => {
   const user = useAppSelector(state => state.auth.user);
-  const { selection: recipes, selectionFilter } = useAppSelector(state => state.recipes);
+  const { selection: recipes, loadingMany: loading, selectionFilter } = useAppSelector(state => state.recipes);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  return (
+  return loading ? (
+    <CircularProgress color='secondary' />
+  ) : (
     <div
       style={{
         display: 'flex',

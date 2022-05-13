@@ -4,6 +4,7 @@ import apiService from './apiService';
 interface RecipeService {
   getRecipes: () => Promise<APIResponse>;
   getRecipe: (recipeId: string) => Promise<APIResponse>;
+  deleteRecipe: (recipeId: string) => Promise<APIResponse>;
 }
 
 const getRecipes = () =>
@@ -18,9 +19,16 @@ const getRecipe = (recipeId: string) =>
     method: 'get',
   });
 
+const deleteRecipe = (recipeId: string) =>
+  apiService.makeRequest({
+    url: `/recipes/${recipeId}`,
+    method: 'delete',
+  });
+
 const recipeService: RecipeService = {
   getRecipes,
   getRecipe,
+  deleteRecipe,
 };
 
 export default recipeService;

@@ -71,6 +71,18 @@ const getRecipe = createAsyncThunk<Recipe, string, { rejectValue: ApplicationErr
   }
 );
 
+const deleteRecipe = createAsyncThunk<string, string, { rejectValue: ApplicationError }>(
+  `${sliceName}/deleteRecipe`,
+  async (recipeId: string, { rejectWithValue }) => {
+    try {
+      await recipeService.deleteRecipe(recipeId);
+      return recipeId;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
+  }
+);
+
 const RecipesSlice = createSlice({
   name: sliceName,
   initialState,
@@ -148,6 +160,24 @@ const RecipesSlice = createSlice({
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
+    builder.addCase(deleteRecipe.pending, state => {
+      state.loadingOne = true;
+    });
+    builder.addCase(deleteRecipe.fulfilled, (state, action) => {
+      state.loadingOne = false;
+      state.selected = null;
+      state.all = state.all.filter(recipe => recipe.id !== action.payload);
+      state.selection = state.selection.filter(recipe => recipe.id !== action.payload);
+      state.error = null;
+    });
+    builder.addCase(deleteRecipe.rejected, (state, action) => {
+      state.loadingOne = false;
+      if (action.payload) {
+        state.error = action.payload;
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
     builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
   },
 });
@@ -155,6 +185,7 @@ const RecipesSlice = createSlice({
 export const recipeActions = {
   getRecipes,
   getRecipe,
+  deleteRecipe,
   ...RecipesSlice.actions,
 };
 

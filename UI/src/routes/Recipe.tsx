@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Grid, Divider, Button, Typography, Card, Box } from '@mui/material';
+import { Stack, Grid, Divider, Button, Typography, Card, Box, CircularProgress } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarIcon from '@mui/icons-material/Star';
@@ -9,18 +9,20 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
-import { TagButton } from '../components';
+import { AlertDialog, TagButton } from '../components';
 
 const Recipe = () => {
   const { user } = useAppSelector(state => state.auth);
-  const { selected: recipe, error } = useAppSelector(state => state.recipes);
+  const { selected: recipe, loadingOne: loading, error } = useAppSelector(state => state.recipes);
   const [selectedPortionSize, setSelectedPortionSize] = useState(recipe?.portionSize || 1);
+  const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
+  const [recipeDeleted, setRecipeDeleted] = useState(false);
   const { recipeId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!recipe && !error && recipeId) dispatch(recipeActions.getRecipe(recipeId));
+    if (!recipe && !error && recipeId && !recipeDeleted) dispatch(recipeActions.getRecipe(recipeId));
   }, [dispatch, recipe, error]);
 
   const recipeDescriptionColumn = recipe ? (
@@ -227,6 +229,7 @@ const Recipe = () => {
           variant='outlined'
           size='small'
           color='secondary'
+          onClick={() => setConfirmDeleteDialog(true)}
           sx={{
             width: '150px',
             fontSize: 20,
@@ -256,11 +259,13 @@ const Recipe = () => {
       <div />
     );
 
-  return (
+  return loading ? (
+    <CircularProgress color='secondary' />
+  ) : (
     <div style={{ width: '100%', height: '100%', paddingTop: '40px' }}>
-      {error && (
+      {(error || recipeDeleted) && (
         <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
-          <Typography variant='h6'>{error.message}</Typography>
+          <Typography variant='h6'>{error?.message || 'Resepti poistettu onnistuneesti'}</Typography>
           <Button
             variant='contained'
             color='secondary'
@@ -280,20 +285,35 @@ const Recipe = () => {
         </Stack>
       )}
       {recipe && (
-        <Grid container justifyContent='center' rowSpacing={5}>
-          <Grid container item xs={1.5} direction='column' alignItems='center'>
-            {leftColumn}
+        <>
+          <Grid container justifyContent='center' rowSpacing={5}>
+            <Grid container item xs={1.5} direction='column' alignItems='center'>
+              {leftColumn}
+            </Grid>
+            <Grid container item md={10.5} xl={4.5} direction='column' alignItems='flex-end'>
+              {recipeDescriptionColumn}
+            </Grid>
+            <Grid container item md={10.5} xl={4.5} direction='column'>
+              {recipeInstructionsColumn}
+            </Grid>
+            <Grid container item xs={1.5} direction='column' justifyContent='flex-end' alignItems='center'>
+              {rightColumn}
+            </Grid>
           </Grid>
-          <Grid container item md={10.5} xl={4.5} direction='column' alignItems='flex-end'>
-            {recipeDescriptionColumn}
-          </Grid>
-          <Grid container item md={10.5} xl={4.5} direction='column'>
-            {recipeInstructionsColumn}
-          </Grid>
-          <Grid container item xs={1.5} direction='column' justifyContent='flex-end' alignItems='center'>
-            {rightColumn}
-          </Grid>
-        </Grid>
+          <AlertDialog
+            open={confirmDeleteDialog}
+            title='Poista resepti'
+            text='Haluatko varmasti poistaa tämän reseptin?'
+            acceptText='Poista'
+            declineText='Peruuta'
+            onAccept={() => {
+              dispatch(recipeActions.deleteRecipe(recipe.id));
+              setRecipeDeleted(true);
+              setConfirmDeleteDialog(false);
+            }}
+            onDecline={() => setConfirmDeleteDialog(false)}
+          />
+        </>
       )}
     </div>
   );
