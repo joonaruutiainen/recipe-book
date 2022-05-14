@@ -52,7 +52,7 @@ const Recipes = () => {
             Omat reseptit
           </Button>
         </Stack>
-        <Grid container justifyContent='flex-start' rowSpacing={6}>
+        <Grid container justifyContent='flex-start' rowSpacing={6} sx={{ mb: 5 }}>
           {recipes.map(recipe => (
             <Grid
               container
