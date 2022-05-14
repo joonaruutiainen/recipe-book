@@ -290,10 +290,29 @@ const Recipe = () => {
             <Grid container item xs={1.5} direction='column' alignItems='center'>
               {leftColumn}
             </Grid>
-            <Grid container item md={10.5} xl={4.5} direction='column' alignItems='flex-end'>
+            <Grid
+              container
+              item
+              md={10.5}
+              xl={4.5}
+              direction='column'
+              sx={{
+                alignItems: { xs: 'center', md: 'flex-start', xl: 'flex-end' },
+              }}
+            >
               {recipeDescriptionColumn}
             </Grid>
-            <Grid container item md={10.5} xl={4.5} direction='column'>
+            <Grid
+              container
+              item
+              md={10.5}
+              xl={4.5}
+              direction='column'
+              sx={{
+                alignItems: { xs: 'center', md: 'flex-start' },
+                ml: { xs: 0, md: 5, xl: 0 },
+              }}
+            >
               {recipeInstructionsColumn}
             </Grid>
             <Grid container item xs={1.5} direction='column' justifyContent='flex-end' alignItems='center'>
