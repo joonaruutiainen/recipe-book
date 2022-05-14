@@ -129,6 +129,23 @@ const NavBar = () => {
             </Menu>
           </Box>
         )}
+        {!user && (
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={() => navigate('login')}
+            sx={{
+              width: '220px',
+              mr: 5,
+              fontSize: 20,
+              paddingX: 3,
+              textTransform: 'none',
+              borderRadius: 25,
+            }}
+          >
+            Kirjaudu sisään
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
