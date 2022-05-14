@@ -121,7 +121,7 @@ const Register = () => {
             <TextField
               label='Käyttäjätunnus'
               value={name}
-              ref={nameInput}
+              inputRef={nameInput}
               error={missingName}
               fullWidth
               color='secondary'
@@ -139,7 +139,7 @@ const Register = () => {
             <TextField
               label='Sähköposti'
               value={email}
-              ref={emailInput}
+              inputRef={emailInput}
               error={missingEmail}
               fullWidth
               color='secondary'
@@ -158,7 +158,7 @@ const Register = () => {
               label='Salasana'
               type='password'
               value={password}
-              ref={passwordInput}
+              inputRef={passwordInput}
               error={missingPassword}
               fullWidth
               color='secondary'
@@ -177,7 +177,7 @@ const Register = () => {
               label='Vahvista salasana'
               type='password'
               value={confirmPassword}
-              ref={confirmPasswordInput}
+              inputRef={confirmPasswordInput}
               error={missingCorfimPassword}
               fullWidth
               color='secondary'

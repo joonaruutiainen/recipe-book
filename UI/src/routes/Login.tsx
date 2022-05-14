@@ -118,7 +118,7 @@ const Login = () => {
             <TextField
               label='Sähköposti / käyttäjätunnus'
               value={identifier}
-              ref={identifierInput}
+              inputRef={identifierInput}
               error={missingIdentifier}
               fullWidth
               color='secondary'
@@ -137,7 +137,7 @@ const Login = () => {
               label='Salasana'
               type='password'
               value={password}
-              ref={passwordInput}
+              inputRef={passwordInput}
               error={missingPassword}
               fullWidth
               color='secondary'
