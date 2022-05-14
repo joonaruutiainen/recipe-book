@@ -270,7 +270,7 @@ const Recipe = () => {
             variant='contained'
             color='secondary'
             onClick={() => {
-              navigate('/');
+              navigate('/recipes');
               dispatch(recipeActions.clearError());
             }}
             sx={{

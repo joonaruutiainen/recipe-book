@@ -18,7 +18,7 @@ const Recipes = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flexStart',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         width: '100%',
         height: '100%',
