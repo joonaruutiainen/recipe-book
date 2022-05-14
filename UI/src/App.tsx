@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CircularProgress } from '@mui/material';
 import { NavBar } from './components';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
@@ -10,7 +11,7 @@ import { recipeActions } from './redux/slices/recipesSlice';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#39352C',
+      main: '#554F43',
     },
     secondary: {
       main: '#EC216A',
@@ -65,7 +66,7 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const { initialized, user } = useAppSelector(state => state.auth);
+  const { initialized, user, loading } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -88,7 +89,8 @@ const App = () => {
           <NavBar />
         </div>
         <div className='content'>
-          <Outlet />
+          {loading && <CircularProgress color='secondary' />}
+          {!loading && <Outlet />}
         </div>
       </div>
     </ThemeProvider>

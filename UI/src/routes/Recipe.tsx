@@ -143,7 +143,7 @@ const Recipe = () => {
       <Card
         sx={{
           width: '100%',
-          height: '90vh',
+          height: '87vh',
           position: 'sticky',
           top: '20px',
           display: 'flex',

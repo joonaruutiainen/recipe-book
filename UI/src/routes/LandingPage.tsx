@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { Button, Divider, Stack, Typography, Box, CircularProgress } from '@mui/material';
+import { Button, Divider, Stack, Typography, Box } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import MealIcon from '../img/meal.png';
 import ChefIcon from '../img/chef.png';
