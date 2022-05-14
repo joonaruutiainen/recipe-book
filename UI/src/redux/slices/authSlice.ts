@@ -8,6 +8,8 @@ export interface AuthState {
   initialized: boolean;
   user: User | null;
   newUser: User | null;
+  loginData: LoginData | null;
+  registrationData: RegistrationData | null;
   loading: boolean;
   error: ApplicationError | null;
 }
@@ -18,6 +20,8 @@ const initialState: AuthState = {
   initialized: false,
   user: user || null,
   newUser: null,
+  loginData: null,
+  registrationData: null,
   loading: false,
   error: null,
 };
@@ -83,6 +87,12 @@ const AuthSlice = createSlice({
   name: sliceName,
   initialState,
   reducers: {
+    clearLoginData(state) {
+      state.loginData = null;
+    },
+    clearRegistrationData(state) {
+      state.registrationData = null;
+    },
     clearNewUser(state) {
       state.newUser = null;
     },
@@ -112,8 +122,9 @@ const AuthSlice = createSlice({
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
-    builder.addCase(loginUser.pending, state => {
+    builder.addCase(loginUser.pending, (state, action) => {
       state.loading = true;
+      state.loginData = action.meta.arg;
       if (state.newUser) {
         state.newUser = null;
       }
@@ -122,6 +133,7 @@ const AuthSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload));
       state.loading = false;
       state.user = action.payload;
+      state.loginData = null;
       state.error = null;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
@@ -155,12 +167,14 @@ const AuthSlice = createSlice({
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
-    builder.addCase(registerUser.pending, state => {
+    builder.addCase(registerUser.pending, (state, action) => {
       state.loading = true;
+      state.registrationData = action.meta.arg;
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.loading = false;
       state.newUser = action.payload;
+      state.registrationData = null;
       state.error = null;
     });
     builder.addCase(registerUser.rejected, (state, action) => {

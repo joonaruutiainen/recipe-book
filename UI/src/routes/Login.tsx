@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
 const Login = () => {
-  const { user, newUser, loading, error } = useAppSelector(state => state.auth);
+  const { user, newUser, loginData, loading, error } = useAppSelector(state => state.auth);
 
   const [identifier, setIdentifier] = useState<string>('');
   const [missingIdentifier, setMissingIdentifier] = useState<boolean>(false);
@@ -64,6 +64,14 @@ const Login = () => {
       dispatch(authActions.clearNewUser());
     }
   }, [dispatch, newUser]);
+
+  useEffect(() => {
+    if (loginData) {
+      setIdentifier(loginData.identifier);
+      setPassword(loginData.password);
+      dispatch(authActions.clearLoginData());
+    }
+  }, [dispatch, loginData]);
 
   const submit = (e?: React.FormEvent): void => {
     e?.preventDefault();
