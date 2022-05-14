@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Grid, Button, CircularProgress, TextField, Typography } from '@mui/material';
+import LoginImg from '../img/login.png';
 import { CardContainer, Notification } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
 const Login = () => {
-  const { user, newUser, error } = useAppSelector(state => state.auth);
+  const { user, newUser, loading, error } = useAppSelector(state => state.auth);
 
   const [identifier, setIdentifier] = useState<string>('');
   const [missingIdentifier, setMissingIdentifier] = useState<boolean>(false);
@@ -70,81 +72,121 @@ const Login = () => {
     if (identifier && password) dispatch(authActions.loginUser({ identifier, password }));
   };
 
-  return (
-    <CardContainer width='500px' height='550px'>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '100px',
-        }}
-      >
-        {notification}
-        {(missingIdentifier || missingPassword) && (
-          <Notification
-            message='Täytä kaikki kentät'
-            color='red'
-            onClose={() => {
-              setMissingIdentifier(false);
-              setMissingPassword(false);
+  return loading ? (
+    <CircularProgress color='secondary' />
+  ) : (
+    <Grid container spacing={5}>
+      <Grid container item md={5} direction='column' justifyContent='center' alignItems='center'>
+        <img src={LoginImg} alt='' width={300} style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }} />
+      </Grid>
+      <Grid container item md={3} direction='column' justifyContent='center' alignItems='center'>
+        <CardContainer width='500px' height='550px'>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100px',
             }}
-          />
-        )}
-      </div>
-      <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input
-          type='text'
-          placeholder='Sähköposti / käyttäjätunnus'
-          value={identifier}
-          ref={identifierInput}
-          style={missingIdentifier ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingIdentifier) setMissingIdentifier(false);
-            setIdentifier(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              passwordInput.current?.focus();
-            }
-          }}
-        />
-        <input
-          type='password'
-          placeholder='Salasana'
-          value={password}
-          ref={passwordInput}
-          style={missingPassword ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingPassword) setMissingPassword(false);
-            setPassword(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              submit();
-            }
-          }}
-        />
-        <button type='submit'>Kirjaudu sisään</button>
-      </form>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '100px',
-        }}
-      >
-        <div>Oletko uusi käyttäjä?</div>
-        <Link to='/register'>Rekisteröidy</Link>
-      </div>
-    </CardContainer>
+          >
+            {notification}
+            {(missingIdentifier || missingPassword) && (
+              <Notification
+                message='Täytä kaikki kentät'
+                color='red'
+                onClose={() => {
+                  setMissingIdentifier(false);
+                  setMissingPassword(false);
+                }}
+              />
+            )}
+          </div>
+          <form
+            onSubmit={submit}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '300px' }}
+          >
+            <TextField
+              label='Sähköposti / käyttäjätunnus'
+              value={identifier}
+              ref={identifierInput}
+              error={missingIdentifier}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingIdentifier) setMissingIdentifier(false);
+                setIdentifier(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  passwordInput.current?.focus();
+                }
+              }}
+            />
+            <TextField
+              label='Salasana'
+              type='password'
+              value={password}
+              ref={passwordInput}
+              error={missingPassword}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingPassword) setMissingPassword(false);
+                setPassword(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  submit();
+                }
+              }}
+            />
+            <Button
+              variant='contained'
+              color='secondary'
+              type='submit'
+              size='small'
+              sx={{
+                width: '220px',
+                fontSize: 20,
+                paddingX: 3,
+                textTransform: 'none',
+                borderRadius: 25,
+              }}
+            >
+              Kirjaudu sisään
+            </Button>
+          </form>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100px',
+            }}
+          >
+            <Typography variant='h6'>Oletko uusi käyttäjä?</Typography>
+            <Button
+              color='secondary'
+              onClick={() => navigate('/register')}
+              size='small'
+              sx={{
+                fontSize: 20,
+                paddingX: 3,
+                textTransform: 'none',
+              }}
+            >
+              Rekisteröidy
+            </Button>
+          </div>
+        </CardContainer>
+      </Grid>
+    </Grid>
   );
 };
 

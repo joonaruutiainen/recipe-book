@@ -1,3 +1,4 @@
+import { Card } from '@mui/material';
 import React from 'react';
 
 export interface CardContainerProps {
@@ -7,8 +8,8 @@ export interface CardContainerProps {
 }
 
 const CardContainer: React.FC<CardContainerProps> = ({ width, height, children }) => (
-  <div
-    style={{
+  <Card
+    sx={{
       width,
       height,
       display: 'flex',
@@ -21,7 +22,7 @@ const CardContainer: React.FC<CardContainerProps> = ({ width, height, children }
     }}
   >
     {children}
-  </div>
+  </Card>
 );
 
 export default CardContainer;

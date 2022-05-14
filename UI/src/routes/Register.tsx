@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import RegistrationImg from '../img/registration.png';
 import { CardContainer, Notification } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
 const Register = () => {
-  const { newUser, error } = useAppSelector(state => state.auth);
+  const { newUser, loading, error } = useAppSelector(state => state.auth);
 
   const [name, setName] = useState<string>('');
   const [missingName, setMissingName] = useState<boolean>(false);
@@ -64,117 +66,165 @@ const Register = () => {
       dispatch(authActions.registerUser({ name, email, password, confirmPassword }));
   };
 
-  return (
-    <CardContainer width='500px' height='550px'>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '100px',
-        }}
-      >
-        {notification}
-        {(missingName || missingEmail || missingPassword || missingCorfimPassword) && (
-          <Notification
-            message='Täytä kaikki kentät'
-            color='red'
-            onClose={() => {
-              setMissingName(false);
-              setMissingEmail(false);
-              setMissingPassword(false);
-              setMissingConfirmPassword(false);
+  return loading ? (
+    <CircularProgress color='secondary' />
+  ) : (
+    <Grid container spacing={5}>
+      <Grid container item md={5} direction='column' justifyContent='center' alignItems='center'>
+        <img
+          src={RegistrationImg}
+          alt=''
+          width={350}
+          style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }}
+        />
+      </Grid>
+      <Grid container item md={3} direction='column' justifyContent='center' alignItems='center'>
+        <CardContainer width='500px' height='700px'>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100px',
             }}
-          />
-        )}
-      </div>
-      <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input
-          type='text'
-          placeholder='Käyttäjätunnus'
-          value={name}
-          ref={nameInput}
-          style={missingName ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingName) setMissingName(false);
-            setName(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              emailInput.current?.focus();
-            }
-          }}
-        />
-        <input
-          type='text'
-          placeholder='Sähköposti'
-          value={email}
-          ref={emailInput}
-          style={missingEmail ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingEmail) setMissingEmail(false);
-            setEmail(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              passwordInput.current?.focus();
-            }
-          }}
-        />
-        <input
-          type='password'
-          placeholder='Salasana'
-          value={password}
-          ref={passwordInput}
-          style={missingPassword ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingPassword) setMissingPassword(false);
-            setPassword(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              confirmPasswordInput.current?.focus();
-            }
-          }}
-        />
-        <input
-          type='password'
-          placeholder='Vahvista salasana'
-          value={confirmPassword}
-          ref={confirmPasswordInput}
-          style={missingCorfimPassword ? { borderColor: 'red' } : {}}
-          onChange={e => {
-            if (missingCorfimPassword) setMissingConfirmPassword(false);
-            setConfirmPassword(e.target.value);
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              submit();
-            }
-          }}
-        />
-        <button type='submit'>Luo käyttäjä</button>
-      </form>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '100px',
-        }}
-      >
-        <div>Onko sinulla jo käyttäjätunnus?</div>
-        <Link to='/login'>Kirjaudu sisään</Link>
-      </div>
-    </CardContainer>
+          >
+            {notification}
+            {(missingName || missingEmail || missingPassword || missingCorfimPassword) && (
+              <Notification
+                message='Täytä kaikki kentät'
+                color='red'
+                onClose={() => {
+                  setMissingName(false);
+                  setMissingEmail(false);
+                  setMissingPassword(false);
+                  setMissingConfirmPassword(false);
+                }}
+              />
+            )}
+          </div>
+          <form
+            onSubmit={submit}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '300px' }}
+          >
+            <TextField
+              label='Käyttäjätunnus'
+              value={name}
+              ref={nameInput}
+              error={missingName}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingName) setMissingName(false);
+                setName(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  emailInput.current?.focus();
+                }
+              }}
+            />
+            <TextField
+              label='Sähköposti'
+              value={email}
+              ref={emailInput}
+              error={missingEmail}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingEmail) setMissingEmail(false);
+                setEmail(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  passwordInput.current?.focus();
+                }
+              }}
+            />
+            <TextField
+              label='Salasana'
+              type='password'
+              value={password}
+              ref={passwordInput}
+              error={missingPassword}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingPassword) setMissingPassword(false);
+                setPassword(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  confirmPasswordInput.current?.focus();
+                }
+              }}
+            />
+            <TextField
+              label='Vahvista salasana'
+              type='password'
+              value={confirmPassword}
+              ref={confirmPasswordInput}
+              error={missingCorfimPassword}
+              fullWidth
+              color='secondary'
+              onChange={e => {
+                if (missingCorfimPassword) setMissingConfirmPassword(false);
+                setConfirmPassword(e.target.value);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  submit();
+                }
+              }}
+            />
+            <Button
+              variant='contained'
+              color='secondary'
+              type='submit'
+              size='small'
+              sx={{
+                width: '220px',
+                fontSize: 20,
+                paddingX: 3,
+                textTransform: 'none',
+                borderRadius: 25,
+              }}
+            >
+              Luo käyttäjä
+            </Button>
+          </form>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100px',
+            }}
+          >
+            <Typography variant='h6'>Onko sinulla jo käyttäjätunnus?</Typography>
+            <Button
+              color='secondary'
+              onClick={() => navigate('/login')}
+              size='small'
+              sx={{
+                fontSize: 20,
+                paddingX: 3,
+                textTransform: 'none',
+              }}
+            >
+              Kirjaudu sisään
+            </Button>
+          </div>
+        </CardContainer>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -64,6 +64,7 @@ const LandingPage = () => {
                 variant='contained'
                 color='secondary'
                 onClick={() => navigate('/recipes')}
+                size='small'
                 sx={{
                   width: '220px',
                   fontSize: 20,
@@ -94,6 +95,7 @@ const LandingPage = () => {
                 variant='contained'
                 color='secondary'
                 onClick={() => navigate('/register')}
+                size='small'
                 sx={{
                   width: '220px',
                   fontSize: 20,

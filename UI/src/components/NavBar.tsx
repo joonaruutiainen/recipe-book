@@ -134,6 +134,7 @@ const NavBar = () => {
             variant='contained'
             color='secondary'
             onClick={() => navigate('login')}
+            size='small'
             sx={{
               width: '220px',
               mr: 5,
