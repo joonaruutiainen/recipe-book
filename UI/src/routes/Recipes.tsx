@@ -35,6 +35,7 @@ const Recipes = () => {
           marginBottom={5}
         >
           <Button
+            color={selectionFilter === SelectionFilter.public ? 'secondary' : 'primary'}
             onClick={() => {
               if (!(selectionFilter === SelectionFilter.public))
                 dispatch(recipeActions.setSelection(SelectionFilter.public));
@@ -43,6 +44,7 @@ const Recipes = () => {
             Julkaistut reseptit
           </Button>
           <Button
+            color={selectionFilter === SelectionFilter.myRecipes ? 'secondary' : 'primary'}
             onClick={() => {
               if (!user) navigate('/login');
               else if (!(selectionFilter === SelectionFilter.myRecipes))
