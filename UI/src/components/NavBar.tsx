@@ -109,7 +109,7 @@ const NavBar = () => {
                 }}
                 sx={{ justifyContent: 'center' }}
               >
-                <Typography textAlign='center'>Profile</Typography>
+                <Typography textAlign='center'>Asetukset</Typography>
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -119,7 +119,7 @@ const NavBar = () => {
                 }}
                 sx={{ justifyContent: 'center' }}
               >
-                <Typography textAlign='center'>Logout</Typography>
+                <Typography textAlign='center'>Kirjaudu ulos</Typography>
               </MenuItem>
             </Menu>
           </Box>
