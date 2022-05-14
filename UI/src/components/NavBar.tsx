@@ -79,7 +79,12 @@ const NavBar = () => {
           >
             <Tooltip title='Open user settings' enterDelay={1000}>
               <IconButton onClick={openUserMenu} sx={{ p: 0 }}>
-                <img src={UserIcon} alt='' width={60} />
+                <img
+                  src={UserIcon}
+                  alt=''
+                  width={65}
+                  style={{ filter: 'drop-shadow(3px 3px 7px rgba(57, 53, 44, 0.8))' }}
+                />
               </IconButton>
             </Tooltip>
             <Menu

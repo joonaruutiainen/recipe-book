@@ -49,7 +49,12 @@ const LandingPage = () => {
         </Stack>
         <Stack direction='column' justifyContent='center' alignItems='flex-start' spacing={5} paddingY={10} width={650}>
           <Stack direction='row' justifyContent='space-between' alignItems='center' width='100%'>
-            <img src={MealIcon} alt='' width={300} />
+            <img
+              src={MealIcon}
+              alt=''
+              width={300}
+              style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }}
+            />
             <Stack direction='column' justifyContent='center' alignItems='center' spacing={3}>
               <Stack direction='column' justifyContent='center' alignItems='center'>
                 <Typography variant='h6'>Mitäs sitä tänään söisi?</Typography>
@@ -73,7 +78,12 @@ const LandingPage = () => {
           </Stack>
           <Stack direction='row' justifyContent='space-between' alignItems='center' width='100%'>
             <Box sx={{ width: 300, display: 'flex', justifyContent: 'center' }}>
-              <img src={ChefIcon} alt='' width={250} />
+              <img
+                src={ChefIcon}
+                alt=''
+                width={250}
+                style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }}
+              />
             </Box>
             <Stack direction='column' justifyContent='center' alignItems='center' spacing={3}>
               <Stack direction='column' justifyContent='center' alignItems='center'>
