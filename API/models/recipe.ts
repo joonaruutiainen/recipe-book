@@ -87,26 +87,30 @@ const inputSchema = {
         .required()
         // .messages({
         //   'number.base': 'duration.hours must be a number',
+        //   'number.min': 'duration.hours must be between 0-99',
+        //   'number.max': 'duration.hours must be between 0-99',
         //   'any.required': 'duration.hours is required',
         // }),
         .messages({
           'number.base': 'Reseptin kesto tunteina täytyy olla kokonaisluku',
+          'number.min': 'Reseption kesto tunteina täytyy olla välillä 0-99',
+          'number.max': 'Reseption kesto tunteina täytyy olla välillä 0-99',
           'any.required': 'Reseptin kesto tunteina on vaadittu kenttä',
         }),
       minutes: Joi.number()
         .required()
-        .min(1)
+        .min(0)
         .max(59)
         // .messages({
         //   'number.base': 'duration.minutes must be a number',
-        //   'number.min': 'minutes must be between 1-59',
-        //   'number.max': 'minutes must be between 1-59',
+        //   'number.min': 'duration.minutes must be between 0-59',
+        //   'number.max': 'duration.minutes must be between 0-59',
         //   'any.required': 'duration.minutes is required',
         // }),
         .messages({
           'number.base': 'Reseptin kesto minuutteina täytyy olla kokonaisluku',
-          'number.min': 'Reseption kesto minuutteina täytyy olla välillä 1-59',
-          'number.max': 'Reseption kesto minuutteina täytyy olla välillä 1-59',
+          'number.min': 'Reseption kesto minuutteina täytyy olla välillä 0-59',
+          'number.max': 'Reseption kesto minuutteina täytyy olla välillä 0-59',
           'any.required': 'Reseptin kesto minuutteina on vaadittu kenttä',
         }),
     })
@@ -403,11 +407,13 @@ const RecipeDurationSchema = new Schema<IRecipeDuration>(
     hours: {
       type: Number,
       required: true,
+      min: 0,
+      max: 99,
     },
     minutes: {
       type: Number,
       required: true,
-      min: 1,
+      min: 0,
       max: 59,
     },
   },

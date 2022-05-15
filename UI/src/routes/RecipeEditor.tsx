@@ -327,7 +327,7 @@ const RecipeEditor = () => {
                     <TagButton
                       text={tag.name}
                       color={tag.color}
-                      selected={tagSelection.includes(tag)}
+                      selected={Boolean(tagSelection.find(t => t.name === tag.name))}
                       onClick={() =>
                         tagSelection.includes(tag)
                           ? setTagSelection(tagSelection.filter(t => t.name !== tag.name))
@@ -862,6 +862,25 @@ const RecipeEditor = () => {
               }}
             >
               Avaa resepti
+            </Button>
+          )}
+          {error && (
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() => {
+                navigate('/recipeEditor');
+                dispatch(recipeActions.clearError());
+              }}
+              sx={{
+                width: '200px',
+                fontSize: 20,
+                paddingX: 3,
+                textTransform: 'none',
+                borderRadius: 25,
+              }}
+            >
+              Muokkaa
             </Button>
           )}
           <Button
