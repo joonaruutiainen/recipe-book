@@ -30,10 +30,6 @@ const Register = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    nameInput.current?.focus();
-  }, []);
-
   // catch error from store, make a notification and clear the error from store
   useEffect(() => {
     if (error) {
@@ -125,6 +121,7 @@ const Register = () => {
               error={missingName}
               fullWidth
               color='secondary'
+              autoFocus
               onChange={e => {
                 if (missingName) setMissingName(false);
                 setName(e.target.value);

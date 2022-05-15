@@ -1,21 +1,21 @@
-interface RecipeDuration {
+export interface RecipeDuration {
   hours: number;
   minutes: number;
 }
 
-interface RecipeTag {
+export interface RecipeTag {
   name: string;
   color: string;
 }
 
-interface RecipeIngredient {
+export interface RecipeIngredient {
   quantity?: number;
   unit?: string;
   description: string;
   subtitle?: string;
 }
 
-interface RecipeStep {
+export interface RecipeStep {
   index: number;
   title: string;
   description: string;
@@ -73,5 +73,19 @@ export interface Recipe {
   /**
    * The ID of the user who created the recipe.
    */
+  userId: string;
+}
+
+export interface RecipeEditorData {
+  id?: string;
+  title: string;
+  description: string;
+  duration: RecipeDuration;
+  tags?: RecipeTag[];
+  portionSize: number;
+  subtitles?: string[];
+  ingredients: RecipeIngredient[];
+  pages: number;
+  instructions: RecipeStep[];
   userId: string;
 }

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Recipe } from '../../types';
+import { Recipe, RecipeEditorData } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { recipeService } from '../../services';
 import type { RootState } from '../store';
@@ -16,6 +16,8 @@ export interface RecipesState {
   selection: Recipe[];
   selectionFilter: SelectionFilter;
   selected: Recipe | null;
+  recipeEditorData: RecipeEditorData | null;
+  newRecipe: Recipe | null;
   loadingMany: boolean;
   loadingOne: boolean;
   error: ApplicationError | null;
@@ -26,6 +28,8 @@ const initialState: RecipesState = {
   selection: [],
   selectionFilter: SelectionFilter.public,
   selected: null,
+  recipeEditorData: null,
+  newRecipe: null,
   loadingMany: false,
   loadingOne: false,
   error: null,
@@ -83,6 +87,30 @@ const deleteRecipe = createAsyncThunk<string, string, { rejectValue: Application
   }
 );
 
+const addRecipe = createAsyncThunk<Recipe, RecipeEditorData, { rejectValue: ApplicationError }>(
+  `${sliceName}/addRecipe`,
+  async (recipeData: RecipeEditorData, { rejectWithValue }) => {
+    try {
+      const res = await recipeService.addRecipe(recipeData);
+      return res.payload as Recipe;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
+  }
+);
+
+const updateRecipe = createAsyncThunk<Recipe, RecipeEditorData, { rejectValue: ApplicationError }>(
+  `${sliceName}/updateRecipe`,
+  async (recipeData: RecipeEditorData, { rejectWithValue }) => {
+    try {
+      const res = await recipeService.updateRecipe(recipeData);
+      return res.payload as Recipe;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
+  }
+);
+
 const RecipesSlice = createSlice({
   name: sliceName,
   initialState,
@@ -101,6 +129,12 @@ const RecipesSlice = createSlice({
     },
     clearSelectedRecipe(state) {
       state.selected = null;
+    },
+    clearRecipeEditorData(state) {
+      state.recipeEditorData = null;
+    },
+    clearNewRecipe(state) {
+      state.newRecipe = null;
     },
     clearError(state) {
       state.error = null;
@@ -178,6 +212,47 @@ const RecipesSlice = createSlice({
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
+    builder.addCase(addRecipe.pending, (state, action) => {
+      state.loadingOne = true;
+      state.recipeEditorData = action.meta.arg;
+    });
+    builder.addCase(addRecipe.fulfilled, (state, action) => {
+      state.loadingOne = false;
+      state.recipeEditorData = null;
+      state.newRecipe = action.payload;
+      state.selected = null;
+      state.all = state.all.concat([action.payload]);
+      state.error = null;
+    });
+    builder.addCase(addRecipe.rejected, (state, action) => {
+      state.loadingOne = false;
+      if (action.payload) {
+        state.error = action.payload;
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
+    builder.addCase(updateRecipe.pending, (state, action) => {
+      state.loadingOne = true;
+      state.recipeEditorData = action.meta.arg;
+    });
+    builder.addCase(updateRecipe.fulfilled, (state, action) => {
+      state.loadingOne = false;
+      state.recipeEditorData = null;
+      state.newRecipe = action.payload;
+      state.selected = null;
+      state.all = state.all.map(recipe => (recipe.id === action.payload.id ? action.payload : recipe));
+      state.selection = state.selection.map(recipe => (recipe.id === action.payload.id ? action.payload : recipe));
+      state.error = null;
+    });
+    builder.addCase(updateRecipe.rejected, (state, action) => {
+      state.loadingOne = false;
+      if (action.payload) {
+        state.error = action.payload;
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
     builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
   },
 });
@@ -186,6 +261,8 @@ export const recipeActions = {
   getRecipes,
   getRecipe,
   deleteRecipe,
+  addRecipe,
+  updateRecipe,
   ...RecipesSlice.actions,
 };
 

@@ -22,10 +22,6 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    identifierInput.current?.focus();
-  }, []);
-
   // catch error from store, make a notification and clear the error from store
   useEffect(() => {
     if (error) {
@@ -122,6 +118,7 @@ const Login = () => {
               error={missingIdentifier}
               fullWidth
               color='secondary'
+              autoFocus
               onChange={e => {
                 if (missingIdentifier) setMissingIdentifier(false);
                 setIdentifier(e.target.value);

@@ -50,15 +50,15 @@ const LandingPage = () => {
             <Stack direction='column' justifyContent='center' spacing={2}>
               <Stack direction='row' spacing={2} alignItems='center'>
                 <DoneIcon color='secondary' />
-                <Typography variant='h6'>Tallenna reseptejä valmiin pohjan avulla</Typography>
+                <Typography variant='body1'>Tallenna reseptejä valmiin pohjan avulla</Typography>
               </Stack>
               <Stack direction='row' spacing={2} alignItems='center'>
                 <DoneIcon color='secondary' />
-                <Typography variant='h6'>Luo oma reseptikokoelmasi</Typography>
+                <Typography variant='body1'>Luo oma reseptikokoelmasi</Typography>
               </Stack>
               <Stack direction='row' spacing={2} alignItems='center'>
                 <DoneIcon color='secondary' />
-                <Typography variant='h6'>Selaa muiden käyttäjien julkaisemia reseptejä</Typography>
+                <Typography variant='body1'>Selaa muiden käyttäjien julkaisemia reseptejä</Typography>
               </Stack>
             </Stack>
           </Box>
@@ -94,8 +94,8 @@ const LandingPage = () => {
               />
               <Stack direction='column' justifyContent='center' alignItems='center' spacing={3}>
                 <Stack direction='column' justifyContent='center' alignItems='center'>
-                  <Typography variant='h6'>Mitäs sitä tänään söisi?</Typography>
-                  <Typography variant='h6'>Tutustu reseptikirjan valikoimaan!</Typography>
+                  <Typography variant='body1'>Mitäs sitä tänään söisi?</Typography>
+                  <Typography variant='body1'>Tutustu reseptikirjan valikoimaan!</Typography>
                 </Stack>
                 <Button
                   variant='contained'
@@ -125,8 +125,8 @@ const LandingPage = () => {
               </Box>
               <Stack direction='column' justifyContent='center' alignItems='center' spacing={3}>
                 <Stack direction='column' justifyContent='center' alignItems='center'>
-                  <Typography variant='h6'>Lisää omia reseptejäsi ja aloita </Typography>
-                  <Typography variant='h6'>kokoelmasi kasvattaminen!</Typography>
+                  <Typography variant='body1'>Lisää omia reseptejäsi ja aloita </Typography>
+                  <Typography variant='body1'>kokoelmasi kasvattaminen!</Typography>
                 </Stack>
                 <Button
                   variant='contained'

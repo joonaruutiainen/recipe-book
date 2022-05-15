@@ -46,8 +46,20 @@ const theme = createTheme({
       color: '#39352C',
     },
     h6: {
+      fontFamily: 'Segoe UI',
+      fontSize: 24,
+      fontWeight: 'lighter',
+      color: '#39352C',
+    },
+    body1: {
       fontFamily: 'Helvetica',
       fontSize: 20,
+      color: '#39352C',
+    },
+    subtitle1: {
+      fontFamily: 'Segoe UI',
+      fontSize: 15,
+      fontWeight: 'lighter',
       color: '#39352C',
     },
     button: {

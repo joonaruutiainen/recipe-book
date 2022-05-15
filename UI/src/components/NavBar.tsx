@@ -5,10 +5,12 @@ import Logo from '../img/logo.png';
 import UserIcon from '../img/user.png';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
+import { recipeActions } from '../redux/slices/recipesSlice';
 import { userActions } from '../redux/slices/usersSlice';
 
 const NavBar = () => {
   const { user } = useAppSelector(state => state.auth);
+  const { selected, newRecipe, recipeEditorData, error } = useAppSelector(state => state.recipes);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -27,7 +29,13 @@ const NavBar = () => {
       <Toolbar disableGutters>
         <Box
           sx={{ ml: 5, display: 'flex', justifyContent: 'center', '&:hover': { cursor: 'pointer' } }}
-          onClick={() => navigate('/')}
+          onClick={() => {
+            if (selected) dispatch(recipeActions.clearSelectedRecipe());
+            if (newRecipe) dispatch(recipeActions.clearNewRecipe());
+            if (recipeEditorData) dispatch(recipeActions.clearRecipeEditorData());
+            if (error) dispatch(recipeActions.clearError());
+            navigate('/');
+          }}
         >
           <img src={Logo} alt='' height='80px' />
         </Box>
@@ -103,7 +111,7 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={closeUserMenu}
             >
-              <Typography variant='h6' color='secondary' minWidth={100}>
+              <Typography variant='body1' color='secondary' minWidth={100}>
                 {user.name}
               </Typography>
               <MenuItem

@@ -26,13 +26,21 @@ const Recipe = () => {
   }, [dispatch, recipe, error]);
 
   const recipeDescriptionColumn = recipe ? (
-    <Stack direction='column' justifyContent='flex-start' spacing={2} width='95%' maxWidth='720px' marginRight={5}>
+    <Stack
+      direction='column'
+      justifyContent='flex-start'
+      spacing={2}
+      width='95%'
+      maxWidth='720px'
+      marginRight={5}
+      paddingBottom={5}
+    >
       <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
       <Typography variant='h1'>{recipe.title}</Typography>
       <Stack direction='row' justifyContent='space-between' width='100%'>
         <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1}>
           <AccessTimeIcon />
-          <Typography variant='h6'>
+          <Typography variant='body1'>
             {recipe.duration.hours > 0
               ? `${recipe.duration.hours}h ${recipe.duration.minutes}min valmistusaika`
               : `${recipe.duration.minutes}min valmistusaika`}
@@ -50,7 +58,7 @@ const Recipe = () => {
           <TagButton key={tag.name} text={tag.name} color={tag.color} />
         ))}
       </Stack>
-      <Typography variant='h6' align='justify'>
+      <Typography variant='body1' align='justify'>
         {recipe.description}
       </Typography>
       <Stack direction='row' justifyContent='space-between' width='100%'>
@@ -79,7 +87,7 @@ const Recipe = () => {
           />
         </Stack>
       </Stack>
-      <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4} paddingBottom={5}>
+      <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
         {recipe.subtitles &&
           recipe.subtitles?.map(st => (
             <Stack
@@ -89,7 +97,7 @@ const Recipe = () => {
               divider={<Divider orientation='horizontal' flexItem />}
               spacing={1}
             >
-              <Typography variant='h6'>{st}</Typography>
+              <Typography variant='body1'>{st}</Typography>
               <Stack direction='column' justifyContent='flex-start' width='100%' spacing={1}>
                 {recipe.ingredients
                   .filter(i => i.subtitle === st)
@@ -97,13 +105,13 @@ const Recipe = () => {
                     <Stack key={i.description} direction='row' justifyContent='flex-end'>
                       <div style={{ width: '20%' }}>
                         {i.quantity && i.unit && (
-                          <Typography variant='h6'>
+                          <Typography variant='body1'>
                             {i.quantity} {i.unit}
                           </Typography>
                         )}
                       </div>
                       <div style={{ width: '50%' }}>
-                        <Typography variant='h6'>{i.description}</Typography>
+                        <Typography variant='body1'>{i.description}</Typography>
                       </div>
                     </Stack>
                   ))}
@@ -114,11 +122,11 @@ const Recipe = () => {
           recipe.ingredients.map(i => (
             <div>
               {i.quantity && i.unit && (
-                <Typography variant='h6'>
+                <Typography variant='body1'>
                   {i.quantity} {i.unit}
                 </Typography>
               )}
-              <Typography variant='h6'>{i.description}</Typography>
+              <Typography variant='body1'>{i.description}</Typography>
             </div>
           ))}
       </Stack>
@@ -176,7 +184,7 @@ const Recipe = () => {
                 </Typography>
                 <Typography variant='h3'>{step.title}</Typography>
               </Stack>
-              <Typography variant='h6' align='justify'>
+              <Typography variant='body1' align='justify'>
                 {step.description}
               </Typography>
             </Stack>
@@ -244,6 +252,7 @@ const Recipe = () => {
           variant='contained'
           size='small'
           color='secondary'
+          onClick={() => navigate('/recipeEditor')}
           sx={{
             width: '150px',
             fontSize: 20,
@@ -265,7 +274,7 @@ const Recipe = () => {
     <div style={{ width: '100%', height: '100%', paddingTop: '40px' }}>
       {(error || recipeDeleted) && (
         <Stack direction='column' justifyContent='center' alignItems='center' spacing={2}>
-          <Typography variant='h6'>{error?.message || 'Resepti poistettu onnistuneesti'}</Typography>
+          <Typography variant='body1'>{error?.message || 'Resepti poistettu onnistuneesti'}</Typography>
           <Button
             variant='contained'
             color='secondary'
