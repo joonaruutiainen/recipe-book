@@ -69,7 +69,7 @@ const recipeRightsRequired = async (req: Request, res: Response, next: NextFunct
     const recipe = await validateRecipeId(req);
     if (recipe?.public) return next();
     const user = await authenticateUser(req);
-    if (user?.id === recipe?.userId || user?.admin) return next();
+    if (user?.id === recipe?.user.id || user?.admin) return next();
     return makeResponse.error(res, new APIError('Recipe rights required', 403));
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);

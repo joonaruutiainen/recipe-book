@@ -6,14 +6,13 @@ import type { RootState } from '../store';
 import { authActions } from './authSlice';
 
 export enum SelectionFilter {
-  public = 'public',
+  all = 'all',
   myRecipes = 'myRecipes',
   favorites = 'favorites',
 }
 
 export interface RecipesState {
   all: Recipe[];
-  selection: Recipe[];
   selectionFilter: SelectionFilter;
   selected: Recipe | null;
   recipeEditorData: RecipeEditorData | null;
@@ -25,8 +24,7 @@ export interface RecipesState {
 
 const initialState: RecipesState = {
   all: [],
-  selection: [],
-  selectionFilter: SelectionFilter.public,
+  selectionFilter: SelectionFilter.all,
   selected: null,
   recipeEditorData: null,
   newRecipe: null,
@@ -115,9 +113,8 @@ const RecipesSlice = createSlice({
   name: sliceName,
   initialState,
   reducers: {
-    setSelection(state, action: PayloadAction<SelectionFilter>) {
+    setSelectionFilter(state, action: PayloadAction<SelectionFilter>) {
       state.selectionFilter = action.payload;
-      state.selection = state.all.filter(recipe => (action.payload === 'public' ? recipe.public : recipe));
     },
     selectRecipe(state, action: PayloadAction<string>) {
       const selected = state.all.find(recipe => recipe.id === action.payload);
@@ -147,8 +144,7 @@ const RecipesSlice = createSlice({
     builder.addCase(getRecipes.fulfilled, (state, action) => {
       state.loadingMany = false;
       state.all = action.payload;
-      state.selection = action.payload.filter(recipe => recipe.public);
-      state.selectionFilter = SelectionFilter.public;
+      state.selectionFilter = SelectionFilter.all;
       state.error = null;
     });
     builder.addCase(getRecipes.rejected, (state, action) => {
@@ -201,7 +197,6 @@ const RecipesSlice = createSlice({
       state.loadingOne = false;
       state.selected = null;
       state.all = state.all.filter(recipe => recipe.id !== action.payload);
-      state.selection = state.selection.filter(recipe => recipe.id !== action.payload);
       state.error = null;
     });
     builder.addCase(deleteRecipe.rejected, (state, action) => {
@@ -242,7 +237,6 @@ const RecipesSlice = createSlice({
       state.newRecipe = action.payload;
       state.selected = null;
       state.all = state.all.map(recipe => (recipe.id === action.payload.id ? action.payload : recipe));
-      state.selection = state.selection.map(recipe => (recipe.id === action.payload.id ? action.payload : recipe));
       state.error = null;
     });
     builder.addCase(updateRecipe.rejected, (state, action) => {

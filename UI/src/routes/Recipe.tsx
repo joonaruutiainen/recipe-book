@@ -38,13 +38,11 @@ const Recipe = () => {
       <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
       <Typography variant='h1'>{recipe.title}</Typography>
       <Stack direction='row' justifyContent='space-between' width='100%'>
-        <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1}>
+        <Stack direction='row' alignItems='center' spacing={1}>
           <AccessTimeIcon />
-          <Typography variant='body1'>
-            {recipe.duration.hours > 0
-              ? `${recipe.duration.hours}h ${recipe.duration.minutes}min valmistusaika`
-              : `${recipe.duration.minutes}min valmistusaika`}
-          </Typography>
+          {recipe.duration.hours > 0 && <Typography variant='body1'>{recipe.duration.hours}h</Typography>}
+          {recipe.duration.minutes > 0 && <Typography variant='body1'>{recipe.duration.minutes}min</Typography>}
+          <Typography variant='body1'>valmistusaika</Typography>
         </Stack>
         <Button startIcon={<StarIcon />} sx={{ fontSize: 20, textTransform: 'none' }}>
           Lisää suosikkilistalle
@@ -61,6 +59,12 @@ const Recipe = () => {
       <Typography variant='body1' align='justify'>
         {recipe.description}
       </Typography>
+      <Stack direction='row' spacing={1}>
+        <Typography variant='subtitle2'>Reseptin on lisännyt:</Typography>
+        <Typography variant='subtitle2' fontWeight='bold'>
+          {recipe.user.name}
+        </Typography>
+      </Stack>
       <Stack direction='row' justifyContent='space-between' width='100%'>
         <Typography variant='h4'>Ainesosat</Typography>
         <Stack direction='row' justifyContent='space-between' alignItems='center' width='200px'>
@@ -89,6 +93,7 @@ const Recipe = () => {
       </Stack>
       <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
         {recipe.subtitles &&
+          recipe.subtitles.length > 0 &&
           recipe.subtitles?.map(st => (
             <Stack
               key={st}
@@ -103,32 +108,39 @@ const Recipe = () => {
                   .filter(i => i.subtitle === st)
                   .map(i => (
                     <Stack key={i.description} direction='row' justifyContent='flex-end'>
-                      <div style={{ width: '20%' }}>
+                      <Box sx={{ width: '20%' }}>
                         {i.quantity && i.unit && (
                           <Typography variant='body1'>
                             {i.quantity} {i.unit}
                           </Typography>
                         )}
-                      </div>
-                      <div style={{ width: '50%' }}>
+                      </Box>
+                      <Box sx={{ width: '50%' }}>
                         <Typography variant='body1'>{i.description}</Typography>
-                      </div>
+                      </Box>
                     </Stack>
                   ))}
               </Stack>
             </Stack>
           ))}
-        {!recipe.subtitles &&
-          recipe.ingredients.map(i => (
-            <div>
-              {i.quantity && i.unit && (
-                <Typography variant='body1'>
-                  {i.quantity} {i.unit}
-                </Typography>
-              )}
-              <Typography variant='body1'>{i.description}</Typography>
-            </div>
-          ))}
+        {!(recipe.subtitles && recipe.subtitles.length > 0) && (
+          <Stack direction='column' spacing={1} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
+            {recipe.ingredients.map(i => (
+              <Stack key={i.description} direction='row' justifyContent='flex-end' width='100%'>
+                <Box sx={{ width: '20%' }}>
+                  {i.quantity && i.unit && (
+                    <Typography variant='body1'>
+                      {i.quantity} {i.unit}
+                    </Typography>
+                  )}
+                </Box>
+                <Box sx={{ width: '50%' }}>
+                  <Typography variant='body1'>{i.description}</Typography>
+                </Box>
+              </Stack>
+            ))}
+          </Stack>
+        )}
       </Stack>
     </Stack>
   ) : (
@@ -221,7 +233,7 @@ const Recipe = () => {
   );
 
   const rightColumn =
-    user?.admin || user?.id === recipe?.userId ? (
+    user?.admin || user?.id === recipe?.user.id ? (
       <Stack
         direction='column'
         justifyContent='flex-start'

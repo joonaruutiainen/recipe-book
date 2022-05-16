@@ -106,7 +106,10 @@ const RecipeEditor = () => {
         ingredients,
         instructions,
         pages: 1,
-        userId: user.id,
+        user: {
+          id: user.id,
+          name: user.name,
+        },
       };
       dispatch(
         recipe ? recipeActions.updateRecipe({ id: recipe.id, ...recipeData }) : recipeActions.addRecipe(recipeData)

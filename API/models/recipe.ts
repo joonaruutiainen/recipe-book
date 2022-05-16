@@ -1,6 +1,14 @@
 import { Schema, model } from 'mongoose';
 import Joi, { ValidationError as JoiValidationError, ValidationErrorItem as JoiValidationErrorItem } from 'joi';
-import { IRecipe, IRecipeDuration, IRecipeIngredient, IRecipeStep, IRecipeTag, RecipeModel } from './types';
+import {
+  IRecipe,
+  IRecipeDuration,
+  IRecipeIngredient,
+  IRecipeStep,
+  IRecipeTag,
+  IRecipeUser,
+  RecipeModel,
+} from './types';
 import APIValidationError from './apiValidationError';
 import APIError from './apiError';
 
@@ -41,6 +49,17 @@ const schemaDefaults = {
 };
 
 const inputSchema = {
+  image: Joi.string()
+    .trim()
+    .normalize()
+    // .messages({
+    //   'string.base': 'image must be a string',
+    //   'string.empty': 'image is not allowed to be an empty string',
+    // }),
+    .messages({
+      'string.base': 'Kuvatunnisteen täytyy olla merkkijono',
+      'string.empty': 'Kuvatunniste ei voi olla tyhjä merkkijono',
+    }),
   title: Joi.string()
     .required()
     .trim()
@@ -388,17 +407,41 @@ const inputSchema = {
       'array.min': 'Valmistusvaiheita täytyye olla vähintään 1',
       'any.required': 'Valmistusvaiheet on vaadittu kenttä',
     }),
-  userId: Joi.string()
+  user: Joi.object()
+    .keys({
+      id: Joi.string()
+        .required()
+        // .messages({
+        //   'string.base': 'user.id must be a string (mongoose objectId)',
+        //   'string.empty': 'user.id is not allowed to be an empty string',
+        //   'any.required': 'user.id is required',
+        // }),
+        .messages({
+          'string.base': 'KäyttäjäID:n täytyy olla merkkijono',
+          'string.empty': 'KäyttäjäID ei voi olla tyhjä merkkijono',
+          'any.required': 'KäyttäjäID on vaadittu kenttä',
+        }),
+      name: Joi.string()
+        .required()
+        // .messages({
+        //   'string.base': 'user.name must be a string (mongoose objectId)',
+        //   'string.empty': 'user.name is not allowed to be an empty string',
+        //   'any.required': 'user.name is required',
+        // }),
+        .messages({
+          'string.base': 'Käyttäjätunnuksen täytyy olla merkkijono',
+          'string.empty': 'Käyttäjätunnus ei voi olla tyhjä merkkijono',
+          'any.required': 'Käyttäjätunnus on vaadittu kenttä',
+        }),
+    })
     .required()
     // .messages({
-    //   'string.base': 'userId must be a string (mongoose objectId)',
-    //   'string.empty': 'userId is not allowed to be an empty string',
-    //   'any.required': 'userId is required',
-    // }),
+    //   'object.base': 'user must be given as an object',
+    //   'any.required': 'user is required',
+    // })
     .messages({
-      'string.base': 'KäyttäjäID:n täytyy olla merkkijono',
-      'string.empty': 'KäyttäjäID ei voi olla tyhjä merkkijono',
-      'any.required': 'KäyttäjäID on vaadittu kenttä',
+      'object.base': 'Käyttäjän täytyy olla objekti',
+      'any.required': 'Käyttäjä on vaadittu kenttä',
     }),
 };
 
@@ -522,8 +565,37 @@ const RecipeStepSchema = new Schema<IRecipeStep>(
   }
 );
 
+const RecipeUserSchema = new Schema<IRecipeUser>(
+  {
+    id: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    toJSON: {
+      versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...user } = ret;
+        return user;
+      },
+    },
+  }
+);
+
 const RecipeSchema = new Schema<IRecipe>(
   {
+    image: {
+      type: String,
+      trim: true,
+    },
     title: {
       type: String,
       required: true,
@@ -572,8 +644,8 @@ const RecipeSchema = new Schema<IRecipe>(
       type: Boolean,
       default: false,
     },
-    userId: {
-      type: String,
+    user: {
+      type: RecipeUserSchema,
       required: true,
     },
   },

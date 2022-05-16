@@ -62,6 +62,12 @@ const theme = createTheme({
       fontWeight: 'lighter',
       color: '#39352C',
     },
+    subtitle2: {
+      fontFamily: 'Helvetica',
+      fontSize: 16,
+      fontStyle: 'italic',
+      color: '#39352C',
+    },
     button: {
       fontSize: 20,
     },

@@ -13,8 +13,10 @@ export interface UsersState {
   error: ApplicationError | null;
 }
 
+const currentUser: User | undefined = JSON.parse(localStorage.getItem('user')!);
+
 const initialState: UsersState = {
-  all: [],
+  all: currentUser ? [currentUser] : [],
   selected: null,
   userUpdated: false,
   loading: false,

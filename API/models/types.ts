@@ -52,7 +52,13 @@ export interface IRecipeStep {
   pageNumber: number;
 }
 
+export interface IRecipeUser {
+  id: string;
+  name: string;
+}
+
 export interface IRecipe {
+  image?: string;
   title: string;
   description: string;
   duration: IRecipeDuration;
@@ -63,7 +69,7 @@ export interface IRecipe {
   pages: number;
   instructions: Array<IRecipeStep>;
   public: boolean;
-  userId: string;
+  user: IRecipeUser;
 }
 
 export interface RecipeModel extends Model<IRecipe> {
