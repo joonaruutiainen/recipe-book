@@ -85,7 +85,7 @@ const NavBar = () => {
               alignItems: 'center',
             }}
           >
-            <Tooltip title='Open user settings' enterDelay={1000}>
+            <Tooltip title='Avaa käyttäjävalikko' enterDelay={1000}>
               <IconButton onClick={openUserMenu} sx={{ p: 0 }}>
                 <img
                   src={UserIcon}
