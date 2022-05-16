@@ -175,7 +175,7 @@ const Login = () => {
               height: '100px',
             }}
           >
-            <Typography variant='h6'>Oletko uusi käyttäjä?</Typography>
+            <Typography variant='body1'>Oletko uusi käyttäjä?</Typography>
             <Button
               color='secondary'
               onClick={() => navigate('/register')}

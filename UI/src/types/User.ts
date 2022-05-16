@@ -16,3 +16,9 @@ export interface User {
    */
   admin: boolean;
 }
+
+export interface UserEditorData {
+  id: string;
+  name?: string;
+  email?: string;
+}

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User, LoginData, RegistrationData } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { authService } from '../../services';
@@ -98,6 +98,9 @@ const AuthSlice = createSlice({
     },
     clearError(state) {
       state.error = null;
+    },
+    updateCurrentUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
     },
   },
   extraReducers: builder => {

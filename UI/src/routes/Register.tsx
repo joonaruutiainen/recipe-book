@@ -215,7 +215,7 @@ const Register = () => {
               height: '100px',
             }}
           >
-            <Typography variant='h6'>Onko sinulla jo käyttäjätunnus?</Typography>
+            <Typography variant='body1'>Onko sinulla jo käyttäjätunnus?</Typography>
             <Button
               color='secondary'
               onClick={() => navigate('/login')}

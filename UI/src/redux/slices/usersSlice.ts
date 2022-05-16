@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, SerializedError, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { User, UserEditorData } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { userService } from '../../services';
 import type { RootState } from '../store';
@@ -8,13 +8,15 @@ import { authActions } from './authSlice';
 export interface UsersState {
   all: User[];
   selected: User | null;
+  userUpdated: boolean;
   loading: boolean;
-  error: ApplicationError | SerializedError | null;
+  error: ApplicationError | null;
 }
 
 const initialState: UsersState = {
   all: [],
   selected: null,
+  userUpdated: false,
   loading: false,
   error: null,
 };
@@ -59,6 +61,18 @@ const getUser = createAsyncThunk<User, string, { rejectValue: ApplicationError }
   }
 );
 
+const updateUser = createAsyncThunk<User, UserEditorData, { rejectValue: ApplicationError }>(
+  `${sliceName}/updateUser`,
+  async (userData: UserEditorData, { rejectWithValue }) => {
+    try {
+      const res = await userService.updateUser(userData);
+      return res.payload as User;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
+  }
+);
+
 const UsersSlice = createSlice({
   name: sliceName,
   initialState,
@@ -73,6 +87,12 @@ const UsersSlice = createSlice({
     },
     clearSelectedUser(state) {
       state.selected = null;
+    },
+    clearUserUpdated(state) {
+      state.userUpdated = false;
+    },
+    clearError(state) {
+      state.error = null;
     },
   },
   extraReducers: builder => {
@@ -89,7 +109,7 @@ const UsersSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
     builder.addCase(getUser.pending, state => {
@@ -105,8 +125,28 @@ const UsersSlice = createSlice({
       if (action.payload) {
         state.error = action.payload;
       } else {
-        state.error = action.error;
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
+    });
+    builder.addCase(updateUser.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.selected = action.payload;
+      state.userUpdated = true;
+      state.error = null;
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
+      state.loading = false;
+      if (action.payload) {
+        state.error = action.payload;
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
+    builder.addCase(authActions.loginUser.fulfilled, (state, action) => {
+      state.all = [action.payload];
     });
     builder.addCase(authActions.logoutUser.fulfilled, () => initialState);
   },
@@ -115,6 +155,7 @@ const UsersSlice = createSlice({
 export const userActions = {
   getUsers,
   getUser,
+  updateUser,
   ...UsersSlice.actions,
 };
 
