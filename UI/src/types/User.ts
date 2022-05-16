@@ -21,4 +21,6 @@ export interface UserEditorData {
   id: string;
   name?: string;
   email?: string;
+  password?: string;
+  newPassword?: string;
 }

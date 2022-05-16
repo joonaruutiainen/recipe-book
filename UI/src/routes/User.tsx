@@ -14,12 +14,19 @@ const User = () => {
   const { selected: user, userUpdated, loading, error } = useAppSelector(state => state.users);
 
   const [editingUser, setEditingUser] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
 
   const [name, setName] = useState<string>('');
   const [missingName, setMissingName] = useState<boolean>(false);
 
   const [email, setEmail] = useState<string>('');
   const [missingEmail, setMissingEmail] = useState<boolean>(false);
+
+  const [password, setPassword] = useState<string>('');
+  const [missingPassword, setMissingPassword] = useState(false);
+
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [missingNewPassword, setMissingNewPassword] = useState(false);
 
   const [notification, setNotification] = useState<React.ReactNode | null>(null);
 
@@ -49,22 +56,39 @@ const User = () => {
 
   useEffect(() => {
     if (userUpdated && user) {
-      setEditingUser(false);
-      setNotification(
-        <Notification
-          message='Käyttäjätiedot päivitetty'
-          color='green'
-          onClose={() => {
-            setNotification(null);
-          }}
-        />
-      );
+      if (editingUser) {
+        setEditingUser(false);
+        setNotification(
+          <Notification
+            message='Käyttäjätiedot päivitetty'
+            color='green'
+            onClose={() => {
+              setNotification(null);
+            }}
+          />
+        );
+      }
+      if (changePassword) {
+        setChangePassword(false);
+        setPassword('');
+        setNewPassword('');
+        setNotification(
+          <Notification
+            message='Salasana vaihdettu'
+            color='green'
+            onClose={() => {
+              setNotification(null);
+            }}
+          />
+        );
+      }
       dispatch(userActions.clearUserUpdated());
       dispatch(authActions.updateCurrentUser(user));
     }
   }, [dispatch, userUpdated, user]);
 
   const submitUpdate = () => {
+    if (notification) setNotification(null);
     if (!name) setMissingName(true);
     if (!email) setMissingEmail(true);
     if (name === user?.name && email === user?.email) setEditingUser(false);
@@ -74,6 +98,20 @@ const User = () => {
           id: user.id,
           name: name !== user.name ? name : undefined,
           email: email !== user.email ? email : undefined,
+        })
+      );
+  };
+
+  const submitChangePassword = () => {
+    if (notification) setNotification(null);
+    if (!password) setMissingPassword(true);
+    if (!newPassword) setMissingNewPassword(true);
+    if (user && password && newPassword)
+      dispatch(
+        userActions.updateUser({
+          id: user.id,
+          password,
+          newPassword,
         })
       );
   };
@@ -93,16 +131,18 @@ const User = () => {
               justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
-              height: '100px',
+              height: '130px',
             }}
           >
             {notification}
           </Box>
           {!editingUser && (
-            <Stack direction='column' alignItems='flex-end' spacing={2} width='100%'>
+            <Stack direction='column' justifyContent='center' alignItems='flex-end' spacing={2} width='100%'>
               <Stack direction='row' justifyContent='flex-end' spacing={5} width='100%'>
                 <Box sx={{ width: '40%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                  <Typography variant='body1'>Käyttäjätunnus:</Typography>
+                  <Typography variant='body1' color='secondary'>
+                    Käyttäjätunnus:
+                  </Typography>
                 </Box>
                 <Typography variant='body1' sx={{ width: '50%' }}>
                   {user.name}
@@ -110,7 +150,9 @@ const User = () => {
               </Stack>
               <Stack direction='row' justifyContent='flex-end' spacing={5} width='100%'>
                 <Box sx={{ width: '40%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                  <Typography variant='body1'>Sähköposti:</Typography>
+                  <Typography variant='body1' color='secondary'>
+                    Sähköposti:
+                  </Typography>
                 </Box>
                 <Typography variant='body1' sx={{ width: '50%' }}>
                   {user.email}
@@ -122,6 +164,7 @@ const User = () => {
                 onClick={() => {
                   setName(user.name);
                   setEmail(user.email);
+                  if (changePassword) setChangePassword(false);
                   setEditingUser(true);
                 }}
                 sx={{
@@ -136,14 +179,13 @@ const User = () => {
             </Stack>
           )}
           {editingUser && (
-            <Stack direction='column' spacing={2} width='100%'>
+            <Stack direction='column' justifyContent='center' spacing={2} width='100%'>
               <TextField
                 label='Käyttäjätunnus'
                 value={name}
                 error={missingName}
                 fullWidth
                 color='secondary'
-                autoFocus
                 onChange={e => {
                   if (missingName) setMissingName(false);
                   setName(e.target.value);
@@ -190,28 +232,85 @@ const User = () => {
               </Stack>
             </Stack>
           )}
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              height: '100px',
-            }}
-          >
-            <Button
-              startIcon={<KeyIcon color='primary' />}
+          {!changePassword && (
+            <Box
               sx={{
-                fontSize: 20,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '200px',
               }}
             >
-              Vaihda salasana
-            </Button>
-          </Box>
+              <Button
+                startIcon={<KeyIcon color='primary' />}
+                onClick={() => {
+                  if (editingUser) setEditingUser(false);
+                  setChangePassword(true);
+                }}
+                sx={{
+                  fontSize: 20,
+                  paddingX: 3,
+                  textTransform: 'none',
+                  borderRadius: 25,
+                }}
+              >
+                Vaihda salasana
+              </Button>
+            </Box>
+          )}
+          {changePassword && (
+            <Stack direction='column' alignItems='center' spacing={2} width='100%' height='200px'>
+              <TextField
+                label='Vanha salasana'
+                type='password'
+                value={password}
+                error={missingPassword}
+                fullWidth
+                autoFocus
+                color='secondary'
+                onChange={e => setPassword(e.target.value)}
+              />
+              <TextField
+                label='Uusi salasana'
+                type='password'
+                value={newPassword}
+                error={missingNewPassword}
+                fullWidth
+                color='secondary'
+                onChange={e => setNewPassword(e.target.value)}
+              />
+              <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
+                <Button
+                  endIcon={<CloseIcon color='primary' />}
+                  size='small'
+                  onClick={() => setChangePassword(false)}
+                  sx={{
+                    fontSize: 20,
+                    paddingX: 3,
+                    textTransform: 'none',
+                    borderRadius: 25,
+                  }}
+                >
+                  Peruuta
+                </Button>
+                <Button
+                  endIcon={<DoneIcon color='primary' />}
+                  size='small'
+                  onClick={submitChangePassword}
+                  sx={{
+                    fontSize: 20,
+                    paddingX: 3,
+                    textTransform: 'none',
+                    borderRadius: 25,
+                  }}
+                >
+                  Tallenna
+                </Button>
+              </Stack>
+            </Stack>
+          )}
         </Stack>
       )}
     </CardContainer>

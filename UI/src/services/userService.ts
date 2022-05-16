@@ -20,11 +20,11 @@ const getUser = (userId: string) =>
   });
 
 const updateUser = (userData: UserEditorData) => {
-  const { id, name, email } = userData;
+  const { id, name, email, password, newPassword } = userData;
   return apiService.makeRequest({
     url: `/users/${id}`,
     method: 'put',
-    data: { name, email },
+    data: { name, email, password, newPassword },
   });
 };
 

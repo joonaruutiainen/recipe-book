@@ -227,7 +227,7 @@ UserSchema.statics.validateUserPassword = async function (password: string) {
       return Promise.reject(
         new APIValidationError(
           // 'Invalid user password',
-          'Virheellinen salasana',
+          'Virheellinen uusi salasana',
           400,
           err.details.map((e: JoiValidationErrorItem) => e.message)
         )

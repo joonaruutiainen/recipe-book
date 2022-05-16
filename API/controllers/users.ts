@@ -44,7 +44,7 @@ const getUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const user = await validateUserId(req);
-    const { name, email, password } = req.body;
+    const { name, email, password, newPassword } = req.body;
 
     if (name) {
       await User.validateUserName(user.id, name);
@@ -56,9 +56,10 @@ const updateUser = async (req: Request, res: Response) => {
       user.email = email;
     }
 
-    if (password) {
-      await User.validateUserPassword(password);
-      user.password = password;
+    if (password && newPassword) {
+      await user.verifyPassword(password);
+      await User.validateUserPassword(newPassword);
+      user.password = newPassword;
     }
 
     await user.save();
