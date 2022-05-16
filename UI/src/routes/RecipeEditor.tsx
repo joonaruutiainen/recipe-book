@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   Card,
+  CardMedia,
   Box,
   CircularProgress,
   TextField,
@@ -167,35 +168,59 @@ const RecipeEditor = () => {
   };
 
   const imageFileUpload = (
-    <Stack direction='row' alignItems='center' spacing={2}>
-      <input
-        id='image-file-upload'
-        type='file'
-        accept='image/*'
-        style={{ display: 'none' }}
-        onChange={e => setImage(e.target.files?.[0])}
-      />
-      <label htmlFor='image-file-upload' style={{ width: 'max-content' }}>
-        <Fab component='span'>
-          <AddPhotoAlternateIcon color='primary' />
-        </Fab>
-      </label>
-      <Typography variant='body1'>{image ? image.name : 'Lataa kuva reseptistä'}</Typography>
-      {image && (
-        <Tooltip title='Poista kuva'>
-          <IconButton onClick={() => setImage(undefined)} sx={{ p: '1px' }}>
-            <CloseIcon
-              color='primary'
-              sx={{
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              }}
-            />
-          </IconButton>
-        </Tooltip>
+    <Card
+      sx={{
+        width: '100%',
+        height: !image && !recipe?.image ? '100px' : 'fit-content',
+        maxHeight: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: '7px',
+        backgroundColor: 'white',
+        boxShadow: '2px 2px 5px 2px rgba(57, 53, 44, 0.4)',
+      }}
+    >
+      {recipe?.image && !image && (
+        <CardMedia
+          component='img'
+          image={`http://localhost:8080/api/v1/recipes/${recipe.id}/image`}
+          crossOrigin='use-credentials'
+          sx={{ maxHeight: '75%' }}
+        />
       )}
-    </Stack>
+      {image && <CardMedia component='img' image={URL.createObjectURL(image)} sx={{ maxHeight: '75%' }} />}
+      <Stack direction='row' justifyContent='center' alignItems='center' height='100px' spacing={2}>
+        <input
+          id='image-file-upload'
+          type='file'
+          accept='image/*'
+          style={{ display: 'none' }}
+          onChange={e => setImage(e.target.files?.[0])}
+        />
+        <label htmlFor='image-file-upload' style={{ width: 'max-content' }}>
+          <Fab component='span'>
+            <AddPhotoAlternateIcon color='primary' />
+          </Fab>
+        </label>
+        <Typography variant='body1'>{image ? image.name : 'Lataa kuva reseptistä'}</Typography>
+        {image && (
+          <Tooltip title='Poista kuva'>
+            <IconButton onClick={() => setImage(undefined)} sx={{ p: '1px' }}>
+              <CloseIcon
+                color='primary'
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Stack>
+    </Card>
   );
 
   const titleEditor = (
@@ -616,7 +641,7 @@ const RecipeEditor = () => {
   );
 
   const recipeDescriptionColumn = (
-    <Stack direction='column' spacing={2} width='95%' maxWidth='720px' marginRight={5} paddingBottom={10}>
+    <Stack direction='column' spacing={3} width='95%' maxWidth='720px' marginRight={5} paddingBottom={10}>
       {imageFileUpload}
       {titleEditor}
       {descriptionEditor}
@@ -893,6 +918,7 @@ const RecipeEditor = () => {
               color='secondary'
               onClick={() => {
                 navigate(`/recipes/${newRecipe.id}`);
+                dispatch(recipeActions.selectRecipe(newRecipe.id));
                 dispatch(recipeActions.clearNewRecipe());
               }}
               sx={{
