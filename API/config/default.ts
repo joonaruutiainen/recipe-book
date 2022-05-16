@@ -25,7 +25,8 @@ const defaultConfig: Config = {
   },
   cors: {
     origin: 'http://localhost:3000',
-    allowedHeaders: 'Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, X-XSRF-TOKEN',
+    allowedHeaders:
+      'Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, X-XSRF-TOKEN, Cross-Origin-Resource-Policy',
     credentials: true,
   },
 };

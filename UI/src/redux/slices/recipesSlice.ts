@@ -89,7 +89,9 @@ const addRecipe = createAsyncThunk<Recipe, RecipeEditorData, { rejectValue: Appl
   `${sliceName}/addRecipe`,
   async (recipeData: RecipeEditorData, { rejectWithValue }) => {
     try {
-      const res = await recipeService.addRecipe(recipeData);
+      const { image, ...recipe } = recipeData;
+      let res = await recipeService.addRecipe(recipe);
+      if (image) res = await recipeService.uploadImage(recipeData.id!, image);
       return res.payload as Recipe;
     } catch (err) {
       return rejectWithValue(err as ApplicationError);
@@ -101,7 +103,9 @@ const updateRecipe = createAsyncThunk<Recipe, RecipeEditorData, { rejectValue: A
   `${sliceName}/updateRecipe`,
   async (recipeData: RecipeEditorData, { rejectWithValue }) => {
     try {
-      const res = await recipeService.updateRecipe(recipeData);
+      const { image, ...recipe } = recipeData;
+      let res = await recipeService.updateRecipe(recipe);
+      if (image) res = await recipeService.uploadImage(recipeData.id!, image);
       return res.payload as Recipe;
     } catch (err) {
       return rejectWithValue(err as ApplicationError);

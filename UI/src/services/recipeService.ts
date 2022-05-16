@@ -7,6 +7,7 @@ interface RecipeService {
   deleteRecipe: (recipeId: string) => Promise<APIResponse>;
   addRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse>;
   updateRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse>;
+  uploadImage: (recipeId: string, image: File) => Promise<APIResponse>;
 }
 
 const getRecipes = () =>
@@ -41,12 +42,24 @@ const updateRecipe = (recipeData: RecipeEditorData) =>
     data: recipeData,
   });
 
+const uploadImage = (recipeId: string, image: File) => {
+  const data = new FormData();
+  data.append('image', image);
+  return apiService.makeRequest({
+    url: `/recipes/${recipeId}/uploadImage`,
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data,
+  });
+};
+
 const recipeService: RecipeService = {
   getRecipes,
   getRecipe,
   deleteRecipe,
   addRecipe,
   updateRecipe,
+  uploadImage,
 };
 
 export default recipeService;

@@ -13,7 +13,11 @@ import {
   MenuItem,
   Menu,
   Radio,
+  Fab,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import AddIcon from '@mui/icons-material/Add';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,6 +38,8 @@ const RecipeEditor = () => {
     loadingOne: loading,
     error,
   } = useAppSelector(state => state.recipes);
+
+  const [image, setImage] = useState<File | undefined>(undefined);
 
   const [title, setTitle] = useState<string>(recipe?.title || '');
   const [missingTitle, setMissingTitle] = useState(false);
@@ -97,6 +103,7 @@ const RecipeEditor = () => {
       instructions.length > 0
     ) {
       const recipeData = {
+        image,
         title,
         description,
         duration,
@@ -158,6 +165,38 @@ const RecipeEditor = () => {
   const editInstructionStep = (step: RecipeStep) => {
     setInstructionStep(step);
   };
+
+  const imageFileUpload = (
+    <Stack direction='row' alignItems='center' spacing={2}>
+      <input
+        id='image-file-upload'
+        type='file'
+        accept='image/*'
+        style={{ display: 'none' }}
+        onChange={e => setImage(e.target.files?.[0])}
+      />
+      <label htmlFor='image-file-upload' style={{ width: 'max-content' }}>
+        <Fab component='span'>
+          <AddPhotoAlternateIcon color='primary' />
+        </Fab>
+      </label>
+      <Typography variant='body1'>{image ? image.name : 'Lataa kuva reseptistä'}</Typography>
+      {image && (
+        <Tooltip title='Poista kuva'>
+          <IconButton onClick={() => setImage(undefined)} sx={{ p: '1px' }}>
+            <CloseIcon
+              color='primary'
+              sx={{
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Stack>
+  );
 
   const titleEditor = (
     <Stack direction='column' width='100%'>
@@ -577,8 +616,8 @@ const RecipeEditor = () => {
   );
 
   const recipeDescriptionColumn = (
-    <Stack direction='column' spacing={2} width='95%' maxWidth='720px' marginRight={5} paddingBottom={500}>
-      <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
+    <Stack direction='column' spacing={2} width='95%' maxWidth='720px' marginRight={5} paddingBottom={10}>
+      {imageFileUpload}
       {titleEditor}
       {descriptionEditor}
       <Stack direction='column' width='100%' spacing={3} divider={<Divider orientation='horizontal' flexItem />}>

@@ -33,6 +33,10 @@ export interface Recipe {
    */
   id: string;
   /**
+   * Image ID of the recipe.
+   */
+  image?: string;
+  /**
    * Title of the recipe (1 to 100 characters).
    */
   title: string;
@@ -83,6 +87,7 @@ export interface Recipe {
 
 export interface RecipeEditorData {
   id?: string;
+  image?: File;
   title: string;
   description: string;
   duration: RecipeDuration;

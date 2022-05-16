@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { Error as DBError } from 'mongoose';
+import path from 'path';
 import Recipe from '../models/recipe';
 import APIError from '../models/apiError';
 import makeResponse from '../utils/responseHandler';
 import loadUserFromRequest from '../utils/loadUser';
+import { IRecipe } from '../models/types';
 
 export const validateRecipeId = async (req: Request) => {
   const { recipeId } = req.params;
@@ -69,7 +71,7 @@ const getRecipe = async (req: Request, res: Response) => {
     return makeResponse.success(res, 200, 'Recipe fetched successfully', recipe.toJSON());
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
-    return makeResponse.error(res, new APIError('Interal server error when fetching recipe from database', 500));
+    return makeResponse.error(res, new APIError('Internal server error when fetching recipe from database', 500));
   }
 };
 
@@ -88,7 +90,35 @@ const updateRecipe = async (req: Request, res: Response) => {
     return makeResponse.success(res, 200, 'Recipe updated successfully', updatedRecipe);
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
-    return makeResponse.error(res, new APIError('Interal server error when updating recipe in database', 500));
+    return makeResponse.error(res, new APIError('Internal server error when updating recipe in database', 500));
+  }
+};
+
+const uploadImage = async (req: Request, res: Response) => {
+  try {
+    const recipe = await validateRecipeId(req);
+
+    const image = req.file?.filename;
+    let updatedRecipe: IRecipe | null = { ...recipe.toJSON(), image };
+
+    updatedRecipe = await Recipe.findOneAndUpdate({ _id: recipe.id }, updatedRecipe, { returnDocument: 'after' });
+
+    return makeResponse.success(res, 200, 'Image uploaded successfully', updatedRecipe);
+  } catch (err) {
+    if (err instanceof APIError) return makeResponse.error(res, err);
+    return makeResponse.error(res, new APIError('Internal server error when uploading an image', 500));
+  }
+};
+
+const getImage = async (req: Request, res: Response) => {
+  try {
+    const recipe = await validateRecipeId(req);
+    const filePath = path.resolve(__dirname, `../images/${recipe.image}`);
+    res.setHeader('Content-Type', 'image/*');
+    return res.sendFile(filePath);
+  } catch (err) {
+    if (err instanceof APIError) return makeResponse.error(res, err);
+    return makeResponse.error(res, new APIError('Internal server error when fetching an image', 500));
   }
 };
 
@@ -101,7 +131,7 @@ const deleteRecipe = async (req: Request, res: Response) => {
     return makeResponse.success(res, 200, 'Recipe deleted successfully');
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
-    return makeResponse.error(res, new APIError('Interal server error when deleting recipe from database', 500));
+    return makeResponse.error(res, new APIError('Internal server error when deleting recipe from database', 500));
   }
 };
 
@@ -115,7 +145,7 @@ const publishRecipe = async (req: Request, res: Response) => {
     return makeResponse.success(res, 200, 'Recipe published successfully');
   } catch (err) {
     if (err instanceof APIError) return makeResponse.error(res, err);
-    return makeResponse.error(res, new APIError('Interal server error when updating recipe in database', 500));
+    return makeResponse.error(res, new APIError('Internal server error when updating recipe in database', 500));
   }
 };
 
@@ -124,8 +154,10 @@ const recipeController = {
   getRecipes,
   getRecipe,
   updateRecipe,
+  uploadImage,
   deleteRecipe,
   publishRecipe,
+  getImage,
 };
 
 export default recipeController;

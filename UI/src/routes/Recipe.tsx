@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Grid, Divider, Button, Typography, Card, Box, CircularProgress } from '@mui/material';
+import { Stack, Grid, Divider, Button, Typography, Card, Box, CircularProgress, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarIcon from '@mui/icons-material/Star';
@@ -33,9 +33,18 @@ const Recipe = () => {
       width='95%'
       maxWidth='720px'
       marginRight={5}
-      paddingBottom={5}
+      paddingBottom={10}
     >
-      <div style={{ width: '100%', height: '350px', backgroundColor: 'white' }} />
+      {recipe.image && (
+        <Box sx={{ width: '100%', height: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img
+            crossOrigin='use-credentials'
+            src={`http://localhost:8080/api/v1/recipes/${recipe.id}/image`}
+            alt=''
+            style={{ borderRadius: '7px', maxWidth: '100%', maxHeight: '100%' }}
+          />
+        </Box>
+      )}
       <Typography variant='h1'>{recipe.title}</Typography>
       <Stack direction='row' justifyContent='space-between' width='100%'>
         <Stack direction='row' alignItems='center' spacing={1}>
@@ -68,27 +77,33 @@ const Recipe = () => {
       <Stack direction='row' justifyContent='space-between' width='100%'>
         <Typography variant='h4'>Ainesosat</Typography>
         <Stack direction='row' justifyContent='space-between' alignItems='center' width='200px'>
-          <IndeterminateCheckBoxIcon
+          <IconButton
             color='secondary'
             onClick={selectedPortionSize > 1 ? () => setSelectedPortionSize(n => n - 1) : undefined}
-            sx={{
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            }}
-          />
+            sx={{ p: 1 }}
+          >
+            <IndeterminateCheckBoxIcon
+              color='secondary'
+              sx={{
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+            />
+          </IconButton>
           <Typography variant='h5'>
             {selectedPortionSize === 1 ? '1 annos' : `${selectedPortionSize} annosta`}
           </Typography>
-          <AddBoxIcon
-            color='secondary'
-            onClick={() => setSelectedPortionSize(n => n + 1)}
-            sx={{
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            }}
-          />
+          <IconButton color='secondary' onClick={() => setSelectedPortionSize(n => n + 1)} sx={{ p: 1 }}>
+            <AddBoxIcon
+              color='secondary'
+              sx={{
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+            />
+          </IconButton>
         </Stack>
       </Stack>
       <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
