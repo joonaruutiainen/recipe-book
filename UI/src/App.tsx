@@ -68,9 +68,6 @@ const theme = createTheme({
       fontStyle: 'italic',
       color: '#39352C',
     },
-    button: {
-      fontSize: 20,
-    },
   },
   breakpoints: {
     values: {
@@ -79,6 +76,23 @@ const theme = createTheme({
       md: 900,
       lg: 1300,
       xl: 1602,
+    },
+  },
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontSize: 20,
+          padding: '4px 15px',
+          textTransform: 'none',
+          borderRadius: 25,
+        },
+      },
     },
   },
 });

@@ -55,12 +55,8 @@ const Recipe = () => {
           {recipe.duration.minutes > 0 && <Typography variant='body1'>{recipe.duration.minutes}min</Typography>}
           <Typography variant='body1'>valmistusaika</Typography>
         </Stack>
-        <Button startIcon={<StarIcon />} sx={{ fontSize: 20, textTransform: 'none' }}>
-          Lisää suosikkilistalle
-        </Button>
-        <Button startIcon={<PeopleIcon />} sx={{ fontSize: 20, textTransform: 'none' }}>
-          Julkaise
-        </Button>
+        <Button startIcon={<StarIcon />}>Lisää suosikkilistalle</Button>
+        <Button startIcon={<PeopleIcon />}>Julkaise</Button>
       </Stack>
       <Stack direction='row' justifyContent='flex-start' spacing={1} width='100%'>
         {recipe.tags?.map(tag => (
@@ -239,6 +235,7 @@ const Recipe = () => {
     >
       <Button
         variant='outlined'
+        size='large'
         onClick={() => {
           navigate('/recipes');
           dispatch(recipeActions.clearSelectedRecipe());
@@ -264,32 +261,13 @@ const Recipe = () => {
       >
         <Button
           variant='outlined'
-          size='small'
           color='secondary'
           onClick={() => setConfirmDeleteDialog(true)}
-          sx={{
-            width: '150px',
-            fontSize: 20,
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
+          sx={{ width: '150px' }}
         >
           Poista
         </Button>
-        <Button
-          variant='contained'
-          size='small'
-          color='secondary'
-          onClick={() => navigate('/recipeEditor')}
-          sx={{
-            width: '150px',
-            fontSize: 20,
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
-        >
+        <Button variant='contained' color='secondary' onClick={() => navigate('/recipeEditor')} sx={{ width: '150px' }}>
           Muokkaa
         </Button>
       </Stack>
@@ -311,12 +289,7 @@ const Recipe = () => {
               navigate('/recipes');
               dispatch(recipeActions.clearError());
             }}
-            sx={{
-              fontSize: 20,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-            }}
+            sx={{ width: '220px' }}
           >
             Palaa etusivulle
           </Button>

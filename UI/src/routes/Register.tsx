@@ -189,19 +189,7 @@ const Register = () => {
                 }
               }}
             />
-            <Button
-              variant='contained'
-              color='secondary'
-              type='submit'
-              size='small'
-              sx={{
-                width: '220px',
-                fontSize: 20,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
-              }}
-            >
+            <Button variant='contained' color='secondary' type='submit' sx={{ width: '220px' }}>
               Luo käyttäjä
             </Button>
           </form>
@@ -216,16 +204,7 @@ const Register = () => {
             }}
           >
             <Typography variant='body1'>Onko sinulla jo käyttäjätunnus?</Typography>
-            <Button
-              color='secondary'
-              onClick={() => navigate('/login')}
-              size='small'
-              sx={{
-                fontSize: 20,
-                paddingX: 3,
-                textTransform: 'none',
-              }}
-            >
+            <Button color='secondary' onClick={() => navigate('/login')}>
               Kirjaudu sisään
             </Button>
           </div>

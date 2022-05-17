@@ -340,25 +340,7 @@ const RecipeEditor = () => {
           </Grid>
         ))}
         <Grid item>
-          <Button
-            variant='outlined'
-            size='small'
-            onClick={() => setAnchorElTags(tagGrid.current)}
-            sx={{
-              width: 'max-content',
-              fontSize: 16,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-              boxShadow: `1px 1px 3px 0px`,
-              '&:hover': {
-                cursor: 'pointer',
-                backgroundColor: 'transparent',
-              },
-            }}
-          >
-            muokkaa tunnisteita
-          </Button>
+          <TagButton text='muokkaa tunnisteita' onClick={() => setAnchorElTags(tagGrid.current)} />
         </Grid>
         <TagEditor
           anchorEl={anchorElTags}
@@ -435,32 +417,10 @@ const RecipeEditor = () => {
         }
       />
       <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
-        <Button
-          endIcon={<CloseIcon color='primary' />}
-          size='small'
-          onClick={removeIngredient}
-          sx={{
-            fontSize: 20,
-            fontWeight: 'lighter',
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
-        >
+        <Button endIcon={<CloseIcon color='primary' />} onClick={removeIngredient}>
           Poista ainesosa
         </Button>
-        <Button
-          endIcon={<DoneIcon color='primary' />}
-          size='small'
-          onClick={addIngredient}
-          sx={{
-            fontSize: 20,
-            fontWeight: 'lighter',
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
-        >
+        <Button endIcon={<DoneIcon color='primary' />} onClick={addIngredient}>
           Tallenna
         </Button>
       </Stack>
@@ -529,17 +489,7 @@ const RecipeEditor = () => {
             <div style={{ width: 'fit-content', minWidth: '30%' }}>
               <Typography variant='body1'>{i.description}</Typography>
             </div>
-            <Button
-              endIcon={<EditIcon color='primary' />}
-              size='small'
-              onClick={() => editIngredient(i)}
-              sx={{
-                fontSize: 18,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
-              }}
-            >
+            <Button endIcon={<EditIcon color='primary' />} onClick={() => editIngredient(i)} sx={{ fontSize: 18 }}>
               Muokkaa
             </Button>
           </Stack>
@@ -547,7 +497,6 @@ const RecipeEditor = () => {
         <Stack direction='row' spacing={2} alignItems='center'>
           {!ingredient && (
             <Button
-              size='small'
               startIcon={<AddIcon color='primary' />}
               onClick={() => {
                 if (invalidIngredients) setInvalidIngredients(false);
@@ -557,9 +506,6 @@ const RecipeEditor = () => {
                 fontSize: 24,
                 fontFamily: 'Segoe UI',
                 fontWeight: 'lighter',
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
               }}
             >
               Lisää ainesosa
@@ -634,32 +580,10 @@ const RecipeEditor = () => {
         }
       />
       <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
-        <Button
-          endIcon={<CloseIcon color='primary' />}
-          size='small'
-          onClick={removeInstructionStep}
-          sx={{
-            fontSize: 20,
-            fontWeight: 'lighter',
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
-        >
+        <Button endIcon={<CloseIcon color='primary' />} onClick={removeInstructionStep}>
           Poista vaihe
         </Button>
-        <Button
-          endIcon={<DoneIcon color='primary' />}
-          size='small'
-          onClick={addInstructionStep}
-          sx={{
-            fontSize: 20,
-            fontWeight: 'lighter',
-            paddingX: 3,
-            textTransform: 'none',
-            borderRadius: 25,
-          }}
-        >
+        <Button endIcon={<DoneIcon color='primary' />} onClick={addInstructionStep}>
           Tallenna
         </Button>
       </Stack>
@@ -693,14 +617,8 @@ const RecipeEditor = () => {
           <Stack direction='row' justifyContent='flex-end' width='100%'>
             <Button
               endIcon={<EditIcon color='primary' />}
-              size='small'
               onClick={() => editInstructionStep(step)}
-              sx={{
-                fontSize: 18,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
-              }}
+              sx={{ fontSize: 18 }}
             >
               Muokkaa
             </Button>
@@ -710,7 +628,6 @@ const RecipeEditor = () => {
       <Stack direction='row' spacing={2} alignItems='center'>
         {!instructionStep && (
           <Button
-            size='small'
             startIcon={<AddIcon color='primary' />}
             onClick={() => {
               if (invalidInstructions) setInvalidInstructions(false);
@@ -720,9 +637,6 @@ const RecipeEditor = () => {
               fontSize: 24,
               fontFamily: 'Segoe UI',
               fontWeight: 'lighter',
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
             }}
           >
             Lisää vaihe
@@ -806,32 +720,13 @@ const RecipeEditor = () => {
     >
       <Button
         variant='outlined'
-        size='small'
         color='secondary'
         onClick={recipe ? () => navigate(`/recipes/${recipe.id}`) : () => navigate('/')}
-        sx={{
-          width: '150px',
-          fontSize: 20,
-          paddingX: 3,
-          textTransform: 'none',
-          borderRadius: 25,
-        }}
+        sx={{ width: '150px' }}
       >
         Peruuta
       </Button>
-      <Button
-        variant='contained'
-        size='small'
-        color='secondary'
-        onClick={submit}
-        sx={{
-          width: '150px',
-          fontSize: 20,
-          paddingX: 3,
-          textTransform: 'none',
-          borderRadius: 25,
-        }}
-      >
+      <Button variant='contained' color='secondary' onClick={submit} sx={{ width: '150px' }}>
         Tallenna
       </Button>
     </Stack>

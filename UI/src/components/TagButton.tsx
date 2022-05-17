@@ -4,13 +4,13 @@ import DoneIcon from '@mui/icons-material/Done';
 
 export interface TagButtonProps {
   text: string;
-  color: string;
+  color?: string;
   selected?: boolean;
   onClick?: () => void;
   sx?: SxProps;
 }
 
-const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, onClick, sx = {} }) => (
+const TagButton: React.FC<TagButtonProps> = ({ text, color = '#554F43', selected = false, onClick, sx = {} }) => (
   <Button
     variant='outlined'
     size='small'
@@ -20,7 +20,6 @@ const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, on
       width: 'max-content',
       fontSize: 15,
       paddingX: '10px',
-      textTransform: 'none',
       color,
       borderColor: color,
       borderRadius: 25,

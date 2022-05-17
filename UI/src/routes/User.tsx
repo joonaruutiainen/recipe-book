@@ -137,7 +137,7 @@ const User = () => {
             {notification}
           </Box>
           {!editingUser && (
-            <Stack direction='column' justifyContent='center' alignItems='flex-end' spacing={2} width='100%'>
+            <Stack direction='column' justifyContent='center' alignItems='center' spacing={2} width='100%'>
               <Stack direction='row' justifyContent='flex-end' spacing={5} width='100%'>
                 <Box sx={{ width: '40%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                   <Typography variant='body1' color='secondary'>
@@ -160,18 +160,11 @@ const User = () => {
               </Stack>
               <Button
                 endIcon={<EditIcon color='primary' />}
-                size='small'
                 onClick={() => {
                   setName(user.name);
                   setEmail(user.email);
                   if (changePassword) setChangePassword(false);
                   setEditingUser(true);
-                }}
-                sx={{
-                  fontSize: 20,
-                  paddingX: 3,
-                  textTransform: 'none',
-                  borderRadius: 25,
                 }}
               >
                 Muokkaa
@@ -203,30 +196,10 @@ const User = () => {
                 }}
               />
               <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
-                <Button
-                  endIcon={<CloseIcon color='primary' />}
-                  size='small'
-                  onClick={() => setEditingUser(false)}
-                  sx={{
-                    fontSize: 20,
-                    paddingX: 3,
-                    textTransform: 'none',
-                    borderRadius: 25,
-                  }}
-                >
+                <Button endIcon={<CloseIcon color='primary' />} onClick={() => setEditingUser(false)}>
                   Peruuta
                 </Button>
-                <Button
-                  endIcon={<DoneIcon color='primary' />}
-                  size='small'
-                  onClick={submitUpdate}
-                  sx={{
-                    fontSize: 20,
-                    paddingX: 3,
-                    textTransform: 'none',
-                    borderRadius: 25,
-                  }}
-                >
+                <Button endIcon={<DoneIcon color='primary' />} onClick={submitUpdate}>
                   Tallenna
                 </Button>
               </Stack>
@@ -248,12 +221,6 @@ const User = () => {
                 onClick={() => {
                   if (editingUser) setEditingUser(false);
                   setChangePassword(true);
-                }}
-                sx={{
-                  fontSize: 20,
-                  paddingX: 3,
-                  textTransform: 'none',
-                  borderRadius: 25,
                 }}
               >
                 Vaihda salasana
@@ -282,30 +249,10 @@ const User = () => {
                 onChange={e => setNewPassword(e.target.value)}
               />
               <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
-                <Button
-                  endIcon={<CloseIcon color='primary' />}
-                  size='small'
-                  onClick={() => setChangePassword(false)}
-                  sx={{
-                    fontSize: 20,
-                    paddingX: 3,
-                    textTransform: 'none',
-                    borderRadius: 25,
-                  }}
-                >
+                <Button endIcon={<CloseIcon color='primary' />} onClick={() => setChangePassword(false)}>
                   Peruuta
                 </Button>
-                <Button
-                  endIcon={<DoneIcon color='primary' />}
-                  size='small'
-                  onClick={submitChangePassword}
-                  sx={{
-                    fontSize: 20,
-                    paddingX: 3,
-                    textTransform: 'none',
-                    borderRadius: 25,
-                  }}
-                >
+                <Button endIcon={<DoneIcon color='primary' />} onClick={submitChangePassword}>
                   Tallenna
                 </Button>
               </Stack>
