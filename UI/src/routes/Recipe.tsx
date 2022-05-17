@@ -36,7 +36,9 @@ const Recipe = () => {
       paddingBottom={10}
     >
       {recipe.image && (
-        <Box sx={{ width: '100%', height: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Box
+          sx={{ width: '100%', maxHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
           <img
             crossOrigin='use-credentials'
             src={`http://localhost:8080/api/v1/recipes/${recipe.id}/image`}
@@ -60,7 +62,7 @@ const Recipe = () => {
           Julkaise
         </Button>
       </Stack>
-      <Stack direction='row' justifyContent='flex-start' spacing={2} width='100%'>
+      <Stack direction='row' justifyContent='flex-start' spacing={1} width='100%'>
         {recipe.tags?.map(tag => (
           <TagButton key={tag.name} text={tag.name} color={tag.color} />
         ))}

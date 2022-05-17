@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, SxProps } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 
 export interface TagButtonProps {
@@ -7,9 +7,10 @@ export interface TagButtonProps {
   color: string;
   selected?: boolean;
   onClick?: () => void;
+  sx?: SxProps;
 }
 
-const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, onClick }) => (
+const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, onClick, sx = {} }) => (
   <Button
     variant='outlined'
     size='small'
@@ -17,8 +18,8 @@ const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, on
     startIcon={selected ? <DoneIcon sx={{ color }} /> : undefined}
     sx={{
       width: 'max-content',
-      fontSize: 16,
-      paddingX: 3,
+      fontSize: 15,
+      paddingX: '10px',
       textTransform: 'none',
       color,
       borderColor: color,
@@ -30,6 +31,7 @@ const TagButton: React.FC<TagButtonProps> = ({ text, color, selected = false, on
         borderColor: color,
         backgroundColor: 'transparent',
       },
+      ...sx,
     }}
   >
     {text}

@@ -382,7 +382,7 @@ const RecipeEditor = () => {
           PaperProps={{
             style: {
               borderRadius: 7,
-              maxWidth: '500px',
+              maxWidth: '450px',
             },
           }}
         >

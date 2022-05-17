@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Grid, Card, Divider, Button, Typography, Container, CircularProgress } from '@mui/material';
+import {
+  Stack,
+  Grid,
+  Card,
+  Divider,
+  Button,
+  Typography,
+  Container,
+  CircularProgress,
+  CardMedia,
+  Box,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import StarIcon from '@mui/icons-material/Star';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions, SelectionFilter } from '../redux/slices/recipesSlice';
 import { TagButton } from '../components';
@@ -81,8 +97,8 @@ const Recipes = () => {
                   height: '320px',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-evenly',
-                  textAlign: 'center',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                   boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
                   '&:hover': {
                     cursor: 'pointer',
@@ -93,14 +109,67 @@ const Recipes = () => {
                   navigate(recipe.id);
                 }}
               >
-                <Stack alignItems='center' spacing={2}>
-                  <Typography variant='h2'>{recipe.title}</Typography>
-                  <Typography variant='h4'>
-                    {recipe.duration.hours}h {recipe.duration.minutes}min
-                  </Typography>
-                  {recipe.tags?.map(tag => (
-                    <TagButton key={tag.name} text={tag.name} color={tag.color} />
-                  ))}
+                {recipe.image && (
+                  <CardMedia
+                    component='img'
+                    image={`http://localhost:8080/api/v1/recipes/${recipe.id}/image`}
+                    crossOrigin='use-credentials'
+                    sx={{ height: '55%' }}
+                  />
+                )}
+                {!recipe.image && (
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '55%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundImage: 'linear-gradient(to bottom right, #e2e0dc, #b1afac)',
+                    }}
+                  >
+                    <ImageNotSupportedIcon color='primary' />
+                    <Typography variant='subtitle1'>Ei kuvaa</Typography>
+                  </Box>
+                )}
+                <Stack spacing={1} width='95%' height='40%'>
+                  <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={1} width='100%'>
+                    <Typography variant='h5' fontWeight='bold'>
+                      {recipe.title}
+                    </Typography>
+                    <Tooltip title='Lisää suosikkeihin'>
+                      <IconButton sx={{ p: '1px' }}>
+                        <StarIcon
+                          color='primary'
+                          sx={{
+                            borderRadius: 25,
+                            '&:hover': {
+                              cursor: 'pointer',
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                  <Stack direction='row' alignItems='center' spacing={1}>
+                    <AccessTimeIcon />
+                    {recipe.duration.hours > 0 && <Typography variant='body1'>{recipe.duration.hours}h</Typography>}
+                    {recipe.duration.minutes > 0 && (
+                      <Typography variant='body1'>{recipe.duration.minutes}min</Typography>
+                    )}
+                  </Stack>
+                  <Stack direction='row' alignItems='center' spacing={1}>
+                    {recipe.tags?.slice(0, 3).map(tag => (
+                      <TagButton key={tag.name} text={tag.name} color={tag.color} />
+                    ))}
+                    {recipe.tags && recipe.tags.length > 3 && (
+                      <TagButton
+                        text={`+${recipe.tags.length - 3}`}
+                        color='#554F43'
+                        sx={{ paddingX: 0, minWidth: '40px' }}
+                      />
+                    )}
+                  </Stack>
                 </Stack>
               </Card>
             </Grid>
