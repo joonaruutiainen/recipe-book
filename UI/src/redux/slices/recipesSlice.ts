@@ -91,7 +91,8 @@ const addRecipe = createAsyncThunk<Recipe, RecipeEditorData, { rejectValue: Appl
     try {
       const { image, ...recipe } = recipeData;
       let res = await recipeService.addRecipe(recipe);
-      if (image) res = await recipeService.uploadImage(recipeData.id!, image);
+      const { payload: newRecipe } = res;
+      if (newRecipe && image) res = await recipeService.uploadImage(newRecipe.id, image);
       return res.payload as Recipe;
     } catch (err) {
       return rejectWithValue(err as ApplicationError);

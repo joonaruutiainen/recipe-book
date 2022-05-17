@@ -1,13 +1,13 @@
-import { APIResponse, RecipeEditorData } from '../types';
+import { APIResponse, Recipe, RecipeEditorData } from '../types';
 import apiService from './apiService';
 
 interface RecipeService {
-  getRecipes: () => Promise<APIResponse>;
-  getRecipe: (recipeId: string) => Promise<APIResponse>;
+  getRecipes: () => Promise<APIResponse<Recipe[]>>;
+  getRecipe: (recipeId: string) => Promise<APIResponse<Recipe>>;
   deleteRecipe: (recipeId: string) => Promise<APIResponse>;
-  addRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse>;
-  updateRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse>;
-  uploadImage: (recipeId: string, image: File) => Promise<APIResponse>;
+  addRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse<Recipe>>;
+  updateRecipe: (recipeData: RecipeEditorData) => Promise<APIResponse<Recipe>>;
+  uploadImage: (recipeId: string, image: File) => Promise<APIResponse<Recipe>>;
 }
 
 const getRecipes = () =>

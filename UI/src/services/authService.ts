@@ -1,11 +1,11 @@
-import { APIResponse, LoginData, RegistrationData } from '../types';
+import { APIResponse, LoginData, RegistrationData, User } from '../types';
 import apiService from './apiService';
 
 interface AuthService {
   initializeSession: () => Promise<APIResponse>;
-  login: (userData: LoginData) => Promise<APIResponse>;
+  login: (userData: LoginData) => Promise<APIResponse<User>>;
   logout: () => Promise<APIResponse>;
-  register: (userData: RegistrationData) => Promise<APIResponse>;
+  register: (userData: RegistrationData) => Promise<APIResponse<User>>;
 }
 
 const initializeSession = async () =>

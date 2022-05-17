@@ -1,10 +1,9 @@
-import { User } from './User';
-import { Recipe } from './Recipe';
 import { APIError } from './APIError';
 
-export interface APIResponse {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface APIResponse<T = any> {
   message: string;
   code?: number;
-  payload?: User | [User] | Recipe | [Recipe];
+  payload?: T;
   error?: APIError;
 }

@@ -1,10 +1,10 @@
-import { APIResponse, UserEditorData } from '../types';
+import { APIResponse, User, UserEditorData } from '../types';
 import apiService from './apiService';
 
 interface UserService {
-  getUsers: () => Promise<APIResponse>;
-  getUser: (userId: string) => Promise<APIResponse>;
-  updateUser: (userData: UserEditorData) => Promise<APIResponse>;
+  getUsers: () => Promise<APIResponse<User[]>>;
+  getUser: (userId: string) => Promise<APIResponse<User>>;
+  updateUser: (userData: UserEditorData) => Promise<APIResponse<User>>;
 }
 
 const getUsers = () =>
