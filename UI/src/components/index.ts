@@ -3,3 +3,4 @@ export { default as CardContainer } from './CardContainer';
 export { default as Notification } from './Notification';
 export { default as TagButton } from './TagButton';
 export { default as AlertDialog } from './AlertDialog';
+export { default as TagEditor } from './TagEditor';

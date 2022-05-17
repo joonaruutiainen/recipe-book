@@ -12,7 +12,6 @@ import {
   CircularProgress,
   TextField,
   MenuItem,
-  Menu,
   Radio,
   Fab,
   Tooltip,
@@ -26,7 +25,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
-import { TagButton } from '../components';
+import { TagButton, TagEditor } from '../components';
 import constants from '../constants';
 import { RecipeDuration, RecipeIngredient, RecipeStep, RecipeTag } from '../types';
 
@@ -53,7 +52,6 @@ const RecipeEditor = () => {
 
   const [tags, setTags] = useState<RecipeTag[]>(recipe?.tags || []);
   const [anchorElTags, setAnchorElTags] = useState<null | HTMLDivElement>(null);
-  const [tagSelection, setTagSelection] = useState<RecipeTag[]>(recipe?.tags || []);
   const tagGrid = useRef<HTMLDivElement>(null);
 
   const [useSubtitles, setUseSubtitles] = useState(false);
@@ -362,84 +360,18 @@ const RecipeEditor = () => {
             muokkaa tunnisteita
           </Button>
         </Grid>
-        <Menu
+        <TagEditor
           anchorEl={anchorElTags}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
           open={Boolean(anchorElTags)}
+          selection={tags}
           onClose={() => {
-            setTagSelection(tags);
             setAnchorElTags(null);
           }}
-          sx={{ mt: '20px' }}
-          PaperProps={{
-            style: {
-              borderRadius: 7,
-              maxWidth: '450px',
-            },
+          onSave={(tagSelection: RecipeTag[]) => {
+            setTags(tagSelection);
+            setAnchorElTags(null);
           }}
-        >
-          <Stack direction='column' width='100%'>
-            <Box sx={{ width: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 1 }}>
-              <Grid container spacing={1} width='95%'>
-                {constants.tags.map(tag => (
-                  <Grid key={tag.name} item>
-                    <TagButton
-                      text={tag.name}
-                      color={tag.color}
-                      selected={Boolean(tagSelection.find(t => t.name === tag.name))}
-                      onClick={() =>
-                        tagSelection.includes(tag)
-                          ? setTagSelection(tagSelection.filter(t => t.name !== tag.name))
-                          : setTagSelection(tagSelection.concat([tag]))
-                      }
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-            <Stack direction='row' width='100%' justifyContent='space-between'>
-              <Button
-                size='small'
-                sx={{
-                  fontSize: 20,
-                  paddingX: 3,
-                  textTransform: 'none',
-                  borderRadius: 25,
-                }}
-                onClick={() => {
-                  setAnchorElTags(null);
-                  setTagSelection(tags);
-                }}
-              >
-                Peruuta
-              </Button>
-              <Button
-                color='secondary'
-                size='small'
-                sx={{
-                  fontSize: 20,
-                  paddingX: 3,
-                  textTransform: 'none',
-                  borderRadius: 25,
-                }}
-                onClick={() => {
-                  setAnchorElTags(null);
-                  setTags(tagSelection);
-                }}
-              >
-                Tallenna
-              </Button>
-            </Stack>
-          </Stack>
-        </Menu>
+        />
       </Grid>
     </Stack>
   );
