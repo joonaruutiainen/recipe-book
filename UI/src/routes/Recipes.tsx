@@ -68,8 +68,8 @@ const Recipes = () => {
           justifyContent='space-between'
           alignItems='center'
           width='100%'
-          marginTop={3}
-          marginBottom={5}
+          marginTop={2}
+          marginBottom={3}
         >
           <Stack
             direction='row'
