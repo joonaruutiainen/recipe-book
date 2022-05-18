@@ -30,7 +30,7 @@ import { Recipe, RecipeTag } from '../types';
 
 const Recipes = () => {
   const user = useAppSelector(state => state.auth.user);
-  const { all: recipes, loadingMany: loading, selectionFilter } = useAppSelector(state => state.recipes);
+  const { all: recipes, selected, loadingMany: loading, selectionFilter } = useAppSelector(state => state.recipes);
 
   const [selection, setSelection] = useState<Recipe[]>([]);
 
@@ -170,7 +170,10 @@ const Recipes = () => {
           <Grid container item lg={3.5} md={12} justifyContent={{ sm: 'center', lg: 'flex-end' }}>
             <Stack direction='row' alignItems='center' spacing={2}>
               <IconButton
-                onClick={() => navigate('/recipeEditor')}
+                onClick={() => {
+                  if (selected) dispatch(recipeActions.clearSelectedRecipe());
+                  navigate('/recipeEditor');
+                }}
                 color='secondary'
                 sx={{
                   p: '12px',
@@ -296,6 +299,11 @@ const Recipes = () => {
             </Grid>
           ))}
         </Grid>
+        {selection.length === 0 && (
+          <Box sx={{ widht: '100%', height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Typography variant='body1'>Ei reseptejä</Typography>
+          </Box>
+        )}
       </Container>
     </Box>
   );

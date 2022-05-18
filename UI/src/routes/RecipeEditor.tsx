@@ -25,8 +25,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
-import { TagButton, TagEditor } from '../components';
-import constants from '../constants';
+import { TagButton, TagEditor, IngredientEditor } from '../components';
 import { RecipeDuration, RecipeIngredient, RecipeStep, RecipeSubtitle, RecipeTag } from '../types';
 
 const RecipeEditor = () => {
@@ -64,7 +63,6 @@ const RecipeEditor = () => {
 
   const [ingredient, setIngredient] = useState<RecipeIngredient | null>(null);
   const [ingredients, setIngredients] = useState<RecipeIngredient[]>(recipe?.ingredients || []);
-  const [missingIngredientDescription, setMissingIngredientDescription] = useState(false);
   const [invalidIngredients, setInvalidIngredients] = useState(false);
 
   const [instructionStep, setInstructionStep] = useState<RecipeStep | null>(null);
@@ -168,17 +166,13 @@ const RecipeEditor = () => {
     }
   };
 
-  const addIngredient = () => {
-    if (!ingredient?.description) setMissingIngredientDescription(true);
-    else {
-      setIngredients(ingredients.concat([ingredient]));
-      setIngredient(null);
-    }
+  const addIngredient = (ingr: RecipeIngredient) => {
+    setIngredients(ingredients.concat([ingr]));
+    setIngredient(null);
   };
 
   const removeIngredient = () => {
     if (ingredient && ingredients.includes(ingredient)) setIngredients(ingredients.filter(i => i !== ingredient));
-    if (missingIngredientDescription) setMissingIngredientDescription(false);
     setIngredient(null);
   };
 
@@ -417,7 +411,8 @@ const RecipeEditor = () => {
       onClick={() => {
         if (invalidIngredients) setInvalidIngredients(false);
         if (subtitle) setSubtitle(null);
-        setIngredient({ quantity: 1, unit: 'kpl', description: '', subtitle: st });
+        const newIngredient: RecipeIngredient = { quantity: 1, unit: 'kpl', description: '', subtitle: st };
+        setIngredient(newIngredient);
       }}
       sx={{
         fontSize: useSubtitles ? 20 : 24,
@@ -452,75 +447,6 @@ const RecipeEditor = () => {
       >
         Muokkaa
       </Button>
-    </Stack>
-  );
-
-  const singleIngredientEditor = (
-    <Stack direction='column' spacing={1} width='100%'>
-      <Stack direction='row' spacing={1} alignItems='center' width='100%'>
-        <TextField
-          label='Määrä'
-          type='number'
-          size='small'
-          color='secondary'
-          value={ingredient?.quantity}
-          onChange={
-            ingredient ? e => setIngredient({ ...ingredient, quantity: parseFloat(e.target.value) }) : undefined
-          }
-          inputProps={{
-            min: 0.1,
-            max: 1000,
-            step: 0.1,
-          }}
-          sx={{ width: '120px' }}
-        />
-        <TextField
-          select
-          label='Yksikkö'
-          size='small'
-          color='secondary'
-          value={ingredient?.unit}
-          onChange={ingredient ? e => setIngredient({ ...ingredient, unit: e.target.value }) : undefined}
-          SelectProps={{
-            MenuProps: {
-              PaperProps: {
-                style: { maxHeight: 200 },
-              },
-            },
-          }}
-          sx={{ width: '120px' }}
-        >
-          {constants.validUnits.map(unit => (
-            <MenuItem key={unit} value={unit}>
-              {unit}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Stack>
-      <TextField
-        label='Kuvaus'
-        size='small'
-        color='secondary'
-        error={missingIngredientDescription}
-        inputProps={{ maxLength: 100 }}
-        value={ingredient?.description}
-        onChange={
-          ingredient
-            ? e => {
-                if (missingIngredientDescription) setMissingIngredientDescription(false);
-                setIngredient({ ...ingredient, description: e.target.value });
-              }
-            : undefined
-        }
-      />
-      <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
-        <Button endIcon={<CloseIcon color='primary' />} onClick={removeIngredient}>
-          Poista ainesosa
-        </Button>
-        <Button endIcon={<DoneIcon color='primary' />} onClick={addIngredient}>
-          Tallenna
-        </Button>
-      </Stack>
     </Stack>
   );
 
@@ -623,7 +549,14 @@ const RecipeEditor = () => {
                   .map((ingr, index) => singleIngredient(index, ingr))}
                 <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
                   {!ingredient && newIngredientButton(st)}
-                  {ingredient && ingredient.subtitle?.index === st.index && singleIngredientEditor}
+                  {ingredient && ingredient.subtitle?.index === st.index && (
+                    <IngredientEditor
+                      ingredient={ingredient}
+                      subtitle={ingredient.subtitle}
+                      onClose={removeIngredient}
+                      onSave={addIngredient}
+                    />
+                  )}
                 </Stack>
               </Stack>
             ))}
@@ -637,7 +570,9 @@ const RecipeEditor = () => {
             {ingredients.map((ingr, index) => singleIngredient(index, ingr))}
             <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
               {!ingredient && newIngredientButton()}
-              {ingredient && singleIngredientEditor}
+              {ingredient && (
+                <IngredientEditor ingredient={ingredient} onClose={removeIngredient} onSave={addIngredient} />
+              )}
             </Stack>
           </>
         )}
