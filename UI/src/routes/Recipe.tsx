@@ -107,18 +107,18 @@ const Recipe = () => {
       <Stack direction='column' justifyContent='flex-start' width='100%' spacing={4}>
         {recipe.subtitles &&
           recipe.subtitles.length > 0 &&
-          recipe.subtitles?.map(st => (
+          recipe.subtitles.map(st => (
             <Stack
-              key={st}
+              key={st.index}
               direction='column'
               width='100%'
               divider={<Divider orientation='horizontal' flexItem />}
               spacing={1}
             >
-              <Typography variant='body1'>{st}</Typography>
+              <Typography variant='body1'>{st.name}</Typography>
               <Stack direction='column' justifyContent='flex-start' width='100%' spacing={1}>
                 {recipe.ingredients
-                  .filter(i => i.subtitle === st)
+                  .filter(i => i.subtitle?.name === st.name)
                   .map(i => (
                     <Stack key={i.description} direction='row' justifyContent='flex-end'>
                       <Box sx={{ width: '20%' }}>

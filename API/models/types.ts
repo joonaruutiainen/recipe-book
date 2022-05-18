@@ -38,11 +38,16 @@ export interface IRecipeTag {
   color: string;
 }
 
+export interface IRecipeSubtitle {
+  index: number;
+  name: string;
+}
+
 export interface IRecipeIngredient {
   quantity?: number;
   unit?: string;
   description: string;
-  subtitle?: string;
+  subtitle?: IRecipeSubtitle;
 }
 
 export interface IRecipeStep {
@@ -64,7 +69,7 @@ export interface IRecipe {
   duration: IRecipeDuration;
   tags?: Array<IRecipeTag>;
   portionSize: number;
-  subtitles?: Array<string>;
+  subtitles?: Array<IRecipeSubtitle>;
   ingredients: Array<IRecipeIngredient>;
   pages: number;
   instructions: Array<IRecipeStep>;

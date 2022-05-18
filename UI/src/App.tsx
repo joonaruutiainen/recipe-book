@@ -94,6 +94,11 @@ const theme = createTheme({
         },
       },
     },
+    MuiInputBase: {
+      defaultProps: {
+        autoComplete: 'off',
+      },
+    },
   },
 });
 

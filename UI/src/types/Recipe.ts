@@ -8,11 +8,16 @@ export interface RecipeTag {
   color: string;
 }
 
+export interface RecipeSubtitle {
+  index: number;
+  name: string;
+}
+
 export interface RecipeIngredient {
   quantity?: number;
   unit?: string;
   description: string;
-  subtitle?: string;
+  subtitle?: RecipeSubtitle;
 }
 
 export interface RecipeStep {
@@ -59,7 +64,7 @@ export interface Recipe {
   /**
    * Recipe can be optionally divided into several subtitles (1 to 100 characters each).
    */
-  subtitles?: [string];
+  subtitles?: [RecipeSubtitle];
   /**
    * The list of ingredients describing the quantities and names of the ingredients needed for cooking the recipe.
    * Each ingredient can be associated with a subtitle if recipe subtitles are provided.
@@ -93,7 +98,7 @@ export interface RecipeEditorData {
   duration: RecipeDuration;
   tags?: RecipeTag[];
   portionSize: number;
-  subtitles?: string[];
+  subtitles?: RecipeSubtitle[];
   ingredients: RecipeIngredient[];
   pages: number;
   instructions: RecipeStep[];

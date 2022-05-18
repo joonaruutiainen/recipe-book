@@ -5,6 +5,7 @@ import {
   IRecipeDuration,
   IRecipeIngredient,
   IRecipeStep,
+  IRecipeSubtitle,
   IRecipeTag,
   IRecipeUser,
   RecipeModel,
@@ -23,7 +24,7 @@ const schemaDefaults = {
   },
   subtitle: {
     minLength: 1,
-    maxLenght: 100,
+    maxLength: 100,
   },
   ingredient: {
     description: {
@@ -198,26 +199,50 @@ const inputSchema = {
       'any.required': 'Annosten määrä on vaadittu kenttä',
     }),
   subtitles: Joi.array()
-
     .items(
-      Joi.string()
-        .min(schemaDefaults.subtitle.minLength)
-        .max(schemaDefaults.subtitle.maxLenght)
+      Joi.object()
+        .keys({
+          index: Joi.number()
+            .min(1)
+            .required()
+            // .messages({
+            //   'number.base': 'subtitle.index must be a number',
+            //   'number.min': 'subtitles must start from index 1',
+            //   'any.required': 'subtitle.index is required',
+            // }),
+            .messages({
+              'number.base': 'Alaotsiko numeron täytyy olla kokonaisluku',
+              'number.min': 'Alaotsikoiden numeroinnin täytyy alkaa luvusta 1',
+              'any.required': 'Alaotsikon numero on vaadittu kenttä',
+            }),
+          name: Joi.string()
+            .min(schemaDefaults.subtitle.minLength)
+            .max(schemaDefaults.subtitle.maxLength)
+            .required()
+            // .messages({
+            //   'string.base': 'subtitle.name must be a string',
+            //   'string.empty': 'subtitle.name is not allowed to be an empty string',
+            //   'string.min': `minimum name length for subtitle is ${schemaDefaults.step.title.minLength} characters`,
+            //   'string.max': `maximum name length for subtitle is ${schemaDefaults.step.title.maxLength} characters`,
+            //   'any.required': 'subtitle.name is required',
+            // }),
+            .messages({
+              'string.base': 'Alaotsikon nimen täytyy olla merkkijono',
+              'string.empty': 'Alaotsikon nimi ei voi olla tyhjä merkkijono',
+              'string.min': `Alaotsikon nimen täytyy olla vähintään ${schemaDefaults.step.title.minLength} merkkiä pitkä`,
+              'string.max': `Alaotsikon nimi voi olla enintään ${schemaDefaults.step.title.maxLength} merkkiä pitkä`,
+              'any.required': 'Alaotsikon nimi on vaadittu kenttä',
+            }),
+        })
         // .messages({
-        //   'string.base': 'subtitle must be a string',
-        //   'string.empty': `minimum subtitle length for recipe is ${schemaDefaults.subtitle.minLength} characters`,
-        //   'string.min': `minimum subtitle length for recipe is ${schemaDefaults.subtitle.minLength} characters`,
-        //   'string.max': `maximum subtitle length for recipe is ${schemaDefaults.subtitle.maxLenght} characters`,
+        //   'object.base': 'subtitle must be given as an object
         // })
         .messages({
-          'string.base': 'Alaotsikon täytyy olla merkkijono',
-          'string.empty': 'Alaotsikko ei voi olla tyhjä merkkijono',
-          'string.min': `Alaotsikon täytyy olla vähintään ${schemaDefaults.subtitle.minLength} merkkiä pitkä`,
-          'string.max': `Alaotsikko voi olla enintään ${schemaDefaults.subtitle.maxLenght} merkkiä pitkä`,
+          'object.base': 'Alaotsikon täytyy olla objekti',
         })
     )
     // .messages({
-    //   'array.base': 'subtitles must be given as an array of strings',
+    //   'array.base': 'subtitles must be given as an array of subtitle objects',
     // }),
     .messages({
       'array.base': 'Alaotsikot täytyy antaa listana',
@@ -273,16 +298,47 @@ const inputSchema = {
               'string.max': `Ainesosan kuvaus voi olla enintään ${schemaDefaults.ingredient.description.maxLength} merkkiä pitkä`,
               'any.required': 'Ainesosan kuvaus on vaadittu kenttä',
             }),
-          subtitle: Joi.string()
+          subtitle: Joi.object()
+            .keys({
+              index: Joi.number()
+                .min(1)
+                .required()
+                // .messages({
+                //   'number.base': 'subtitle.index must be a number',
+                //   'number.min': 'subtitles must start from index 1',
+                //   'any.required': 'subtitle.index is required',
+                // }),
+                .messages({
+                  'number.base': 'Alaotsiko numeron täytyy olla kokonaisluku',
+                  'number.min': 'Alaotsikoiden numeroinnin täytyy alkaa luvusta 1',
+                  'any.required': 'Alaotsikon numero on vaadittu kenttä',
+                }),
+              name: Joi.string()
+                .min(schemaDefaults.subtitle.minLength)
+                .max(schemaDefaults.subtitle.maxLength)
+                .required()
+                // .messages({
+                //   'string.base': 'subtitle.name must be a string',
+                //   'string.empty': 'subtitle.name is not allowed to be an empty string',
+                //   'string.min': `minimum name length for subtitle is ${schemaDefaults.step.title.minLength} characters`,
+                //   'string.max': `maximum name length for subtitle is ${schemaDefaults.step.title.maxLength} characters`,
+                //   'any.required': 'subtitle.name is required',
+                // }),
+                .messages({
+                  'string.base': 'Alaotsikon nimen täytyy olla merkkijono',
+                  'string.empty': 'Alaotsikon nimi ei voi olla tyhjä merkkijono',
+                  'string.min': `Alaotsikon nimen täytyy olla vähintään ${schemaDefaults.step.title.minLength} merkkiä pitkä`,
+                  'string.max': `Alaotsikon nimi voi olla enintään ${schemaDefaults.step.title.maxLength} merkkiä pitkä`,
+                  'any.required': 'Alaotsikon nimi on vaadittu kenttä',
+                }),
+            })
             .valid(Joi.in('....subtitles'))
             // .messages({
             //   'string.base': 'ingredient.subtitle must be a string',
-            //   'string.empty': 'ingredient.subtitle is not allowed to be an empty string',
             //   'any.only': 'ingredient.subtitle must match to the given list of recipe subtitles',
             // }),
             .messages({
-              'string.base': 'Ainesosaan liitetyn otsikon täytyy olla merkkijono',
-              'string.empty': 'Ainesosaan liitetty otsikko ei voi olla tyhjä merkkijono',
+              'object.base': 'Ainesosaan liitetyn otsikon täytyy olla objekti',
               'any.only': 'Ainesosaan liitetyn otsikon täytyy löytyä annettulta reseptin alaotsikoiden listalta',
             }),
         })
@@ -495,6 +551,32 @@ const RecipeTagSchema = new Schema<IRecipeTag>(
   }
 );
 
+const RecipeSubtitleSchema = new Schema<IRecipeSubtitle>(
+  {
+    index: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    name: {
+      type: String,
+      required: true,
+      minlength: schemaDefaults.subtitle.minLength,
+      maxlength: schemaDefaults.subtitle.maxLength,
+    },
+  },
+  {
+    toJSON: {
+      versionKey: false,
+      transform: (_, ret) => {
+        // eslint-disable-next-line
+        const { _id, ...recipeSubtitle } = ret;
+        return recipeSubtitle;
+      },
+    },
+  }
+);
+
 const RecipeIngredientSchema = new Schema<IRecipeIngredient>(
   {
     quantity: {
@@ -513,7 +595,7 @@ const RecipeIngredientSchema = new Schema<IRecipeIngredient>(
       maxlength: schemaDefaults.ingredient.description.maxLength,
     },
     subtitle: {
-      type: String,
+      type: RecipeSubtitleSchema,
     },
   },
   {
@@ -623,7 +705,7 @@ const RecipeSchema = new Schema<IRecipe>(
       min: 1,
     },
     subtitles: {
-      type: [String],
+      type: [RecipeSubtitleSchema],
     },
     ingredients: {
       type: [RecipeIngredientSchema],

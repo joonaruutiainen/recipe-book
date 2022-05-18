@@ -27,7 +27,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
 import { TagButton, TagEditor } from '../components';
 import constants from '../constants';
-import { RecipeDuration, RecipeIngredient, RecipeStep, RecipeTag } from '../types';
+import { RecipeDuration, RecipeIngredient, RecipeStep, RecipeSubtitle, RecipeTag } from '../types';
 
 const RecipeEditor = () => {
   const { user } = useAppSelector(state => state.auth);
@@ -54,8 +54,10 @@ const RecipeEditor = () => {
   const [anchorElTags, setAnchorElTags] = useState<null | HTMLDivElement>(null);
   const tagGrid = useRef<HTMLDivElement>(null);
 
-  const [useSubtitles, setUseSubtitles] = useState(false);
-  const [subtitles, setSubtitles] = useState<string[]>(recipe?.subtitles || []);
+  const [useSubtitles, setUseSubtitles] = useState(Boolean(recipe?.subtitles) || false);
+  const [subtitle, setSubtitle] = useState<RecipeSubtitle | null>(null);
+  const [invalidSubtitle, setInvalidSubtitle] = useState(false);
+  const [subtitles, setSubtitles] = useState<RecipeSubtitle[]>(recipe?.subtitles || []);
 
   const [portionSize, setPortionSize] = useState<number>(recipe?.portionSize || 1);
   const [portionSizeUnit, setPortionSizeUnit] = useState<string>('annosta');
@@ -87,6 +89,10 @@ const RecipeEditor = () => {
     }
   }, [dispatch, recipeEditorData]);
 
+  useEffect(() => {
+    if (useSubtitles && subtitles.length === 0) setUseSubtitles(false);
+  }, [useSubtitles, subtitles]);
+
   const submit = () => {
     if (!title) setMissingTitle(true);
     if (!description) setMissingDescription(true);
@@ -108,8 +114,8 @@ const RecipeEditor = () => {
         duration,
         tags: tags.length > 0 ? tags : undefined,
         portionSize,
-        subtitles: subtitles.length > 0 ? subtitles : undefined,
-        ingredients,
+        subtitles: useSubtitles && subtitles.length > 0 ? subtitles : [],
+        ingredients: !useSubtitles ? ingredients.map(i => ({ ...i, subtitle: undefined })) : ingredients,
         instructions,
         pages: 1,
         user: {
@@ -123,9 +129,48 @@ const RecipeEditor = () => {
     }
   };
 
+  const toggleSubtitles = () => {
+    if (subtitles.length === 0) {
+      const newSubtitle: RecipeSubtitle = { name: 'Alaotsikko 1', index: 1 };
+      setSubtitles([newSubtitle]);
+      setSubtitle(newSubtitle);
+      setIngredients(ingredients.map(ingr => ({ ...ingr, subtitle: newSubtitle })));
+    } else if (ingredients.length > 0) setIngredients(ingredients.filter(ingr => ingr.subtitle !== undefined));
+    if (subtitle) setSubtitle(null);
+    if (ingredient) setIngredient(null);
+    setUseSubtitles(!useSubtitles);
+  };
+
+  const removeSubtitle = () => {
+    if (subtitle && subtitles.find(st => st.index === subtitle.index)) {
+      setSubtitles(subtitles.filter(st => st.index !== subtitle.index).map((st, i) => ({ ...st, index: i + 1 })));
+      setIngredients(
+        ingredients
+          .filter(ingr => ingr.subtitle?.index !== subtitle.index)
+          .map(ingr =>
+            ingr.subtitle && ingr.subtitle.index > subtitle.index
+              ? { ...ingr, subtitle: { ...ingr.subtitle, index: ingr.subtitle.index - 1 } }
+              : ingr
+          )
+      );
+    }
+    if (invalidSubtitle) setInvalidSubtitle(false);
+    setSubtitle(null);
+  };
+
+  const addSubtitle = () => {
+    if (!subtitle?.name) setInvalidSubtitle(true);
+    if (subtitle && subtitle.name) {
+      if (subtitles.find(st => st.index === subtitle.index))
+        setSubtitles(subtitles.map(st => (st.index === subtitle.index ? subtitle : st)));
+      else setSubtitles(subtitles.concat([subtitle]).sort((a, b) => a.index - b.index));
+      setSubtitle(null);
+    }
+  };
+
   const addIngredient = () => {
     if (!ingredient?.description) setMissingIngredientDescription(true);
-    if (ingredient && ingredient.description) {
+    else {
       setIngredients(ingredients.concat([ingredient]));
       setIngredient(null);
     }
@@ -135,11 +180,6 @@ const RecipeEditor = () => {
     if (ingredient && ingredients.includes(ingredient)) setIngredients(ingredients.filter(i => i !== ingredient));
     if (missingIngredientDescription) setMissingIngredientDescription(false);
     setIngredient(null);
-  };
-
-  const editIngredient = (ingr: RecipeIngredient) => {
-    setIngredients(ingredients.filter(i => i !== ingr));
-    setIngredient(ingr);
   };
 
   const addInstructionStep = () => {
@@ -159,10 +199,6 @@ const RecipeEditor = () => {
     if (missingInstructionStepTitle) setMissingInstructionStepTitle(false);
     if (missingInstructionStepDescription) setMissingInstructionStepDescription(false);
     setInstructionStep(null);
-  };
-
-  const editInstructionStep = (step: RecipeStep) => {
-    setInstructionStep(step);
   };
 
   const imageFileUpload = (
@@ -227,7 +263,6 @@ const RecipeEditor = () => {
         label='Reseptin otsikko'
         value={title}
         fullWidth
-        autoComplete='off'
         color='secondary'
         error={missingTitle}
         inputProps={{ maxLength: 100 }}
@@ -248,7 +283,6 @@ const RecipeEditor = () => {
         label='Reseptin kuvaus'
         value={description}
         fullWidth
-        autoComplete='off'
         color='secondary'
         error={missingDescription}
         multiline
@@ -358,6 +392,69 @@ const RecipeEditor = () => {
     </Stack>
   );
 
+  const newSubtitleButton = (
+    <Button
+      startIcon={<AddIcon color='primary' />}
+      onClick={() => {
+        const newSubtitle: RecipeSubtitle = { name: `Alaotsikko ${subtitles.length + 1}`, index: subtitles.length + 1 };
+        if (ingredient) setIngredient(null);
+        setSubtitle(newSubtitle);
+        setSubtitles(subtitles.concat([newSubtitle]));
+      }}
+      sx={{
+        fontSize: 24,
+        fontFamily: 'Segoe UI',
+        fontWeight: 'lighter',
+      }}
+    >
+      Lisää uusi alaotsikko
+    </Button>
+  );
+
+  const newIngredientButton = (st?: RecipeSubtitle) => (
+    <Button
+      startIcon={<AddIcon color='primary' />}
+      onClick={() => {
+        if (invalidIngredients) setInvalidIngredients(false);
+        if (subtitle) setSubtitle(null);
+        setIngredient({ quantity: 1, unit: 'kpl', description: '', subtitle: st });
+      }}
+      sx={{
+        fontSize: useSubtitles ? 20 : 24,
+        fontFamily: 'Segoe UI',
+        fontWeight: 'lighter',
+      }}
+    >
+      Lisää ainesosa
+    </Button>
+  );
+
+  const singleIngredient = (index: number, ingr: RecipeIngredient) => (
+    <Stack key={index} direction='row' justifyContent='flex-end' alignItems='center'>
+      <Box sx={{ width: '20%' }}>
+        {ingr.quantity && ingr.unit && (
+          <Typography variant='body1'>
+            {ingr.quantity} {ingr.unit}
+          </Typography>
+        )}
+      </Box>
+      <Box sx={{ width: 'fit-content', minWidth: '30%' }}>
+        <Typography variant='body1'>{ingr.description}</Typography>
+      </Box>
+      <Button
+        endIcon={<EditIcon color='primary' />}
+        onClick={() => {
+          if (subtitle) setSubtitle(null);
+          setIngredients(ingredients.filter(i => i !== ingr));
+          setIngredient(ingr);
+        }}
+        sx={{ fontSize: 18 }}
+      >
+        Muokkaa
+      </Button>
+    </Stack>
+  );
+
   const singleIngredientEditor = (
     <Stack direction='column' spacing={1} width='100%'>
       <Stack direction='row' spacing={1} alignItems='center' width='100%'>
@@ -432,7 +529,7 @@ const RecipeEditor = () => {
       <Typography variant='h4'>Ainesosat</Typography>
       <Stack direction='row' spacing={2} justifyContent='space-between'>
         <Stack direction='row' spacing={1} alignItems='center'>
-          <Radio checked={useSubtitles} size='small' onClick={() => setUseSubtitles(!useSubtitles)} />
+          <Radio checked={useSubtitles} size='small' onClick={toggleSubtitles} />
           <Typography variant='body1'>Jaa alaotsikoihin</Typography>
         </Stack>
         <Stack direction='row' spacing={1} alignItems='center'>
@@ -471,48 +568,79 @@ const RecipeEditor = () => {
           </TextField>
         </Stack>
       </Stack>
-      <Stack direction='column' spacing={1} divider={<Divider orientation='horizontal' flexItem />}>
+      <Stack direction='column' spacing={2} divider={<Divider orientation='horizontal' flexItem />}>
         {invalidIngredients && (
           <Typography variant='body1' color='error'>
             Lisää vähintään 1 ainesosa
           </Typography>
         )}
-        {ingredients.map(i => (
-          <Stack key={i.description} direction='row' justifyContent='flex-end' alignItems='center'>
-            <div style={{ width: '20%' }}>
-              {i.quantity && i.unit && (
-                <Typography variant='body1'>
-                  {i.quantity} {i.unit}
-                </Typography>
-              )}
-            </div>
-            <div style={{ width: 'fit-content', minWidth: '30%' }}>
-              <Typography variant='body1'>{i.description}</Typography>
-            </div>
-            <Button endIcon={<EditIcon color='primary' />} onClick={() => editIngredient(i)} sx={{ fontSize: 18 }}>
-              Muokkaa
-            </Button>
+        {useSubtitles && (
+          <Stack direction='column' divider={<Divider orientation='horizontal' flexItem />} spacing={2}>
+            {subtitles.map(st => (
+              <Stack key={st.index} direction='column' width='100%' spacing={1}>
+                {subtitle && subtitle.index === st.index && (
+                  <Stack direction='row' justifyContent='space-between' alignItems='center' spacing={2}>
+                    <TextField
+                      label={`Alaotsikko ${st.index}`}
+                      size='small'
+                      color='secondary'
+                      error={invalidSubtitle}
+                      value={subtitle.name}
+                      onChange={e => {
+                        if (invalidSubtitle) setInvalidSubtitle(false);
+                        setSubtitle({ ...st, name: e.target.value });
+                      }}
+                    />
+                    <Button
+                      endIcon={<CloseIcon color='primary' />}
+                      onClick={() => removeSubtitle()}
+                      sx={{ fontSize: 18 }}
+                    >
+                      Poista alaotsikko
+                    </Button>
+                    <Button endIcon={<DoneIcon color='primary' />} onClick={() => addSubtitle()} sx={{ fontSize: 18 }}>
+                      Tallenna
+                    </Button>
+                  </Stack>
+                )}
+                {!(subtitle && subtitle.index === st.index) && (
+                  <Stack direction='row' alignItems='center' spacing={2}>
+                    <Typography variant='body1'>{st.name}</Typography>
+                    <Button
+                      endIcon={<EditIcon color='primary' />}
+                      onClick={() => {
+                        if (ingredient) setIngredient(null);
+                        setSubtitle(st);
+                      }}
+                      sx={{ fontSize: 18 }}
+                    >
+                      Muokkaa
+                    </Button>
+                  </Stack>
+                )}
+                {ingredients
+                  .filter(ingr => ingr.subtitle?.index === st.index)
+                  .map((ingr, index) => singleIngredient(index, ingr))}
+                <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
+                  {!ingredient && newIngredientButton(st)}
+                  {ingredient && ingredient.subtitle?.index === st.index && singleIngredientEditor}
+                </Stack>
+              </Stack>
+            ))}
+            <Box sx={{ width: '100%', display: 'flex', flexDiretion: 'row', alignItems: 'center' }}>
+              {newSubtitleButton}
+            </Box>
           </Stack>
-        ))}
-        <Stack direction='row' spacing={2} alignItems='center'>
-          {!ingredient && (
-            <Button
-              startIcon={<AddIcon color='primary' />}
-              onClick={() => {
-                if (invalidIngredients) setInvalidIngredients(false);
-                setIngredient({ quantity: 1, unit: 'kpl', description: '' });
-              }}
-              sx={{
-                fontSize: 24,
-                fontFamily: 'Segoe UI',
-                fontWeight: 'lighter',
-              }}
-            >
-              Lisää ainesosa
-            </Button>
-          )}
-          {ingredient && singleIngredientEditor}
-        </Stack>
+        )}
+        {!useSubtitles && (
+          <>
+            {ingredients.map((ingr, index) => singleIngredient(index, ingr))}
+            <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
+              {!ingredient && newIngredientButton()}
+              {ingredient && singleIngredientEditor}
+            </Stack>
+          </>
+        )}
         <div />
       </Stack>
     </Stack>
@@ -566,7 +694,6 @@ const RecipeEditor = () => {
         color='secondary'
         error={missingInstructionStepDescription}
         inputProps={{ maxLength: 1000 }}
-        autoComplete='off'
         multiline
         rows={3}
         value={instructionStep?.description}
@@ -599,39 +726,51 @@ const RecipeEditor = () => {
       )}
       {instructions.map(step => (
         <Stack key={step.index} direction='column' width='100%' spacing={1}>
-          <Stack
-            direction='row'
-            justifyContent='flex-start'
-            alignItems='center'
-            divider={<Divider orientation='vertical' flexItem />}
-            spacing={2}
-          >
-            <Typography variant='h3' width={15}>
-              {step.index}
-            </Typography>
-            <Typography variant='h3'>{step.title}</Typography>
-          </Stack>
-          <Typography variant='body1' align='justify'>
-            {step.description}
-          </Typography>
-          <Stack direction='row' justifyContent='flex-end' width='100%'>
-            <Button
-              endIcon={<EditIcon color='primary' />}
-              onClick={() => editInstructionStep(step)}
-              sx={{ fontSize: 18 }}
-            >
-              Muokkaa
-            </Button>
-          </Stack>
+          {instructionStep && instructionStep.index === step.index && instructionStepEditor}
+          {!(instructionStep && instructionStep.index === step.index) && (
+            <>
+              <Stack
+                direction='row'
+                justifyContent='flex-start'
+                alignItems='center'
+                divider={<Divider orientation='vertical' flexItem />}
+                spacing={2}
+              >
+                <Typography variant='h3' width={15}>
+                  {step.index}
+                </Typography>
+                <Typography variant='h3'>{step.title}</Typography>
+              </Stack>
+              <Typography variant='body1' align='justify'>
+                {step.description}
+              </Typography>
+              <Stack direction='row' justifyContent='flex-end' width='100%'>
+                <Button
+                  endIcon={<EditIcon color='primary' />}
+                  onClick={() => {
+                    if (instructionStep && (instructionStep.title === '' || instructionStep.description === '')) {
+                      removeInstructionStep();
+                    }
+                    setInstructionStep(step);
+                  }}
+                  sx={{ fontSize: 18 }}
+                >
+                  Muokkaa
+                </Button>
+              </Stack>
+            </>
+          )}
         </Stack>
       ))}
-      <Stack direction='row' spacing={2} alignItems='center'>
-        {!instructionStep && (
+      {instructionStep && !instructions.find(step => step.index === instructionStep.index) && instructionStepEditor}
+      {!instructionStep && (
+        <Stack direction='row' spacing={2} alignItems='center'>
           <Button
             startIcon={<AddIcon color='primary' />}
             onClick={() => {
               if (invalidInstructions) setInvalidInstructions(false);
-              setInstructionStep({ index: instructions.length + 1, title: '', description: '', pageNumber: 1 });
+              const newStep: RecipeStep = { index: instructions.length + 1, title: '', description: '', pageNumber: 1 };
+              setInstructionStep(newStep);
             }}
             sx={{
               fontSize: 24,
@@ -641,9 +780,8 @@ const RecipeEditor = () => {
           >
             Lisää vaihe
           </Button>
-        )}
-        {instructionStep && instructionStepEditor}
-      </Stack>
+        </Stack>
+      )}
       <div />
     </Stack>
   );
@@ -748,13 +886,7 @@ const RecipeEditor = () => {
                 dispatch(recipeActions.selectRecipe(newRecipe.id));
                 dispatch(recipeActions.clearNewRecipe());
               }}
-              sx={{
-                width: '200px',
-                fontSize: 20,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
-              }}
+              sx={{ width: '200px' }}
             >
               Avaa resepti
             </Button>
@@ -767,13 +899,7 @@ const RecipeEditor = () => {
                 navigate('/recipeEditor');
                 dispatch(recipeActions.clearError());
               }}
-              sx={{
-                width: '200px',
-                fontSize: 20,
-                paddingX: 3,
-                textTransform: 'none',
-                borderRadius: 25,
-              }}
+              sx={{ width: '200px' }}
             >
               Muokkaa
             </Button>
@@ -786,13 +912,7 @@ const RecipeEditor = () => {
               if (error) dispatch(recipeActions.clearError());
               if (newRecipe) dispatch(recipeActions.clearNewRecipe());
             }}
-            sx={{
-              width: '200px',
-              fontSize: 20,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-            }}
+            sx={{ width: '200px' }}
           >
             Palaa etusivulle
           </Button>
