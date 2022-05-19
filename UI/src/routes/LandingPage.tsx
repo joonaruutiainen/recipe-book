@@ -4,6 +4,7 @@ import { Button, Stack, Typography, Box, Grid, Container } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import MealIcon from '../img/meal.png';
 import ChefIcon from '../img/chef.png';
+import RecipeIcon from '../img/recipeDark.png';
 import { useAppSelector } from '../redux/hooks';
 
 const LandingPage = () => {
@@ -24,7 +25,7 @@ const LandingPage = () => {
           height: '100%',
         }}
       >
-        <Grid container justifyContent='center' alignItems='center' spacing={15}>
+        <Grid container justifyContent='space-evenly' alignItems='center' spacing={15}>
           <Grid
             item
             container
@@ -47,7 +48,12 @@ const LandingPage = () => {
                 gap: 5,
               }}
             >
-              <div style={{ width: '450px', height: '250px', backgroundColor: 'white' }} />
+              <img
+                src={RecipeIcon}
+                alt=''
+                width={450}
+                style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }}
+              />
               <Stack direction='column' justifyContent='center' spacing={2}>
                 <Stack direction='row' spacing={2} alignItems='center'>
                   <DoneIcon color='secondary' />

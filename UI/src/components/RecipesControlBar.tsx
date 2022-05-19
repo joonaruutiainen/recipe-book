@@ -4,7 +4,7 @@ import { Grid, Stack, Divider, Paper, InputBase, Tooltip, Button, Typography, Ic
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import TuneIcon from '@mui/icons-material/Tune';
-import RecipeIcon from '../img/recipe.png';
+import RecipeIcon from '../img/recipeWhite.png';
 import TagEditor from './TagEditor';
 import { recipeActions, SelectionFilter } from '../redux/slices/recipesSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
