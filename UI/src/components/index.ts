@@ -4,3 +4,5 @@ export { default as TagButton } from './TagButton';
 export { default as AlertDialog } from './AlertDialog';
 export { default as TagEditor } from './TagEditor';
 export { default as IngredientEditor } from './IngredientEditor';
+export { default as RecipesControlBar } from './RecipesControlBar';
+export { default as RecipeGridItem } from './RecipeGridItem';
