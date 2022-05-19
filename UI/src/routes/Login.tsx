@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Button, CircularProgress, TextField, Typography } from '@mui/material';
+import { Grid, Button, CircularProgress, TextField, Typography, Card, Box } from '@mui/material';
 import LoginImg from '../img/login.png';
-import { CardContainer, Notification } from '../components';
+import { Notification } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
@@ -84,9 +84,9 @@ const Login = () => {
         <img src={LoginImg} alt='' width={300} style={{ filter: 'drop-shadow(2px 2px 7px rgba(57, 53, 44, 0.4))' }} />
       </Grid>
       <Grid container item md={3} direction='column' justifyContent='center' alignItems='center'>
-        <CardContainer width='500px' height='550px'>
-          <div
-            style={{
+        <Card sx={{ width: '500px', height: '550px', justifyContent: 'space-evenly' }}>
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -106,7 +106,7 @@ const Login = () => {
                 }}
               />
             )}
-          </div>
+          </Box>
           <form
             onSubmit={submit}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '300px' }}
@@ -117,7 +117,6 @@ const Login = () => {
               inputRef={identifierInput}
               error={missingIdentifier}
               fullWidth
-              color='secondary'
               autoFocus
               onChange={e => {
                 if (missingIdentifier) setMissingIdentifier(false);
@@ -137,7 +136,6 @@ const Login = () => {
               inputRef={passwordInput}
               error={missingPassword}
               fullWidth
-              color='secondary'
               onChange={e => {
                 if (missingPassword) setMissingPassword(false);
                 setPassword(e.target.value);
@@ -153,8 +151,8 @@ const Login = () => {
               Kirjaudu sisään
             </Button>
           </form>
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -167,8 +165,8 @@ const Login = () => {
             <Button color='secondary' onClick={() => navigate('/register')}>
               Rekisteröidy
             </Button>
-          </div>
-        </CardContainer>
+          </Box>
+        </Card>
       </Grid>
     </Grid>
   );

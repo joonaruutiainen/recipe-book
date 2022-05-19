@@ -26,7 +26,7 @@ const NavBar = () => {
 
   return (
     <AppBar position='static' sx={{ width: '100vw' }}>
-      <Toolbar disableGutters>
+      <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
         <Box
           sx={{ ml: 5, display: 'flex', justifyContent: 'center', '&:hover': { cursor: 'pointer' } }}
           onClick={() => {
@@ -38,41 +38,6 @@ const NavBar = () => {
           }}
         >
           <img src={Logo} alt='' height='80px' />
-        </Box>
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          <Button onClick={() => navigate('/')} sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}>
-            Home
-          </Button>
-          <Button
-            onClick={() => navigate('login')}
-            sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}
-          >
-            Login
-          </Button>
-          <Button
-            onClick={() => navigate('register')}
-            sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}
-          >
-            Register
-          </Button>
-          <Button
-            onClick={() => navigate('recipes')}
-            sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}
-          >
-            Recipes
-          </Button>
-          <Button
-            onClick={() => navigate('recipeEditor')}
-            sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}
-          >
-            RecipeEditor
-          </Button>
-          <Button
-            onClick={() => navigate('users')}
-            sx={{ my: 2, color: 'white', textTransform: 'none', display: 'block' }}
-          >
-            Users
-          </Button>
         </Box>
         {user && (
           <Box
@@ -143,14 +108,7 @@ const NavBar = () => {
             color='secondary'
             onClick={() => navigate('login')}
             size='small'
-            sx={{
-              width: '220px',
-              mr: 5,
-              fontSize: 20,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-            }}
+            sx={{ width: '220px', mr: 5 }}
           >
             Kirjaudu sisään
           </Button>

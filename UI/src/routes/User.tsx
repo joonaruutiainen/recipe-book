@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CircularProgress, Stack, Typography, Box, TextField, Button } from '@mui/material';
+import { CircularProgress, Stack, Typography, Box, TextField, Button, Card } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyIcon from '@mui/icons-material/Key';
-import { CardContainer, Notification } from '../components';
+import { Notification } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { userActions } from '../redux/slices/usersSlice';
 import { authActions } from '../redux/slices/authSlice';
@@ -117,11 +117,11 @@ const User = () => {
   };
 
   return loading ? (
-    <CardContainer width='500px' height='550px'>
+    <Card sx={{ width: '500px', height: '550px', justifyContent: 'center' }}>
       <CircularProgress color='secondary' />
-    </CardContainer>
+    </Card>
   ) : (
-    <CardContainer width='500px' height='550px'>
+    <Card sx={{ width: '500px', height: '550px', justifyContent: 'space-evenly' }}>
       {user && (
         <Stack direction='column' justifyContent='space-between' spacing={2} width='90%' height='90%'>
           <Box
@@ -178,7 +178,6 @@ const User = () => {
                 value={name}
                 error={missingName}
                 fullWidth
-                color='secondary'
                 onChange={e => {
                   if (missingName) setMissingName(false);
                   setName(e.target.value);
@@ -189,7 +188,6 @@ const User = () => {
                 value={email}
                 error={missingEmail}
                 fullWidth
-                color='secondary'
                 onChange={e => {
                   if (missingEmail) setMissingEmail(false);
                   setEmail(e.target.value);
@@ -236,7 +234,6 @@ const User = () => {
                 error={missingPassword}
                 fullWidth
                 autoFocus
-                color='secondary'
                 onChange={e => setPassword(e.target.value)}
               />
               <TextField
@@ -245,7 +242,6 @@ const User = () => {
                 value={newPassword}
                 error={missingNewPassword}
                 fullWidth
-                color='secondary'
                 onChange={e => setNewPassword(e.target.value)}
               />
               <Stack direction='row' spacing={2} justifyContent='flex-end' alignItems='center' width='100%'>
@@ -260,7 +256,7 @@ const User = () => {
           )}
         </Stack>
       )}
-    </CardContainer>
+    </Card>
   );
 };
 export default User;

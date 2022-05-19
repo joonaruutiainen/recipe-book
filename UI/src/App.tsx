@@ -97,6 +97,28 @@ const theme = createTheme({
     MuiInputBase: {
       defaultProps: {
         autoComplete: 'off',
+        color: 'secondary',
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        InputLabelProps: {
+          color: 'secondary',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          borderRadius: 7,
+          backgroundColor: 'white',
+          boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.6)',
+        },
       },
     },
   },

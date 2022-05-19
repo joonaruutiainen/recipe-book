@@ -21,6 +21,12 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
   const [description, setDescription] = useState<string>(ingredient.description);
   const [missingDescription, setMissingDescription] = useState(false);
 
+  const save = () => {
+    if (!description) setMissingDescription(true);
+    else if (ignoreIngredientQuantity) onSave({ description, subtitle });
+    else onSave({ quantity, unit, description, subtitle });
+  };
+
   return (
     <Stack direction='column' spacing={1} width='100%'>
       <Stack direction='row' spacing={1} alignItems='center' width='100%'>
@@ -28,7 +34,6 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
           label='Määrä'
           type='number'
           size='small'
-          color='secondary'
           value={quantity}
           onChange={e => setQuantity(parseFloat(e.target.value))}
           disabled={ignoreIngredientQuantity}
@@ -43,7 +48,6 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
           select
           label='Yksikkö'
           size='small'
-          color='secondary'
           value={unit}
           onChange={e => setUnit(e.target.value)}
           disabled={ignoreIngredientQuantity}
@@ -72,7 +76,6 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
       <TextField
         label='Kuvaus'
         size='small'
-        color='secondary'
         error={missingDescription}
         inputProps={{ maxLength: 100 }}
         value={description}
@@ -85,14 +88,7 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
         <Button endIcon={<CloseIcon color='primary' />} onClick={onClose}>
           Poista ainesosa
         </Button>
-        <Button
-          endIcon={<DoneIcon color='primary' />}
-          onClick={() => {
-            if (!description) setMissingDescription(true);
-            else if (ignoreIngredientQuantity) onSave({ description, subtitle });
-            else onSave({ quantity, unit, description, subtitle });
-          }}
-        >
+        <Button endIcon={<DoneIcon color='primary' />} onClick={save}>
           Tallenna
         </Button>
       </Stack>

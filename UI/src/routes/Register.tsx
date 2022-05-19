@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Grid, TextField, Typography, Card, Box } from '@mui/material';
 import RegistrationImg from '../img/registration.png';
-import { CardContainer, Notification } from '../components';
+import { Notification } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { authActions } from '../redux/slices/authSlice';
 
@@ -85,9 +85,9 @@ const Register = () => {
         />
       </Grid>
       <Grid container item md={3} direction='column' justifyContent='center' alignItems='center'>
-        <CardContainer width='500px' height='700px'>
-          <div
-            style={{
+        <Card sx={{ width: '500px', height: '700px', justifyContent: 'space-evenly' }}>
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -109,7 +109,7 @@ const Register = () => {
                 }}
               />
             )}
-          </div>
+          </Box>
           <form
             onSubmit={submit}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '300px' }}
@@ -120,7 +120,6 @@ const Register = () => {
               inputRef={nameInput}
               error={missingName}
               fullWidth
-              color='secondary'
               autoFocus
               onChange={e => {
                 if (missingName) setMissingName(false);
@@ -139,7 +138,6 @@ const Register = () => {
               inputRef={emailInput}
               error={missingEmail}
               fullWidth
-              color='secondary'
               onChange={e => {
                 if (missingEmail) setMissingEmail(false);
                 setEmail(e.target.value);
@@ -158,7 +156,6 @@ const Register = () => {
               inputRef={passwordInput}
               error={missingPassword}
               fullWidth
-              color='secondary'
               onChange={e => {
                 if (missingPassword) setMissingPassword(false);
                 setPassword(e.target.value);
@@ -177,7 +174,6 @@ const Register = () => {
               inputRef={confirmPasswordInput}
               error={missingCorfimPassword}
               fullWidth
-              color='secondary'
               onChange={e => {
                 if (missingCorfimPassword) setMissingConfirmPassword(false);
                 setConfirmPassword(e.target.value);
@@ -193,8 +189,8 @@ const Register = () => {
               Luo käyttäjä
             </Button>
           </form>
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -207,8 +203,8 @@ const Register = () => {
             <Button color='secondary' onClick={() => navigate('/login')}>
               Kirjaudu sisään
             </Button>
-          </div>
-        </CardContainer>
+          </Box>
+        </Card>
       </Grid>
     </Grid>
   );

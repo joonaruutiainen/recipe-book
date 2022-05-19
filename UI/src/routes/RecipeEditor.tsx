@@ -257,7 +257,6 @@ const RecipeEditor = () => {
         label='Reseptin otsikko'
         value={title}
         fullWidth
-        color='secondary'
         error={missingTitle}
         inputProps={{ maxLength: 100 }}
         onChange={e => {
@@ -277,7 +276,6 @@ const RecipeEditor = () => {
         label='Reseptin kuvaus'
         value={description}
         fullWidth
-        color='secondary'
         error={missingDescription}
         multiline
         rows={4}
@@ -302,7 +300,6 @@ const RecipeEditor = () => {
           label='h'
           value={duration.hours}
           size='small'
-          color='secondary'
           error={invalidDuration}
           SelectProps={{
             MenuProps: {
@@ -328,7 +325,6 @@ const RecipeEditor = () => {
           label='min'
           value={duration.minutes}
           size='small'
-          color='secondary'
           error={invalidDuration}
           SelectProps={{
             MenuProps: {
@@ -464,7 +460,6 @@ const RecipeEditor = () => {
             type='number'
             hiddenLabel
             size='small'
-            color='secondary'
             value={portionSize}
             onChange={e => setPortionSize(parseInt(e.target.value, 10))}
             inputProps={{
@@ -477,7 +472,6 @@ const RecipeEditor = () => {
             select
             hiddenLabel
             size='small'
-            color='secondary'
             value={portionSizeUnit}
             onChange={e => setPortionSizeUnit(e.target.value)}
             SelectProps={{
@@ -509,7 +503,6 @@ const RecipeEditor = () => {
                     <TextField
                       label={`Alaotsikko ${st.index}`}
                       size='small'
-                      color='secondary'
                       error={invalidSubtitle}
                       value={subtitle.name}
                       onChange={e => {
@@ -607,7 +600,6 @@ const RecipeEditor = () => {
         <TextField
           label='Vaiheen otsikko'
           size='small'
-          color='secondary'
           fullWidth
           autoFocus
           error={missingInstructionStepTitle}
@@ -626,7 +618,6 @@ const RecipeEditor = () => {
       <TextField
         label='Ohjeet'
         size='small'
-        color='secondary'
         error={missingInstructionStepDescription}
         inputProps={{ maxLength: 1000 }}
         multiline
@@ -736,18 +727,20 @@ const RecipeEditor = () => {
     >
       <Card
         sx={{
-          width: '100%',
           height: '87vh',
           position: 'sticky',
           top: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
-          overflow: 'auto',
+          overflowY: 'auto',
         }}
       >
-        <Stack direction='column' justifyContent='flex-start' alignItems='center' spacing={3} sx={{ margin: 5 }}>
+        <Stack
+          direction='column'
+          justifyContent='flex-start'
+          alignItems='center'
+          spacing={3}
+          width='90%'
+          sx={{ margin: 5 }}
+        >
           <Typography variant='h2'>Valmistusohje</Typography>
           {instructionsEditor}
         </Stack>

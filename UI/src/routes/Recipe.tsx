@@ -175,15 +175,10 @@ const Recipe = () => {
     >
       <Card
         sx={{
-          width: '100%',
           height: '87vh',
           position: 'sticky',
           top: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
-          overflow: 'auto',
+          overflowY: 'auto',
         }}
       >
         <Stack
@@ -192,6 +187,7 @@ const Recipe = () => {
           alignItems='center'
           divider={<Divider orientation='horizontal' flexItem />}
           spacing={3}
+          width='90%'
           sx={{ margin: 5 }}
         >
           <Typography variant='h2'>Valmistusohje</Typography>

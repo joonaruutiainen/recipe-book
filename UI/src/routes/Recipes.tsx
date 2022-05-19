@@ -219,11 +219,7 @@ const Recipes = () => {
                 sx={{
                   width: '370px',
                   height: '320px',
-                  display: 'flex',
-                  flexDirection: 'column',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
-                  boxShadow: '2px 3px 15px 2px rgba(57, 53, 44, 0.4)',
                   '&:hover': {
                     cursor: 'pointer',
                   },

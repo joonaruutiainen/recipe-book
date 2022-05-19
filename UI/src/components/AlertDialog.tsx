@@ -23,22 +23,20 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
   const handleClose = () => {};
 
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{title}</DialogTitle>
-        {text && (
-          <DialogContent>
-            <DialogContentText>{text}</DialogContentText>
-          </DialogContent>
-        )}
-        <DialogActions>
-          <Button onClick={onDecline}>{declineText}</Button>
-          <Button onClick={onAccept} autoFocus>
-            {acceptText}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>{title}</DialogTitle>
+      {text && (
+        <DialogContent>
+          <DialogContentText>{text}</DialogContentText>
+        </DialogContent>
+      )}
+      <DialogActions>
+        <Button onClick={onDecline}>{declineText}</Button>
+        <Button onClick={onAccept} autoFocus>
+          {acceptText}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

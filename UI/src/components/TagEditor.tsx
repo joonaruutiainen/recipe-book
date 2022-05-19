@@ -21,6 +21,15 @@ const TagEditor: React.FC<TagEditorProps> = ({ anchorEl, open, selection, onClos
     setTagSelection(selection);
   }, [selection]);
 
+  const save = () => {
+    onSave(tagSelection);
+  };
+
+  const cancel = () => {
+    onClose();
+    setTagSelection(selection);
+  };
+
   return (
     <Menu
       anchorEl={anchorEl}
@@ -46,7 +55,7 @@ const TagEditor: React.FC<TagEditorProps> = ({ anchorEl, open, selection, onClos
         },
       }}
     >
-      <Stack direction='column' width='100%'>
+      <Stack direction='column' width='100%' alignItems='center'>
         <Box sx={{ width: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', p: 1 }}>
           <Grid container spacing={1} width='95%'>
             {constants.tags.map(tag => (
@@ -65,33 +74,9 @@ const TagEditor: React.FC<TagEditorProps> = ({ anchorEl, open, selection, onClos
             ))}
           </Grid>
         </Box>
-        <Stack direction='row' width='100%' justifyContent='space-between'>
-          <Button
-            size='small'
-            sx={{
-              fontSize: 20,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-            }}
-            onClick={() => {
-              onClose();
-              setTagSelection(selection);
-            }}
-          >
-            Peruuta
-          </Button>
-          <Button
-            color='secondary'
-            size='small'
-            sx={{
-              fontSize: 20,
-              paddingX: 3,
-              textTransform: 'none',
-              borderRadius: 25,
-            }}
-            onClick={() => onSave(tagSelection)}
-          >
+        <Stack direction='row' width='95%' justifyContent='space-between'>
+          <Button onClick={cancel}>Peruuta</Button>
+          <Button color='secondary' onClick={save}>
             Tallenna
           </Button>
         </Stack>
