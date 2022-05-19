@@ -14,8 +14,10 @@ const Recipes = () => {
   const [filteredSelection, setFilteredSelection] = useState<Recipe[] | null>(null);
 
   useEffect(() => {
-    if (selectionFilter === SelectionFilter.all) setSelection(recipes);
-    else if (selectionFilter === SelectionFilter.myRecipes) setSelection(recipes.filter(r => r.user.id === user?.id));
+    if (selectionFilter === SelectionFilter.myRecipes) setSelection(recipes.filter(r => r.user.id === user?.id));
+    else if (selectionFilter === SelectionFilter.favorites)
+      setSelection(recipes.filter(r => user?.favorites.includes(r.id)));
+    else setSelection(recipes);
   }, [selectionFilter, recipes]);
 
   const filterSelection = (searchFilter?: string, tagFilters?: RecipeTag[]) => {

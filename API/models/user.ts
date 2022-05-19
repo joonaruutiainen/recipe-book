@@ -123,6 +123,10 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    favorites: {
+      type: [String],
+      default: [],
+    },
   },
   {
     toJSON: {

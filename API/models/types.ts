@@ -18,6 +18,7 @@ export interface IUser {
   email: string;
   password: string;
   admin: boolean;
+  favorites: string[];
   verifyPassword: (password: string) => Promise<APIValidationResult>;
 }
 

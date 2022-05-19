@@ -8,6 +8,12 @@ const userRouter: Router = express.Router();
 userRouter.get('/', auth.adminRightsRequired, userController.getUsers);
 
 userRouter.get('/:userId', auth.userRightsRequired, userController.getUser);
+userRouter.put(
+  '/:userId/updateFavorites/:recipeId',
+  auth.userRightsRequired,
+  csrfProtection,
+  userController.updateUserFavorites
+);
 userRouter.put('/:userId', auth.userRightsRequired, csrfProtection, userController.updateUser);
 userRouter.delete('/:userId', auth.userRightsRequired, csrfProtection, userController.deleteUser);
 

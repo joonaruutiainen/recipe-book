@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Grid, Divider, Button, Typography, Card, Box, CircularProgress, IconButton } from '@mui/material';
+import {
+  Stack,
+  Grid,
+  Divider,
+  Button,
+  Typography,
+  Card,
+  Box,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarIcon from '@mui/icons-material/Star';
@@ -9,11 +20,15 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { recipeActions } from '../redux/slices/recipesSlice';
+import { userActions } from '../redux/slices/usersSlice';
+import { authActions } from '../redux/slices/authSlice';
 import { AlertDialog, TagButton } from '../components';
 
 const Recipe = () => {
   const { user } = useAppSelector(state => state.auth);
   const { selected: recipe, loadingOne: loading, error } = useAppSelector(state => state.recipes);
+  const { userUpdated: favoritesUpdated, selected: updatedUser } = useAppSelector(state => state.users);
+  const [inFavorites, setInFavorites] = useState(false);
   const [selectedPortionSize, setSelectedPortionSize] = useState(recipe?.portionSize || 1);
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
   const [recipeDeleted, setRecipeDeleted] = useState(false);
@@ -24,6 +39,30 @@ const Recipe = () => {
   useEffect(() => {
     if (!recipe && !error && recipeId && !recipeDeleted) dispatch(recipeActions.getRecipe(recipeId));
   }, [dispatch, recipe, error]);
+
+  useEffect(() => {
+    if (favoritesUpdated && updatedUser) {
+      dispatch(authActions.updateCurrentUser(updatedUser));
+      dispatch(userActions.clearSelectedUser());
+      dispatch(userActions.clearUserUpdated());
+    }
+  }, [favoritesUpdated, updatedUser]);
+
+  useEffect(() => {
+    if (user && recipe) setInFavorites(user.favorites.includes(recipe.id));
+  }, [user, recipe]);
+
+  const toggleInFavorites = () => {
+    if (!user) navigate('/login');
+    else if (recipe)
+      dispatch(
+        userActions.updateUserFavorites({
+          userId: user.id,
+          recipeId: recipe.id,
+          value: !inFavorites,
+        })
+      );
+  };
 
   const recipeDescriptionColumn = recipe ? (
     <Stack
@@ -55,7 +94,11 @@ const Recipe = () => {
           {recipe.duration.minutes > 0 && <Typography variant='body1'>{recipe.duration.minutes}min</Typography>}
           <Typography variant='body1'>valmistusaika</Typography>
         </Stack>
-        <Button startIcon={<StarIcon />}>Lisää suosikkilistalle</Button>
+        <Tooltip title={inFavorites ? 'Poista suosikeista' : ''}>
+          <Button startIcon={<StarIcon />} onClick={toggleInFavorites} color={inFavorites ? 'secondary' : 'primary'}>
+            {inFavorites ? 'Lisätty suosikkeihin' : 'Lisää suosikkeihin'}
+          </Button>
+        </Tooltip>
         <Button startIcon={<PeopleIcon />}>Julkaise</Button>
       </Stack>
       <Stack direction='row' justifyContent='flex-start' spacing={1} width='100%'>

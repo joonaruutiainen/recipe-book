@@ -125,7 +125,7 @@ const theme = createTheme({
 });
 
 const App = () => {
-  const { initialized, user, loading } = useAppSelector(state => state.auth);
+  const { initialized, loggedIn, loading } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -136,10 +136,10 @@ const App = () => {
   }, [dispatch, initialized]);
 
   useEffect(() => {
-    if (user) {
+    if (loggedIn) {
       dispatch(recipeActions.getRecipes());
     }
-  }, [dispatch, user]);
+  }, [dispatch, loggedIn]);
 
   return (
     <ThemeProvider theme={theme}>

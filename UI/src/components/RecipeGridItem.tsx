@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Stack, Card, CardMedia, Tooltip, Box, Typography, IconButton } from '@mui/material';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -6,17 +6,46 @@ import StarIcon from '@mui/icons-material/Star';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TagButton from './TagButton';
 import { Recipe } from '../types';
-import { useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { userActions } from '../redux/slices/usersSlice';
 import { recipeActions } from '../redux/slices/recipesSlice';
+import { authActions } from '../redux/slices/authSlice';
 
 export interface RecipeGridItemProps {
   recipe: Recipe;
 }
 
 const RecipeGridItem: React.FC<RecipeGridItemProps> = ({ recipe }) => {
+  const { user } = useAppSelector(state => state.auth);
+  const { userUpdated: favoritesUpdated, selected: updatedUser } = useAppSelector(state => state.users);
   const [inFavorites, setInFavorites] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (favoritesUpdated && updatedUser) {
+      dispatch(authActions.updateCurrentUser(updatedUser));
+      dispatch(userActions.clearSelectedUser());
+      dispatch(userActions.clearUserUpdated());
+    }
+  }, [favoritesUpdated, updatedUser]);
+
+  useEffect(() => {
+    if (user) setInFavorites(user.favorites.includes(recipe.id));
+  }, [user]);
+
+  const toggleInFavorites = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) navigate('/login');
+    else
+      dispatch(
+        userActions.updateUserFavorites({
+          userId: user.id,
+          recipeId: recipe.id,
+          value: !inFavorites,
+        })
+      );
+  };
 
   return (
     <Grid container item sm={12} md={6} lg={4} xl={3} key={recipe.id} justifyContent='center' alignItems='center'>
@@ -63,14 +92,7 @@ const RecipeGridItem: React.FC<RecipeGridItemProps> = ({ recipe }) => {
               {recipe.title}
             </Typography>
             <Tooltip title={inFavorites ? 'Poista suosikeista' : 'Lisää suosikkeihin'}>
-              <IconButton
-                onMouseDown={e => e.stopPropagation()}
-                onClick={e => {
-                  e.stopPropagation();
-                  setInFavorites(!inFavorites);
-                }}
-                sx={{ p: '1px' }}
-              >
+              <IconButton onMouseDown={e => e.stopPropagation()} onClick={toggleInFavorites} sx={{ p: '1px' }}>
                 <StarIcon
                   color={inFavorites ? 'secondary' : 'primary'}
                   sx={{

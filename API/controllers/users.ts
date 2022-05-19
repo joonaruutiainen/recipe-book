@@ -3,6 +3,8 @@ import { Error as DBError } from 'mongoose';
 import User from '../models/user';
 import APIError from '../models/apiError';
 import makeResponse from '../utils/responseHandler';
+import { validateRecipeId } from './recipes';
+import loadUserFromRequest from '../utils/loadUser';
 
 const validateUserId = async (req: Request) => {
   const { userId } = req.params;
@@ -71,6 +73,31 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+const updateUserFavorites = async (req: Request, res: Response) => {
+  try {
+    const recipe = await validateRecipeId(req);
+
+    const { user, error } = await loadUserFromRequest(req);
+    if (error) throw new APIError(error, 500);
+
+    const { add, remove } = req.body;
+
+    if (!add && !remove) throw new APIError('Missing required fields', 400);
+
+    if (!user) throw new APIError('User not found', 404);
+
+    if (add) user.favorites = user.favorites.concat(recipe.id);
+    else user.favorites = user.favorites.filter(r => r !== recipe.id);
+
+    await user.save();
+
+    return makeResponse.success(res, 200, 'Recipe added to user favorites', user);
+  } catch (err) {
+    if (err instanceof APIError) return makeResponse.error(res, err);
+    return makeResponse.error(res, new APIError('Internal server error when adding recipe to user favorites', 500));
+  }
+};
+
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const user = await validateUserId(req);
@@ -88,6 +115,7 @@ const userController = {
   getUsers,
   getUser,
   updateUser,
+  updateUserFavorites,
   deleteUser,
 };
 

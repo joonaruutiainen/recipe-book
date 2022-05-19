@@ -7,6 +7,7 @@ import type { RootState } from '../store';
 export interface AuthState {
   initialized: boolean;
   user: User | null;
+  loggedIn: boolean;
   newUser: User | null;
   loginData: LoginData | null;
   registrationData: RegistrationData | null;
@@ -19,6 +20,7 @@ const user: User | undefined = JSON.parse(localStorage.getItem('user')!);
 const initialState: AuthState = {
   initialized: false,
   user: user || null,
+  loggedIn: false,
   newUser: null,
   loginData: null,
   registrationData: null,
@@ -136,6 +138,7 @@ const AuthSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload));
       state.loading = false;
       state.user = action.payload;
+      state.loggedIn = true;
       state.loginData = null;
       state.error = null;
     });
@@ -158,6 +161,7 @@ const AuthSlice = createSlice({
       localStorage.removeItem('user');
       state.initialized = false;
       state.user = null;
+      state.loggedIn = false;
       state.newUser = null;
       state.loading = false;
       state.error = null;

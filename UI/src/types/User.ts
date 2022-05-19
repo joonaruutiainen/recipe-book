@@ -15,6 +15,10 @@ export interface User {
    * True if the user is marked as an admin, false otherwise.
    */
   admin: boolean;
+  /**
+   * The list of recipe IDs added to user favorites
+   */
+  favorites: string[];
 }
 
 export interface UserEditorData {
@@ -23,4 +27,10 @@ export interface UserEditorData {
   email?: string;
   password?: string;
   newPassword?: string;
+}
+
+export interface FavoritesEditorData {
+  userId: string;
+  recipeId: string;
+  value: boolean;
 }

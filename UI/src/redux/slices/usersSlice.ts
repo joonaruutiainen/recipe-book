@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { User, UserEditorData } from '../../types';
+import { FavoritesEditorData, User, UserEditorData } from '../../types';
 import ApplicationError from '../../utils/ApplicationError';
 import { userService } from '../../services';
 import type { RootState } from '../store';
@@ -68,6 +68,18 @@ const updateUser = createAsyncThunk<User, UserEditorData, { rejectValue: Applica
   async (userData: UserEditorData, { rejectWithValue }) => {
     try {
       const res = await userService.updateUser(userData);
+      return res.payload as User;
+    } catch (err) {
+      return rejectWithValue(err as ApplicationError);
+    }
+  }
+);
+
+const updateUserFavorites = createAsyncThunk<User, FavoritesEditorData, { rejectValue: ApplicationError }>(
+  `${sliceName}/updateUserFavorites`,
+  async (data: FavoritesEditorData, { rejectWithValue }) => {
+    try {
+      const res = await userService.updateUserFavorites(data);
       return res.payload as User;
     } catch (err) {
       return rejectWithValue(err as ApplicationError);
@@ -147,6 +159,23 @@ const UsersSlice = createSlice({
         state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
       }
     });
+    builder.addCase(updateUserFavorites.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(updateUserFavorites.fulfilled, (state, action) => {
+      state.loading = false;
+      state.selected = action.payload;
+      state.userUpdated = true;
+      state.error = null;
+    });
+    builder.addCase(updateUserFavorites.rejected, (state, action) => {
+      state.loading = false;
+      if (action.payload) {
+        state.error = action.payload;
+      } else {
+        state.error = new ApplicationError(action.error.message!, parseInt(action.error.code!, 10));
+      }
+    });
     builder.addCase(authActions.loginUser.fulfilled, (state, action) => {
       state.all = [action.payload];
     });
@@ -158,6 +187,7 @@ export const userActions = {
   getUsers,
   getUser,
   updateUser,
+  updateUserFavorites,
   ...UsersSlice.actions,
 };
 

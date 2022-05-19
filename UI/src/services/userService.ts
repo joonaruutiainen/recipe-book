@@ -1,10 +1,11 @@
-import { APIResponse, User, UserEditorData } from '../types';
+import { APIResponse, FavoritesEditorData, User, UserEditorData } from '../types';
 import apiService from './apiService';
 
 interface UserService {
   getUsers: () => Promise<APIResponse<User[]>>;
   getUser: (userId: string) => Promise<APIResponse<User>>;
   updateUser: (userData: UserEditorData) => Promise<APIResponse<User>>;
+  updateUserFavorites: (data: FavoritesEditorData) => Promise<APIResponse<User>>;
 }
 
 const getUsers = () =>
@@ -28,10 +29,20 @@ const updateUser = (userData: UserEditorData) => {
   });
 };
 
+const updateUserFavorites = (data: FavoritesEditorData) => {
+  const { userId, recipeId, value } = data;
+  return apiService.makeRequest({
+    url: `/users/${userId}/updateFavorites/${recipeId}`,
+    method: 'put',
+    data: value ? { add: true } : { remove: true },
+  });
+};
+
 const userService: UserService = {
   getUsers,
   getUser,
   updateUser,
+  updateUserFavorites,
 };
 
 export default userService;
