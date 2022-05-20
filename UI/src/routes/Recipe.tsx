@@ -23,6 +23,7 @@ import { recipeActions } from '../redux/slices/recipesSlice';
 import { userActions } from '../redux/slices/usersSlice';
 import { authActions } from '../redux/slices/authSlice';
 import { AlertDialog, TagButton } from '../components';
+import { RecipeIngredient, RecipeStep } from '../types';
 
 const Recipe = () => {
   const { user } = useAppSelector(state => state.auth);
@@ -63,6 +64,21 @@ const Recipe = () => {
         })
       );
   };
+
+  const singleIngredient = (index: number, ingr: RecipeIngredient) => (
+    <Stack key={index} direction='row' justifyContent='flex-end' width='100%'>
+      <Box sx={{ width: '20%' }}>
+        {ingr.quantity && ingr.unit && (
+          <Typography variant='body1'>
+            {ingr.quantity} {ingr.unit}
+          </Typography>
+        )}
+      </Box>
+      <Box sx={{ width: '50%' }}>
+        <Typography variant='body1'>{ingr.description}</Typography>
+      </Box>
+    </Stack>
+  );
 
   const recipeDescriptionColumn = recipe ? (
     <Stack
@@ -162,45 +178,39 @@ const Recipe = () => {
               <Stack direction='column' justifyContent='flex-start' width='100%' spacing={1}>
                 {recipe.ingredients
                   .filter(i => i.subtitle?.name === st.name)
-                  .map(i => (
-                    <Stack key={i.description} direction='row' justifyContent='flex-end'>
-                      <Box sx={{ width: '20%' }}>
-                        {i.quantity && i.unit && (
-                          <Typography variant='body1'>
-                            {i.quantity} {i.unit}
-                          </Typography>
-                        )}
-                      </Box>
-                      <Box sx={{ width: '50%' }}>
-                        <Typography variant='body1'>{i.description}</Typography>
-                      </Box>
-                    </Stack>
-                  ))}
+                  .map((ingr, index) => singleIngredient(index, ingr))}
               </Stack>
             </Stack>
           ))}
         {!(recipe.subtitles && recipe.subtitles.length > 0) && (
           <Stack direction='column' spacing={1} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
-            {recipe.ingredients.map(i => (
-              <Stack key={i.description} direction='row' justifyContent='flex-end' width='100%'>
-                <Box sx={{ width: '20%' }}>
-                  {i.quantity && i.unit && (
-                    <Typography variant='body1'>
-                      {i.quantity} {i.unit}
-                    </Typography>
-                  )}
-                </Box>
-                <Box sx={{ width: '50%' }}>
-                  <Typography variant='body1'>{i.description}</Typography>
-                </Box>
-              </Stack>
-            ))}
+            {recipe.ingredients.map((ingr, index) => singleIngredient(index, ingr))}
           </Stack>
         )}
       </Stack>
     </Stack>
   ) : (
     <div />
+  );
+
+  const instructionStep = (step: RecipeStep) => (
+    <Stack key={step.index} direction='column' width='100%' spacing={1}>
+      <Stack
+        direction='row'
+        justifyContent='flex-start'
+        alignItems='center'
+        divider={<Divider orientation='vertical' flexItem />}
+        spacing={2}
+      >
+        <Typography variant='h3' width={15}>
+          {step.index}
+        </Typography>
+        <Typography variant='h3'>{step.title}</Typography>
+      </Stack>
+      <Typography variant='body1' align='justify'>
+        {step.description}
+      </Typography>
+    </Stack>
   );
 
   const recipeInstructionsColumn = recipe ? (
@@ -228,31 +238,14 @@ const Recipe = () => {
           direction='column'
           justifyContent='flex-start'
           alignItems='center'
-          divider={<Divider orientation='horizontal' flexItem />}
           spacing={3}
           width='90%'
           sx={{ margin: 5 }}
         >
           <Typography variant='h2'>Valmistusohje</Typography>
-          {recipe.instructions.map(step => (
-            <Stack key={step.index} direction='column' width='100%' spacing={1}>
-              <Stack
-                direction='row'
-                justifyContent='flex-start'
-                alignItems='center'
-                divider={<Divider orientation='vertical' flexItem />}
-                spacing={2}
-              >
-                <Typography variant='h3' width={15}>
-                  {step.index}
-                </Typography>
-                <Typography variant='h3'>{step.title}</Typography>
-              </Stack>
-              <Typography variant='body1' align='justify'>
-                {step.description}
-              </Typography>
-            </Stack>
-          ))}
+          <Stack direction='column' spacing={2} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
+            {recipe.instructions.map(step => instructionStep(step))}
+          </Stack>
         </Stack>
       </Card>
     </Box>

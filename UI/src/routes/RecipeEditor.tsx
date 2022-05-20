@@ -12,10 +12,12 @@ import {
   CircularProgress,
   TextField,
   MenuItem,
-  Radio,
+  Switch,
   Fab,
   Tooltip,
   IconButton,
+  FormGroup,
+  FormControlLabel,
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import AddIcon from '@mui/icons-material/Add';
@@ -451,8 +453,12 @@ const RecipeEditor = () => {
       <Typography variant='h4'>Ainesosat</Typography>
       <Stack direction='row' spacing={2} justifyContent='space-between'>
         <Stack direction='row' spacing={1} alignItems='center'>
-          <Radio checked={useSubtitles} size='small' onClick={toggleSubtitles} />
-          <Typography variant='body1'>Jaa alaotsikoihin</Typography>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch color='secondary' checked={useSubtitles} onClick={toggleSubtitles} />}
+              label='Jaa alaotsikoihin'
+            />
+          </FormGroup>
         </Stack>
         <Stack direction='row' spacing={1} alignItems='center'>
           <Typography variant='body1'>Annoskoko</Typography>
@@ -644,7 +650,7 @@ const RecipeEditor = () => {
   );
 
   const instructionsEditor = (
-    <Stack direction='column' spacing={1} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
+    <Stack direction='column' spacing={2} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
       {invalidInstructions && (
         <Typography variant='body1' color='error'>
           Lisää vähintään 1 valmistusvaihe

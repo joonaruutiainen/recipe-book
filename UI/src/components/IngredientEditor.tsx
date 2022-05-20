@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Stack, TextField, MenuItem, Typography, Button, Radio } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Stack, TextField, MenuItem, Button, Switch, FormGroup, FormControlLabel } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import constants from '../constants';
@@ -13,18 +13,25 @@ export interface IngredientEditorProps {
 }
 
 const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitle, onClose, onSave }) => {
-  const [ignoreIngredientQuantity, setIgnoreIngredientQuantity] = useState(
-    Boolean(ingredient.quantity === undefined && ingredient.unit === undefined)
+  const [useQuantity, setUseQuantity] = useState(
+    Boolean(!(ingredient.quantity === undefined && ingredient.unit === undefined))
   );
   const [quantity, setQuantity] = useState<number>(ingredient.quantity || 1);
+  const [quantityStep, setQuantityStep] = useState<number>(1);
   const [unit, setUnit] = useState<string>(ingredient.unit || 'kpl');
   const [description, setDescription] = useState<string>(ingredient.description);
   const [missingDescription, setMissingDescription] = useState(false);
 
+  useEffect(() => {
+    if (['kg', 'l', 'dl'].includes(unit)) setQuantityStep(0.1);
+    else if (['rkl', 'tl'].includes(unit)) setQuantityStep(0.5);
+    else setQuantityStep(1);
+  }, [unit]);
+
   const save = () => {
     if (!description) setMissingDescription(true);
-    else if (ignoreIngredientQuantity) onSave({ description, subtitle });
-    else onSave({ quantity, unit, description, subtitle });
+    else if (useQuantity) onSave({ quantity, unit, description, subtitle });
+    else onSave({ description, subtitle });
   };
 
   return (
@@ -36,11 +43,11 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
           size='small'
           value={quantity}
           onChange={e => setQuantity(parseFloat(e.target.value))}
-          disabled={ignoreIngredientQuantity}
+          disabled={!useQuantity}
           inputProps={{
-            min: 0.1,
+            min: quantityStep,
             max: 1000,
-            step: 0.1,
+            step: quantityStep,
           }}
           sx={{ width: '120px' }}
         />
@@ -50,7 +57,7 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
           size='small'
           value={unit}
           onChange={e => setUnit(e.target.value)}
-          disabled={ignoreIngredientQuantity}
+          disabled={!useQuantity}
           SelectProps={{
             MenuProps: {
               PaperProps: {
@@ -66,12 +73,12 @@ const IngredientEditor: React.FC<IngredientEditorProps> = ({ ingredient, subtitl
             </MenuItem>
           ))}
         </TextField>
-        <Radio
-          checked={ignoreIngredientQuantity}
-          size='small'
-          onClick={() => setIgnoreIngredientQuantity(!ignoreIngredientQuantity)}
-        />
-        <Typography variant='body1'>Ei määrää</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={<Switch color='secondary' checked={useQuantity} onClick={() => setUseQuantity(!useQuantity)} />}
+            label='Ilmoita määrä'
+          />
+        </FormGroup>
       </Stack>
       <TextField
         label='Kuvaus'
