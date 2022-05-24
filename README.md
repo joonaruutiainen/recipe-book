@@ -9,7 +9,7 @@ RecipeBook is a web application for private users to create and maintain their o
 RecipeBook is a [MERN-stack application](https://www.mongodb.com/mern-stack):
 - MongoDB Atlas as the database for storing and managing user and recipe data
 - Node-Express RESTful API for user/recipe CRUD operations and managing user authentication and authorization
-- React application as the user interface
+- React-Redux application as the user interface
 
 Other technologies used in the development:
 - Typescript
@@ -18,7 +18,7 @@ Other technologies used in the development:
 - Github actions
 
 Application design:
-- Initial design as a [Figma prototype](https://www.figma.com/proto/ckxBVBewDg2GooyFDt9cXc/Reseptikirjasto?page-id=0%3A1&node-id=38%3A57&viewport=1105%2C639%2C0.44&scaling=scale-down&starting-point-node-id=9%3A163)
+- Initial design as a [Figma prototype](https://www.figma.com/proto/ckxBVBewDg2GooyFDt9cXc/Reseptikirjasto?page-id=0%3A1&node-id=2%3A2&viewport=-1239%2C-1045%2C0.94&scaling=scale-down&starting-point-node-id=9%3A163)
 - React app constructed with components provided by [Material UI](https://mui.com/)
 
 ## Project status and future
