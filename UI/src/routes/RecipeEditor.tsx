@@ -431,7 +431,7 @@ const RecipeEditor = () => {
           </Typography>
         )}
       </Box>
-      <Box sx={{ width: 'fit-content', minWidth: '30%' }}>
+      <Box sx={{ width: 'fit-content', minWidth: '45%' }}>
         <Typography variant='body1'>{ingr.description}</Typography>
       </Box>
       <Button

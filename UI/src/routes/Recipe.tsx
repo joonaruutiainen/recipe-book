@@ -171,11 +171,17 @@ const Recipe = () => {
               key={st.index}
               direction='column'
               width='100%'
-              divider={<Divider orientation='horizontal' flexItem />}
-              spacing={1}
+              divider={<Divider orientation='horizontal' flexItem sx={{ borderBottomWidth: 3 }} />}
+              spacing={0.5}
             >
               <Typography variant='body1'>{st.name}</Typography>
-              <Stack direction='column' justifyContent='flex-start' width='100%' spacing={1}>
+              <Stack
+                direction='column'
+                justifyContent='flex-start'
+                width='100%'
+                spacing={0.5}
+                divider={<Divider orientation='horizontal' flexItem light />}
+              >
                 {recipe.ingredients
                   .filter(i => i.subtitle?.name === st.name)
                   .map((ingr, index) => singleIngredient(index, ingr))}
@@ -183,7 +189,12 @@ const Recipe = () => {
             </Stack>
           ))}
         {!(recipe.subtitles && recipe.subtitles.length > 0) && (
-          <Stack direction='column' spacing={1} divider={<Divider orientation='horizontal' flexItem />} width='100%'>
+          <Stack
+            direction='column'
+            spacing={0.5}
+            divider={<Divider orientation='horizontal' flexItem light />}
+            width='100%'
+          >
             {recipe.ingredients.map((ingr, index) => singleIngredient(index, ingr))}
           </Stack>
         )}
