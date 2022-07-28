@@ -161,9 +161,12 @@ const RecipeEditor = () => {
   const addSubtitle = () => {
     if (!subtitle?.name) setInvalidSubtitle(true);
     if (subtitle && subtitle.name) {
-      if (subtitles.find(st => st.index === subtitle.index))
+      if (subtitles.find(st => st.index === subtitle.index)) {
         setSubtitles(subtitles.map(st => (st.index === subtitle.index ? subtitle : st)));
-      else setSubtitles(subtitles.concat([subtitle]).sort((a, b) => a.index - b.index));
+        setIngredients(
+          ingredients.map(ingr => (ingr.subtitle?.index === subtitle.index ? { ...ingr, subtitle } : ingr))
+        );
+      } else setSubtitles(subtitles.concat([subtitle]).sort((a, b) => a.index - b.index));
       setSubtitle(null);
     }
   };
